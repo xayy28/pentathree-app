@@ -1,58 +1,304 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Sistem Informasi Homestay dan Suvenir (SIMHOSUV)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+![Laravel](https://img.shields.io/badge/Laravel-13.8+-FF2D20?logo=laravel&logoColor=white)
+![PHP](https://img.shields.io/badge/PHP-8.3+-777BB4?logo=php&logoColor=white)
+![Blade](https://img.shields.io/badge/Blade-Laravel%20Blade-FF2D20)
+![Tailwind](https://img.shields.io/badge/TailwindCSS-3.4+-38BDF8?logo=tailwindcss&logoColor=white)
+![Status](https://img.shields.io/badge/Status-Dalam%20Pengembangan-F2C94C)
 
-## About Laravel
+Sistem Informasi Manajmen Homestay dan Penjualan Souvenir Berbasis WEB Pada Natasya Homestay dan Harau Souvenir merupakan aplikasi berbasis web yang dirancang untuk membantu pengelolaan usaha homestay dan penjualan suvenir secara terintegrasi. Sistem ini memungkinkan pelanggan melakukan reservasi homestay, pembelian suvenir, pengelolaan pembayaran, serta membantu pengelola dalam mengelola operasional dan laporan usaha.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+> **Status implementasi:** Saat ini proyek telah memiliki fondasi aplikasi berupa autentikasi pengguna, dashboard dasar, manajemen profil, serta struktur database awal menggunakan Laravel dan Blade Template Engine. Fitur utama bisnis masih dalam tahap pengembangan.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Deskripsi Proyek
 
-## Learning Laravel
+Pengelolaan homestay dan penjualan suvenir secara manual sering menimbulkan berbagai kendala, seperti pencatatan reservasi yang kurang terorganisir, pengelolaan stok yang tidak terpantau dengan baik, serta kesulitan dalam penyusunan laporan usaha.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Melalui Sistem Informasi Manajmen Homestay dan Penjualan Souvenir Berbasis WEB Pada Natasya Homestay dan Harau Souvenir, proses bisnis dapat dilakukan secara lebih efektif dan terintegrasi sehingga meningkatkan kualitas layanan bagi pelanggan serta mempermudah pengelolaan usaha.
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Tujuan Sistem
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+- Menyediakan informasi homestay dan suvenir secara online.
+- Memudahkan pelanggan melakukan reservasi homestay.
+- Memudahkan pelanggan melakukan pembelian suvenir.
+- Membantu admin dalam mengelola data usaha.
+- Menyediakan laporan transaksi dan statistik usaha bagi owner.
 
-## Agentic Development
+---
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Aktor Sistem
+
+| Aktor      | Tanggung Jawab Utama                                                                                            |
+| ---------- | --------------------------------------------------------------------------------------------------------------- |
+| Pengunjung | Melihat informasi homestay, katalog suvenir, galeri, dan informasi umum tanpa login.                            |
+| Customer   | Registrasi, login, melakukan reservasi homestay, pembelian suvenir, pembayaran, serta melihat status transaksi. |
+| Admin      | Mengelola homestay, kamar, fasilitas, suvenir, transaksi, pembayaran, dan data pengguna.                        |
+| Owner      | Mengakses laporan dan statistik usaha.                                                                          |
+
+---
+
+## Fitur Sistem
+
+### Fitur Publik
+
+| Fitur              | Status       |
+| ------------------ | ------------ |
+| Homepage           | Direncanakan |
+| Informasi Homestay | Direncanakan |
+| Katalog Suvenir    | Direncanakan |
+| Galeri             | Direncanakan |
+| Informasi Kontak   | Direncanakan |
+| Pencarian Homestay | Direncanakan |
+
+### Fitur Customer
+
+| Fitur                   | Status           |
+| ----------------------- | ---------------- |
+| Login dan Registrasi    | Fondasi tersedia |
+| Manajemen Profil        | Fondasi tersedia |
+| Reservasi Homestay      | Direncanakan     |
+| Pembelian Suvenir       | Direncanakan     |
+| Checkout dan Pembayaran | Direncanakan     |
+| Riwayat Transaksi       | Direncanakan     |
+| Ulasan Homestay         | Direncanakan     |
+
+### Fitur Operasional dan Manajerial
+
+| Fitur                 | Status           |
+| --------------------- | ---------------- |
+| Dashboard Dasar       | Fondasi tersedia |
+| Manajemen Homestay    | Direncanakan     |
+| Manajemen Kamar       | Direncanakan     |
+| Manajemen Fasilitas   | Direncanakan     |
+| Manajemen Suvenir     | Direncanakan     |
+| Manajemen Stok        | Direncanakan     |
+| Verifikasi Pembayaran | Direncanakan     |
+| Manajemen Transaksi   | Direncanakan     |
+| Laporan dan Statistik | Direncanakan     |
+
+---
+
+## Aturan Bisnis Utama
+
+1. Pengunjung dapat melihat informasi homestay dan suvenir tanpa login.
+2. Customer wajib login sebelum melakukan reservasi homestay atau pembelian suvenir.
+3. Reservasi hanya dapat dilakukan pada kamar yang tersedia pada tanggal yang dipilih.
+4. Pembayaran harus diverifikasi sebelum reservasi atau pesanan diproses.
+5. Stok suvenir akan berkurang secara otomatis setelah transaksi berhasil.
+6. Customer dapat melihat status transaksi melalui dashboard.
+7. Owner hanya memiliki akses terhadap laporan dan statistik usaha.
+
+---
+
+## Teknologi yang Digunakan
+
+| Komponen          | Teknologi                     |
+| ----------------- | ----------------------------- |
+| Backend Framework | Laravel 13                    |
+| Bahasa Backend    | PHP 8.3                       |
+| Frontend          | Laravel Blade                 |
+| Styling           | Tailwind CSS                  |
+| Build Tool        | Vite                          |
+| Authentication    | Custom Authentication Laravel |
+| Database          | MySQL                         |
+| Testing           | PHPUnit                       |
+| Code Formatter    | Laravel Pint                  |
+| Version Control   | Git & GitHub                  |
+
+---
+
+## Instalasi Singkat
+
+### 1. Clone Repository
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git https://github.com/xayy28/pentathree-app.git
+cd pentathree-app
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### 2. Install Dependency
 
-## Contributing
+```bash
+composer install
+npm install
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 3. Konfigurasi Environment
 
-## Code of Conduct
+Salin file `.env.example` menjadi `.env`.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+**Windows PowerShell**
 
-## Security Vulnerabilities
+```powershell
+Copy-Item .env.example .env
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+**Linux / macOS**
 
-## License
+```bash
+cp .env.example .env
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Generate application key:
+
+```bash
+php artisan key:generate
+```
+
+### 4. Konfigurasi Database
+
+Buat database MySQL terlebih dahulu, kemudian sesuaikan konfigurasi database pada file `.env`.
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=pentathree_app
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+Jalankan migrasi database:
+
+```bash
+php artisan migrate
+```
+
+Jika menggunakan seeder:
+
+```bash
+php artisan migrate --seed
+```
+
+### 5. Menjalankan Aplikasi
+
+Jalankan server Laravel:
+
+```bash
+php artisan serve
+```
+
+Jalankan Vite:
+
+```bash
+npm run dev
+```
+
+Aplikasi dapat diakses melalui:
+
+```text
+http://127.0.0.1:8000
+```
+
+---
+
+## Struktur Project
+
+```text
+SIMHOSUV/
+├── app/
+├── bootstrap/
+├── config/
+├── database/
+│   ├── migrations/
+│   └── seeders/
+├── public/
+├── resources/
+│   ├── views/
+│   ├── css/
+│   └── js/
+├── routes/
+├── storage/
+├── tests/
+├── docs/
+├── README.md
+└── CHANGELOG.md
+```
+
+---
+
+## Dokumentasi Proyek
+
+| Dokumen                | Keterangan                               |
+| ---------------------- | ---------------------------------------- |
+| docs/installation.md   | Panduan instalasi dan konfigurasi sistem |
+| docs/features.md       | Dokumentasi fitur sistem                 |
+| docs/dependency.md     | Daftar dependency yang digunakan         |
+| docs/refactoring.md    | Riwayat refactoring proyek               |
+| docs/github-actions.md | Dokumentasi CI/CD dan GitHub Actions     |
+| CHANGELOG.md           | Catatan perubahan proyek                 |
+
+---
+
+## Modul Utama Sistem
+
+### Modul Homestay
+
+- Manajemen Homestay
+- Manajemen Kamar
+- Manajemen Fasilitas
+- Reservasi Homestay
+- Monitoring Ketersediaan Kamar
+
+### Modul Suvenir
+
+- Manajemen Produk
+- Manajemen Kategori
+- Manajemen Stok
+- Pemesanan Suvenir
+
+### Modul Transaksi
+
+- Checkout
+- Pembayaran
+- Verifikasi Pembayaran
+- Riwayat Transaksi
+
+### Modul Laporan
+
+- Laporan Reservasi Homestay
+- Laporan Penjualan Suvenir
+- Statistik Pendapatan
+- Rekapitulasi Transaksi
+
+---
+
+## Screenshot
+
+Screenshot aktual akan ditambahkan setelah fitur utama selesai diimplementasikan.
+
+| Halaman            | Status                      |
+| ------------------ | --------------------------- |
+| Login & Registrasi | Menunggu Implementasi Final |
+| Dashboard          | Menunggu Implementasi Final |
+| Daftar Homestay    | Menunggu Implementasi       |
+| Detail Homestay    | Menunggu Implementasi       |
+| Katalog Suvenir    | Menunggu Implementasi       |
+| Checkout           | Menunggu Implementasi       |
+| Laporan            | Menunggu Implementasi       |
+
+---
+
+## Tim Pengembang — Kelompok PentaThree
+
+| Nama                   | Peran             |
+| ---------------------- | ----------------- |
+| Zackri Kurnia Amri     | Project Manager   |
+| Yelsa Pagansa Putri    | Lead Programmer   |
+| Zikri Ilham Pratama    | Lead Programmer   |
+| Muhammad Aufi Syahyudi | System Analyst    |
+| Taufiqurrahman         | Quality Assurance |
+
+---
+
+## Status Akademik
+
+Proyek ini dikembangkan untuk memenuhi tugas **Project Based Learning (PBL)** pada mata kuliah **Konstruksi dan Evolusi Perangkat Lunak**, Program Studi **D4 Teknologi Rekayasa Perangkat Lunak**, Jurusan **Teknologi Informasi**, **Politeknik Negeri Padang**.
+
+---
+
+## Lisensi
+
+Proyek ini dikembangkan untuk tujuan akademik dan pembelajaran. Seluruh kode sumber dalam repository ini digunakan sebagai bagian dari kegiatan Project Based Learning (PBL).
