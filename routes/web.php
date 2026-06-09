@@ -38,6 +38,11 @@ Route::middleware('auth')->group(function () {
 
         // Scaffolding Rute Modul PBL Admin
         Route::get('/admin/homestay', [HomestayController::class, 'index'])->name('admin.homestay');
+        Route::get('/admin/homestay/create', [HomestayController::class, 'create'])->name('admin.homestay.create');
+        Route::post('/admin/homestay', [HomestayController::class, 'store'])->name('admin.homestay.store');
+        Route::get('/admin/homestay/{homestay_id}/edit', [HomestayController::class, 'edit'])->name('admin.homestay.edit');
+        Route::put('/admin/homestay/{homestay_id}', [HomestayController::class, 'update'])->name('admin.homestay.update');
+        Route::delete('/admin/homestay/{homestay_id}', [HomestayController::class, 'destroy'])->name('admin.homestay.destroy');
         Route::get('/admin/souvenir', [SouvenirController::class, 'index'])->name('admin.souvenir');
         Route::get('/admin/reservasi', [ReservasiController::class, 'index'])->name('admin.reservasi');
         Route::get('/admin/pembayaran', [PembayaranController::class, 'index'])->name('admin.pembayaran');
