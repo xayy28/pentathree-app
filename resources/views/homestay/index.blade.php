@@ -39,66 +39,97 @@
                 </div>
             @else
                 <!-- Desktop & Tablet: Table -->
-                <div class="hidden md:block overflow-x-auto">
-                    <table class="w-full text-left border-collapse text-sm">
+                <div class="hidden md:block overflow-x-auto" style="border-radius: 16px; border: 1px solid #E6E4DD; overflow: hidden;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.875rem;">
                         <thead>
-                            <tr class="border-b border-[#E6E4DD] text-[#8A9C91] font-semibold text-xs uppercase tracking-wider">
-                                <th class="pb-3 w-24">Foto</th>
-                                <th class="pb-3">Nama Homestay</th>
-                                <th class="pb-3">Harga / Malam</th>
-                                <th class="pb-3">Kapasitas</th>
-                                <th class="pb-3">Status</th>
-                                <th class="pb-3 text-right">Aksi</th>
+                            <tr style="background: linear-gradient(135deg, #F7F6F2 0%, #EEF0EB 100%); border-bottom: 2px solid #E6E4DD;">
+                                <th style="padding: 14px 16px; text-align: left; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #8A9C91; width: 90px;">Foto</th>
+                                <th style="padding: 14px 16px; text-align: left; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #8A9C91;">Nama Homestay</th>
+                                <th style="padding: 14px 16px; text-align: left; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #8A9C91;">Harga / Malam</th>
+                                <th style="padding: 14px 16px; text-align: left; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #8A9C91;">Kapasitas</th>
+                                <th style="padding: 14px 16px; text-align: left; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #8A9C91;">Status</th>
+                                <th style="padding: 14px 16px; text-align: left; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #8A9C91;">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-[#F2F0EA] text-[#2C3E35]">
-                            @foreach($homestays as $homestay)
-                                <tr class="hover:bg-[#FAF9F6] transition-colors group">
-                                    <td class="py-4 pr-4">
+                        <tbody>
+                            @foreach($homestays as $i => $homestay)
+                                <tr style="border-bottom: 1px solid #F2F0EA; transition: background 0.15s ease;" 
+                                    onmouseover="this.style.background='linear-gradient(90deg, #FAF9F6 0%, #F5F4F0 100%)'" 
+                                    onmouseout="this.style.background='transparent'">
+                                    <!-- Foto -->
+                                    <td style="padding: 16px;">
                                         @if($homestay->foto)
-                                            <img src="{{ asset($homestay->foto) }}" alt="{{ $homestay->nama_homestay }}" class="w-16 h-12 object-cover rounded-lg border border-[#E6E4DD]">
+                                            <img src="{{ asset($homestay->foto) }}" alt="{{ $homestay->nama_homestay }}" 
+                                                 style="width: 64px; height: 50px; object-fit: cover; border-radius: 10px; border: 1.5px solid #E6E4DD; box-shadow: 0 2px 8px rgba(0,0,0,0.07);">
                                         @else
-                                            <div class="w-16 h-12 bg-[#FAF9F6] border border-[#E6E4DD] rounded-lg flex items-center justify-center text-lg">🏠</div>
+                                            <div style="width: 64px; height: 50px; background: #FAF9F6; border: 1.5px solid #E6E4DD; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">🏠</div>
                                         @endif
                                     </td>
-                                    <td class="py-4 font-serif font-semibold text-base text-[#2C3E35]">
-                                        {{ $homestay->nama_homestay }}
+
+                                    <!-- Nama & Detail -->
+                                    <td style="padding: 16px; max-width: 240px;">
+                                        <span style="display: block; font-family: Georgia, serif; font-weight: 600; font-size: 0.95rem; color: #2C3E35; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                            {{ $homestay->nama_homestay }}
+                                        </span>
                                         @if($homestay->detail)
-                                            <span class="block text-xs font-sans font-normal text-[#8A9C91] max-w-xs truncate" title="{{ $homestay->detail }}">
+                                            <span style="display: block; font-size: 0.72rem; color: #8A9C91; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ $homestay->detail }}">
                                                 {{ $homestay->detail }}
                                             </span>
                                         @endif
                                     </td>
-                                    <td class="py-4 font-semibold text-[#2B4C3F]">
-                                        Rp {{ number_format($homestay->harga_permalam, 0, ',', '.') }}
+
+                                    <!-- Harga -->
+                                    <td style="padding: 16px;">
+                                        <span style="display: inline-flex; align-items: center; gap: 4px; background: #EEF7F2; border: 1px solid #C8E6D4; border-radius: 8px; padding: 5px 10px; font-size: 0.8rem; font-weight: 700; color: #2B4C3F;">
+                                            Rp {{ number_format($homestay->harga_permalam, 0, ',', '.') }}
+                                        </span>
                                     </td>
-                                    <td class="py-4 text-[#5C6E65]">
-                                        {{ $homestay->kapasitas }} Orang
+
+                                    <!-- Kapasitas -->
+                                    <td style="padding: 16px;">
+                                        <span style="display: inline-flex; align-items: center; gap: 5px; color: #5C6E65; font-size: 0.82rem;">
+                                            <svg width="14" height="14" fill="none" stroke="#8A9C91" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                            {{ $homestay->kapasitas }} Orang
+                                        </span>
                                     </td>
-                                    <td class="py-4">
+
+                                    <!-- Status -->
+                                    <td style="padding: 16px;">
                                         @if($homestay->status === 'Tersedia')
-                                            <span class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full bg-[#EAF2EE] text-[#2B4C3F]">
+                                            <span style="display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; border-radius: 999px; background: #EAF2EE; color: #2B4C3F; border: 1px solid #B8DEC8;">
+                                                <span style="width: 6px; height: 6px; border-radius: 50%; background: #2B4C3F; display: inline-block;"></span>
                                                 Tersedia
                                             </span>
                                         @else
-                                            <span class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full bg-[#FDF2F2] border border-[#F5C2C2] text-[#9B1C1C]">
+                                            <span style="display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; border-radius: 999px; background: #FDF2F2; color: #9B1C1C; border: 1px solid #F5C2C2;">
+                                                <span style="width: 6px; height: 6px; border-radius: 50%; background: #E65F5F; display: inline-block;"></span>
                                                 {{ $homestay->status }}
                                             </span>
                                         @endif
                                     </td>
-                                    <td class="py-4 text-right">
-                                        <div class="flex items-center justify-end gap-2">
-                                            <a href="{{ route('admin.homestay.edit', $homestay->homestay_id) }}" class="p-2 text-[#5C6E65] hover:text-[#2B4C3F] hover:bg-[#FAF9F6] border border-transparent hover:border-[#E6E4DD] rounded-lg transition-all" title="Edit">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+
+                                    <!-- Aksi -->
+                                    <td style="padding: 12px 16px; text-align: left;">
+                                        <div style="display: inline-flex; align-items: center; gap: 4px; background: #F7F6F2; border: 1px solid #E6E4DD; border-radius: 10px; padding: 4px;">
+                                            <a href="{{ route('admin.homestay.edit', $homestay->homestay_id) }}" 
+                                               title="Edit"
+                                               style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 7px; border: none; color: #5C6E65; background: transparent; transition: all 0.15s ease; text-decoration: none;"
+                                               onmouseover="this.style.background='white'; this.style.color='#2B4C3F'; this.style.boxShadow='0 1px 4px rgba(0,0,0,0.08)';"
+                                               onmouseout="this.style.background='transparent'; this.style.color='#5C6E65'; this.style.boxShadow='none';">
+                                                <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
                                                 </svg>
                                             </a>
-                                            <form action="{{ route('admin.homestay.destroy', $homestay->homestay_id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus homestay ini?')" class="inline">
+                                            <div style="width: 1px; height: 16px; background: #E6E4DD;"></div>
+                                            <form action="{{ route('admin.homestay.destroy', $homestay->homestay_id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus homestay ini?')" style="display: inline;">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="p-2 text-[#E65F5F] hover:text-white hover:bg-[#E65F5F] rounded-lg transition-all" title="Hapus">
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                <button type="submit" title="Hapus"
+                                                        style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 7px; border: none; color: #8A9C91; background: transparent; cursor: pointer; transition: all 0.15s ease;"
+                                                        onmouseover="this.style.background='#FDF2F2'; this.style.color='#E65F5F'; this.style.boxShadow='0 1px 4px rgba(0,0,0,0.08)';"
+                                                        onmouseout="this.style.background='transparent'; this.style.color='#8A9C91'; this.style.boxShadow='none';">
+                                                    <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                                     </svg>
                                                 </button>
                                             </form>
