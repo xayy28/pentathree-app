@@ -45,14 +45,15 @@
                 <!-- Harga Per Malam -->
                 <div class="space-y-2">
                     <label for="harga_permalam" class="text-xs font-bold uppercase tracking-wider text-[#8A9C91]">Harga Per Malam (Rp)</label>
-                    <div class="relative flex items-center">
-                        <span class="absolute left-4 text-sm font-semibold text-[#8A9C91]">Rp</span>
+                    <div style="position: relative; display: flex; align-items: center;">
+                        <span style="position: absolute; left: 16px; font-size: 0.875rem; font-weight: 600; color: #8A9C91; pointer-events: none; z-index: 10; line-height: 1;">Rp</span>
                         <input type="number" 
                                id="harga_permalam" 
                                name="harga_permalam" 
                                value="{{ old('harga_permalam') }}" 
-                               placeholder="Contoh: 750000"
-                               class="w-full pl-11 pr-4 py-3 bg-[#FAF9F6] border border-[#E6E4DD] focus:border-[#2B4C3F] focus:ring-1 focus:ring-[#2B4C3F] rounded-xl text-[#2C3E35] placeholder-[#8A9C91] text-sm outline-none transition-all @error('harga_permalam') border-red-500 @enderror">
+                               placeholder="750000"
+                               style="padding-left: 2.75rem;"
+                               class="w-full pr-4 py-3 bg-[#FAF9F6] border border-[#E6E4DD] focus:border-[#2B4C3F] focus:ring-1 focus:ring-[#2B4C3F] rounded-xl text-[#2C3E35] placeholder-[#8A9C91] text-sm outline-none transition-all @error('harga_permalam') border-red-500 @enderror">
                     </div>
                     @error('harga_permalam')
                         <p class="text-xs text-[#E65F5F] font-semibold mt-1">{{ $message }}</p>
@@ -104,19 +105,41 @@
             <!-- Upload Foto -->
             <div class="space-y-2">
                 <label class="text-xs font-bold uppercase tracking-wider text-[#8A9C91] block">Foto Homestay</label>
-                <div class="flex items-center gap-4">
-                    <div class="relative flex-grow">
-                        <input type="file" 
-                               id="foto" 
-                               name="foto" 
-                               accept="image/*"
-                               onchange="previewImage(event)"
-                               class="w-full px-4 py-3 bg-[#FAF9F6] border border-[#E6E4DD] focus:border-[#2B4C3F] rounded-xl text-[#2C3E35] text-sm outline-none transition-all file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-[#EAF2EE] file:text-[#2B4C3F] hover:file:bg-[#2B4C3F] hover:file:text-white file:transition-colors file:cursor-pointer @error('foto') border-red-500 @enderror">
+                
+                <!-- Custom Upload Zone -->
+                <label for="foto" 
+                       id="upload-zone"
+                       style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 28px 20px; background: #FAF9F6; border: 2px dashed #D5D3C7; border-radius: 14px; cursor: pointer; transition: all 0.2s ease;"
+                       onmouseover="this.style.borderColor='#2B4C3F'; this.style.background='#EEF7F2';"
+                       onmouseout="this.style.borderColor='#D5D3C7'; this.style.background='#FAF9F6';">
+                    <div style="width: 44px; height: 44px; background: #EAF2EE; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                        <svg width="20" height="20" fill="none" stroke="#2B4C3F" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 16M14 8h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
                     </div>
+                    <div style="text-align: center;">
+                        <span style="display: block; font-size: 0.82rem; font-weight: 600; color: #2C3E35;">Klik untuk pilih foto</span>
+                        <span style="display: block; font-size: 0.7rem; color: #8A9C91; margin-top: 3px;">PNG, JPG, JPEG hingga 2MB</span>
+                    </div>
+                    <input type="file" 
+                           id="foto" 
+                           name="foto" 
+                           accept="image/*"
+                           onchange="previewImage(event)"
+                           style="display: none;">
+                </label>
+
+                <!-- File Name Preview -->
+                <div id="file-name-display" style="display: none; align-items: center; gap: 8px; padding: 10px 14px; background: #EAF2EE; border-radius: 10px; border: 1px solid #B8DEC8;">
+                    <svg width="14" height="14" fill="none" stroke="#2B4C3F" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span id="file-name-text" style="font-size: 0.75rem; font-weight: 600; color: #2B4C3F;"></span>
                 </div>
-                <div id="image-preview-container" class="hidden mt-4">
-                    <p class="text-xs text-[#8A9C91] mb-2">Pratinjau Foto:</p>
-                    <img id="image-preview" src="#" alt="Pratinjau" class="w-full max-w-md h-64 object-cover rounded-2xl border border-[#E6E4DD]">
+
+                <div id="image-preview-container" style="display: none; margin-top: 12px;">
+                    <p style="font-size: 0.7rem; color: #8A9C91; margin-bottom: 8px;">Pratinjau Foto:</p>
+                    <img id="image-preview" src="#" alt="Pratinjau" style="width: 100%; max-width: 320px; height: 180px; object-fit: cover; border-radius: 14px; border: 1.5px solid #E6E4DD; box-shadow: 0 2px 12px rgba(0,0,0,0.06);">
                 </div>
                 @error('foto')
                     <p class="text-xs text-[#E65F5F] font-semibold mt-1">{{ $message }}</p>
@@ -141,19 +164,36 @@
         const input = event.target;
         const container = document.getElementById('image-preview-container');
         const preview = document.getElementById('image-preview');
+        const fileNameDisplay = document.getElementById('file-name-display');
+        const fileNameText = document.getElementById('file-name-text');
+        const uploadZone = document.getElementById('upload-zone');
         
         if (input.files && input.files[0]) {
+            const file = input.files[0];
             const reader = new FileReader();
             
             reader.onload = function(e) {
                 preview.src = e.target.result;
-                container.classList.remove('hidden');
+                container.style.display = 'block';
+                if (fileNameDisplay) {
+                    fileNameText.textContent = file.name;
+                    fileNameDisplay.style.display = 'flex';
+                }
+                if (uploadZone) {
+                    uploadZone.style.borderColor = '#2B4C3F';
+                    uploadZone.style.background = '#EEF7F2';
+                }
             }
             
-            reader.readAsDataURL(input.files[0]);
+            reader.readAsDataURL(file);
         } else {
             preview.src = "#";
-            container.classList.add('hidden');
+            container.style.display = 'none';
+            if (fileNameDisplay) fileNameDisplay.style.display = 'none';
+            if (uploadZone) {
+                uploadZone.style.borderColor = '#D5D3C7';
+                uploadZone.style.background = '#FAF9F6';
+            }
         }
     }
 </script>
