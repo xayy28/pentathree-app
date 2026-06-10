@@ -5,6 +5,7 @@
 ![Blade](https://img.shields.io/badge/Blade-Laravel%20Blade-FF2D20)
 ![Tailwind](https://img.shields.io/badge/TailwindCSS-3.4+-38BDF8?logo=tailwindcss&logoColor=white)
 ![Status](https://img.shields.io/badge/Status-Dalam%20Pengembangan-F2C94C)
+[![Simple CI](https://github.com/xayy28/pentathree-app/actions/workflows/test.yml/badge.svg)](https://github.com/xayy28/pentathree-app/actions/workflows/test.yml)
 
 Sistem Informasi Manajmen Homestay dan Penjualan Souvenir Berbasis WEB Pada Natasya Homestay dan Harau Souvenir merupakan aplikasi berbasis web yang dirancang untuk membantu pengelolaan usaha homestay dan penjualan suvenir secara terintegrasi. Sistem ini memungkinkan pelanggan melakukan reservasi homestay, pembelian suvenir, pengelolaan pembayaran, serta membantu pengelola dalam mengelola operasional dan laporan usaha.
 
