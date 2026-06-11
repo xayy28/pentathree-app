@@ -44,6 +44,11 @@ Route::middleware('auth')->group(function () {
         Route::put('/admin/homestay/{homestay_id}', [HomestayController::class, 'update'])->name('admin.homestay.update');
         Route::delete('/admin/homestay/{homestay_id}', [HomestayController::class, 'destroy'])->name('admin.homestay.destroy');
         Route::get('/admin/souvenir', [SouvenirController::class, 'index'])->name('admin.souvenir');
+        Route::get('/admin/souvenir/create', [SouvenirController::class, 'create'])->name('admin.souvenir.create');
+        Route::post('/admin/souvenir', [SouvenirController::class, 'store'])->name('admin.souvenir.store');
+        Route::get('/admin/souvenir/{souvenir_id}/edit', [SouvenirController::class, 'edit'])->name('admin.souvenir.edit');
+        Route::put('/admin/souvenir/{souvenir_id}', [SouvenirController::class, 'update'])->name('admin.souvenir.update');
+        Route::delete('/admin/souvenir/{souvenir_id}', [SouvenirController::class, 'destroy'])->name('admin.souvenir.destroy');
         Route::get('/admin/reservasi', [ReservasiController::class, 'index'])->name('admin.reservasi');
         Route::get('/admin/pembayaran', [PembayaranController::class, 'index'])->name('admin.pembayaran');
         Route::get('/admin/laporan', [LaporanController::class, 'index'])->name('admin.laporan');
