@@ -1,255 +1,221 @@
-@extends('layouts.app')
+@extends('layouts.user')
 
 @section('title', 'Dashboard')
 
 @section('content')
-<div class="space-y-8">
-    
-    <!-- Welcome Header -->
-    <div class="bg-gradient-to-r from-[#2B4C3F] to-[#1E362C] rounded-2xl p-6 sm:p-10 text-white shadow-md flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden">
-        <div class="absolute right-0 bottom-0 top-0 w-1/3 opacity-10 bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-white to-transparent pointer-events-none"></div>
-        <div>
-            <h1 class="text-3xl font-serif font-semibold mb-2">Halo, {{ auth()->user()->nama }}!</h1>
-            <p class="text-[#A7C5B5] text-sm max-w-xl leading-relaxed">
-                Temukan penginapan impian Anda dan belanja kerajinan lokal khas dari koleksi terbaik kami.
-            </p>
-        </div>
-        <div class="flex-shrink-0">
-            <span class="px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg text-xs font-semibold tracking-wider uppercase text-white">
-                Member sejak {{ auth()->user()->created_at ? auth()->user()->created_at->format('M Y') : date('M Y') }}
+    <!-- Hero Section (Seamless with navbar) -->
+    <div class="relative h-[450px] sm:h-[550px] bg-cover bg-center flex items-center justify-center -mt-6 sm:-mt-0"
+        style="background-image: url('{{ asset('images/hero-banner1.png') }}');">
+        <!-- Dark overlay to ensure text contrast -->
+        <div class="absolute inset-0 bg-black/30"></div>
+
+        <!-- Hero Text Content -->
+        <div class="relative z-10 text-center text-white px-4 max-w-3xl space-y-4">
+            <span class="text-xs sm:text-sm font-semibold tracking-[0.25em] uppercase block drop-shadow-sm text-white/90">
+                The Art of Retreat
             </span>
+            <h1 class="font-cursive text-5xl sm:text-6xl md:text-7xl font-bold leading-tight drop-shadow-md">
+                Quiet spaces for intentional living.
+            </h1>
         </div>
     </div>
 
-    <!-- Main Grid: Profile & Order History -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
-        <!-- Profile Card -->
-        <div class="bg-white rounded-2xl border border-[#E6E4DD] p-6 shadow-sm flex flex-col justify-between">
-            <div>
-                <div class="flex items-center gap-4 mb-6">
-                    <div class="w-14 h-14 bg-[#EAF2EE] rounded-full flex items-center justify-center border border-[#A7C5B5] text-[#2B4C3F] font-semibold text-lg">
-                        {{ strtoupper(substr(auth()->user()->nama, 0, 2)) }}
-                    </div>
-                    <div>
-                        <h3 class="font-serif font-semibold text-lg text-[#2C3E35]">{{ auth()->user()->nama }}</h3>
-                        <p class="text-xs font-mono font-bold text-[#2B4C3F]">{{ auth()->user()->user_id }}</p>
-                    </div>
-                </div>
+    <!-- Main Page Container (Cream Background) -->
+    <div class="bg-[#F8F7F4] py-16 sm:py-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24">
 
-                <div class="space-y-4 text-sm border-t border-[#F2F0EA] pt-4">
-                    <div>
-                        <span class="text-xs text-[#8A9C91] block">Email Address</span>
-                        <span class="text-[#2C3E35] font-medium">{{ auth()->user()->email }}</span>
-                    </div>
-                    <div>
-                        <span class="text-xs text-[#8A9C91] block">Phone Number</span>
-                        <span class="text-[#2C3E35] font-medium">{{ auth()->user()->no_hp }}</span>
-                    </div>
-                    <div>
-                        <span class="text-xs text-[#8A9C91] block">Delivery Address</span>
-                        <p class="text-[#2C3E35] font-medium mt-0.5 leading-relaxed">
-                            {{ auth()->user()->alamat }}
+            <!-- Section 1: Our Curated Sanctuaries (Homestays) -->
+            <section class="space-y-10">
+                <!-- Header Title & Description -->
+                <div
+                    class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-[#E6E4DD] pb-6">
+                    <div class="max-w-2xl space-y-3">
+                        <h2 class="font-serif text-3xl sm:text-4xl text-[#2B4C3F] font-semibold leading-tight">
+                            Our Curated Sanctuaries
+                        </h2>
+                        <p class="text-sm text-[#5C6E65] leading-relaxed">
+                            Each home is selected for its architectural honesty, connection to the Harau landscape, and
+                            commitment to quiet hospitality.
                         </p>
                     </div>
-                </div>
-            </div>
-
-            <div class="mt-6 pt-4 border-t border-[#F2F0EA]">
-                <button class="w-full py-2.5 bg-[#FAF9F6] border border-[#D5D3C7] hover:bg-[#F2F0EA] rounded-lg text-xs font-semibold text-[#2C3E35] transition-colors">
-                    Edit Profil Singkat
-                </button>
-            </div>
-        </div>
-
-        <!-- Order History Table (Span 2) -->
-        <div class="lg:col-span-2 bg-white rounded-2xl border border-[#E6E4DD] p-6 shadow-sm">
-            <div class="flex items-center justify-between mb-6">
-                <div>
-                    <h3 class="text-lg font-serif font-semibold text-[#2C3E35]">Riwayat Pesanan</h3>
-                    <p class="text-xs text-[#8A9C91]">Aktivitas reservasi homestay dan souvenir Anda</p>
-                </div>
-                <span class="text-xs font-semibold text-[#2B4C3F] hover:underline cursor-pointer">Lihat Riwayat Lengkap</span>
-            </div>
-
-            <!-- Desktop: Table -->
-            <div class="hidden lg:block overflow-x-auto">
-                <table class="w-full text-left border-collapse text-sm">
-                    <thead>
-                        <tr class="border-b border-[#E6E4DD] text-[#8A9C91] font-semibold text-xs uppercase tracking-wider">
-                            <th class="pb-3">No. Invoice</th>
-                            <th class="pb-3">Item/Layanan</th>
-                            <th class="pb-3">Tanggal</th>
-                            <th class="pb-3">Total</th>
-                            <th class="pb-3">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-[#F2F0EA] text-[#2C3E35]">
-                        <tr class="hover:bg-[#FAF9F6] transition-colors">
-                            <td class="py-3.5 font-semibold text-[#2B4C3F]">#INV-1092</td>
-                            <td class="py-3.5">
-                                <div class="font-medium text-[#2C3E35]">Green Valley Lodge</div>
-                                <span class="text-[10px] text-[#8A9C91]">2 Malam &bull; Homestay</span>
-                            </td>
-                            <td class="py-3.5 text-[#5C6E65]">14 Jan 2026</td>
-                            <td class="py-3.5 font-medium text-[#2C3E35]">Rp 1.450.000</td>
-                            <td class="py-3.5">
-                                <span class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full bg-[#EAF2EE] text-[#2B4C3F]">
-                                    Lunas
-                                </span>
-                            </td>
-                        </tr>
-                        <tr class="hover:bg-[#FAF9F6] transition-colors">
-                            <td class="py-3.5 font-semibold text-[#2B4C3F]">#INV-1087</td>
-                            <td class="py-3.5">
-                                <div class="font-medium text-[#2C3E35]">Gantungan Kunci Ukiran & Kain Tenun</div>
-                                <span class="text-[10px] text-[#8A9C91]">3 Pcs &bull; Souvenir</span>
-                            </td>
-                            <td class="py-3.5 text-[#5C6E65]">08 Jan 2026</td>
-                            <td class="py-3.5 font-medium text-[#2C3E35]">Rp 280.000</td>
-                            <td class="py-3.5">
-                                <span class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full bg-[#FAF9F6] border border-[#E6E4DD] text-[#5C6E65]">
-                                    Diproses
-                                </span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Mobile/Tablet: Cards -->
-            <div class="lg:hidden space-y-3">
-                <div class="bg-[#FAF9F6] rounded-xl border border-[#E6E4DD] p-4">
-                    <div class="flex items-start justify-between mb-2">
-                        <span class="text-xs font-bold text-[#2B4C3F]">#INV-1092</span>
-                        <span class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full bg-[#EAF2EE] text-[#2B4C3F]">Lunas</span>
-                    </div>
-                    <div class="text-sm font-medium text-[#2C3E35]">Green Valley Lodge</div>
-                    <span class="text-[10px] text-[#8A9C91]">2 Malam &bull; Homestay</span>
-                    <div class="flex items-center justify-between mt-3 pt-3 border-t border-[#E6E4DD]">
-                        <span class="text-[11px] text-[#5C6E65]">14 Jan 2026</span>
-                        <span class="text-sm font-semibold text-[#2C3E35]">Rp 1.450.000</span>
-                    </div>
-                </div>
-                <div class="bg-[#FAF9F6] rounded-xl border border-[#E6E4DD] p-4">
-                    <div class="flex items-start justify-between mb-2">
-                        <span class="text-xs font-bold text-[#2B4C3F]">#INV-1087</span>
-                        <span class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full bg-[#FAF9F6] border border-[#E6E4DD] text-[#5C6E65]">Diproses</span>
-                    </div>
-                    <div class="text-sm font-medium text-[#2C3E35]">Gantungan Kunci Ukiran & Kain Tenun</div>
-                    <span class="text-[10px] text-[#8A9C91]">3 Pcs &bull; Souvenir</span>
-                    <div class="flex items-center justify-between mt-3 pt-3 border-t border-[#E6E4DD]">
-                        <span class="text-[11px] text-[#5C6E65]">08 Jan 2026</span>
-                        <span class="text-sm font-semibold text-[#2C3E35]">Rp 280.000</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Section: Homestay Menu -->
-    <div class="space-y-6">
-        <div>
-            <h3 class="text-2xl font-serif font-semibold text-[#2C3E35]">Rekomendasi Homestay</h3>
-            <p class="text-xs text-[#5C6E65]">Jelajahi penginapan estetik dengan kenyamanan premium terbaik</p>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            
-            <!-- Card 1 -->
-            <div class="bg-white rounded-2xl overflow-hidden border border-[#E6E4DD] shadow-sm hover:shadow-md transition-shadow group">
-                <div class="h-48 overflow-hidden relative">
-                    <img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=800&q=85" alt="Homestay" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                    <span class="absolute top-4 left-4 bg-white/90 backdrop-blur-sm text-[10px] font-bold uppercase tracking-wider text-[#2B4C3F] px-2.5 py-1 rounded-full shadow-sm">Terpopuler</span>
-                </div>
-                <div class="p-6">
-                    <h4 class="font-serif font-semibold text-lg text-[#2C3E35] mb-1">Aura Cozy Retreat</h4>
-                    <p class="text-xs text-[#8A9C91] mb-4">Lembang, Bandung</p>
-                    <div class="flex items-center justify-between border-t border-[#F2F0EA] pt-4">
-                        <div>
-                            <span class="text-[10px] text-[#8A9C91] block">Mulai dari</span>
-                            <span class="text-sm font-semibold text-[#2B4C3F]">Rp 750.000 / malam</span>
-                        </div>
-                        <button class="px-4 py-2 bg-[#2B4C3F] hover:bg-[#1E362C] text-white text-xs font-semibold rounded-lg transition-colors">
-                            Pesan
+                    <!-- Navigation Arrows -->
+                    <div class="flex gap-3">
+                        <button
+                            class="w-10 h-10 rounded-full border border-[#2B4C3F]/30 hover:border-[#2B4C3F] flex items-center justify-center text-[#2B4C3F] transition-all hover:bg-[#EAF2EE]"
+                            aria-label="Previous">
+                            <span class="text-sm font-bold">&lt;</span>
+                        </button>
+                        <button
+                            class="w-10 h-10 rounded-full border border-[#2B4C3F]/30 hover:border-[#2B4C3F] flex items-center justify-center text-[#2B4C3F] transition-all hover:bg-[#EAF2EE]"
+                            aria-label="Next">
+                            <span class="text-sm font-bold">&gt;</span>
                         </button>
                     </div>
                 </div>
-            </div>
 
-            <!-- Card 2 -->
-            <div class="bg-white rounded-2xl overflow-hidden border border-[#E6E4DD] shadow-sm hover:shadow-md transition-shadow group">
-                <div class="h-48 overflow-hidden relative">
-                    <img src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=800&q=85" alt="Homestay" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                </div>
-                <div class="p-6">
-                    <h4 class="font-serif font-semibold text-lg text-[#2C3E35] mb-1">Rustic Green Lodge</h4>
-                    <p class="text-xs text-[#8A9C91] mb-4">Puncak, Bogor</p>
-                    <div class="flex items-center justify-between border-t border-[#F2F0EA] pt-4">
-                        <div>
-                            <span class="text-[10px] text-[#8A9C91] block">Mulai dari</span>
-                            <span class="text-sm font-semibold text-[#2B4C3F]">Rp 900.000 / malam</span>
+                <!-- Homestay Cards Grid (Asymmetrical Layout) -->
+                <div class="flex flex-col md:flex-row gap-8 items-end">
+
+                    <!-- Card 1 (Active - Large Card) -->
+                    <div class="w-full md:w-[58%] transition-all duration-300 group">
+                        <div class="h-80 sm:h-96 overflow-hidden rounded-[32px] relative bg-[#EAF2EE]/10">
+                            <img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=800&q=80"
+                                alt="Cabin Homestay Active"
+                                class="w-full h-full object-cover rounded-[32px] group-hover:scale-105 transition-transform duration-700">
                         </div>
-                        <button class="px-4 py-2 bg-[#2B4C3F] hover:bg-[#1E362C] text-white text-xs font-semibold rounded-lg transition-colors">
-                            Pesan
+                        <div class="pt-5 px-1 space-y-4">
+                            <div class="flex items-end justify-between">
+                                <h4 class="font-serif font-semibold text-2xl text-[#2C3E35]">Kamar 1</h4>
+                                <div class="text-right">
+                                    <span class="font-serif font-bold text-xl text-[#2B4C3F]">900.000</span>
+                                    <span class="text-xs text-[#8A9C91] font-medium uppercase tracking-wider">/night</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-end pt-2">
+                                <a href="{{ route('user.homestay') }}"
+                                    class="px-8 py-3 bg-[#1E362C] hover:bg-[#2B4C3F] text-white text-xs font-semibold rounded-full transition-all shadow-sm">
+                                    Pesan
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 2 (Inactive - Small Card) -->
+                    <div class="w-full md:w-[42%] transition-all duration-300 group">
+                        <div class="h-64 sm:h-72 overflow-hidden rounded-[32px] relative bg-[#EAF2EE]/10">
+                            <img src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=800&q=80"
+                                alt="Cabin Homestay Secondary"
+                                class="w-full h-full object-cover rounded-[32px] group-hover:scale-105 transition-transform duration-700 opacity-90 group-hover:opacity-100">
+                        </div>
+                        <div class="pt-5 px-1 space-y-4">
+                            <div class="flex items-center justify-between">
+                                <h4 class="font-serif font-semibold text-lg text-[#2C3E35]">Kamar 1</h4>
+                                <div class="text-right flex items-center gap-1">
+                                    <span class="font-serif font-semibold text-base text-[#5C6E65]">900.000</span>
+                                    <span class="text-[10px] text-[#8A9C91] font-medium uppercase">/night</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-end pt-2">
+                                <a href="{{ route('user.homestay') }}"
+                                    class="px-6 py-2.5 border border-[#2B4C3F] text-[#2B4C3F] hover:bg-[#EAF2EE] text-xs font-semibold rounded-full transition-all">
+                                    Pesan
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- Section 2: Local Treasures (Souvenirs) -->
+            <section class="space-y-10">
+                <!-- Header Title & Description -->
+                <div
+                    class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-[#E6E4DD] pb-6">
+                    <div class="max-w-2xl space-y-3">
+                        <h2 class="font-serif text-3xl sm:text-4xl text-[#2B4C3F] font-semibold leading-tight">
+                            Local Treasures
+                        </h2>
+                        <p class="text-sm text-[#5C6E65] leading-relaxed">
+                            Bawa pulang buah tangan khas hasil karya seni pengrajin lokal terbaik di sekitar Harau.
+                        </p>
+                    </div>
+                    <!-- Navigation Arrows -->
+                    <div class="flex gap-3">
+                        <button
+                            class="w-10 h-10 rounded-full border border-[#2B4C3F]/30 hover:border-[#2B4C3F] flex items-center justify-center text-[#2B4C3F] transition-all hover:bg-[#EAF2EE]"
+                            aria-label="Previous">
+                            <span class="text-sm font-bold">&lt;</span>
+                        </button>
+                        <button
+                            class="w-10 h-10 rounded-full border border-[#2B4C3F]/30 hover:border-[#2B4C3F] flex items-center justify-center text-[#2B4C3F] transition-all hover:bg-[#EAF2EE]"
+                            aria-label="Next">
+                            <span class="text-sm font-bold">&gt;</span>
                         </button>
                     </div>
                 </div>
-            </div>
+
+                <!-- Souvenirs Grid (Asymmetrical Layout Reversed) -->
+                <div class="flex flex-col md:flex-row gap-8 items-end">
+
+                    <!-- Card 1 (Inactive - Small Card Left) -->
+                    <div class="w-full md:w-[42%] transition-all duration-300 group">
+                        <div class="h-64 sm:h-72 overflow-hidden rounded-2xl relative bg-[#EAF2EE]/10">
+                            <img src="https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?auto=format&fit=crop&w=800&q=80"
+                                alt="Souvenir Secondary"
+                                class="w-full h-full object-cover rounded-2xl group-hover:scale-105 transition-transform duration-700 opacity-90 group-hover:opacity-100">
+                        </div>
+                        <div class="pt-5 px-1 space-y-4">
+                            <div class="flex items-center justify-between">
+                                <h4 class="font-serif font-semibold text-lg text-[#2C3E35]">Souvenir 2</h4>
+                                <div class="text-right flex items-center gap-1">
+                                    <span class="font-serif font-semibold text-base text-[#5C6E65]">900.000</span>
+                                    <span class="text-[10px] text-[#8A9C91] font-medium uppercase">/night</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-end pt-2">
+                                <a href="{{ route('user.souvenir') }}"
+                                    class="px-6 py-2.5 border border-[#2B4C3F] text-[#2B4C3F] hover:bg-[#EAF2EE] text-xs font-semibold rounded-lg transition-all">
+                                    Pesan
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 2 (Active - Large Card Right) -->
+                    <div class="w-full md:w-[58%] transition-all duration-300 group">
+                        <div class="h-80 sm:h-96 overflow-hidden rounded-2xl relative bg-[#EAF2EE]/10">
+                            <img src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=800&q=80"
+                                alt="Souvenir Active"
+                                class="w-full h-full object-cover rounded-2xl group-hover:scale-105 transition-transform duration-700">
+                        </div>
+                        <div class="pt-5 px-1 space-y-4">
+                            <div class="flex items-end justify-between">
+                                <h4 class="font-serif font-semibold text-xl text-[#2C3E35]">Souvenir 1</h4>
+                                <div class="text-right">
+                                    <span class="font-serif font-bold text-xl text-[#2B4C3F]">10.000</span>
+                                    <span class="text-xs text-[#8A9C91] font-medium uppercase tracking-wider">/pcs</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-end pt-2">
+                                <a href="{{ route('user.souvenir') }}"
+                                    class="px-8 py-3 bg-[#1E362C] hover:bg-[#2B4C3F] text-white text-xs font-semibold rounded-lg transition-all shadow-sm">
+                                    Pesan
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- Section 3: Quote filosofis (Bottom) -->
+            <section class="flex justify-center pt-8">
+                <div
+                    class="w-full max-w-4xl bg-[#F0EDE4] rounded-[40px] px-8 py-16 sm:px-16 sm:py-20 text-center space-y-6 shadow-sm border border-[#E6E4DD]/40 relative overflow-hidden">
+                    <!-- Subtle background light glow -->
+                    <div
+                        class="absolute -right-20 -bottom-20 w-80 h-80 rounded-full bg-white/30 blur-3xl pointer-events-none">
+                    </div>
+
+                    <!-- Quote icon -->
+                    <div class="text-5xl sm:text-6xl text-[#2B4C3F]/30 font-serif leading-none select-none">
+                        “
+                    </div>
+
+                    <!-- Quote Text -->
+                    <p class="font-serif text-[#2C3E35] text-lg sm:text-2xl italic leading-relaxed max-w-3xl mx-auto">
+                        "The Aura Collective is not just about a place to sleep; it is about finding the space between
+                        things, the quiet rhythm of the valley, and the luxury of time."
+                    </p>
+
+                    <!-- Quote Close Icon -->
+                    <div class="text-5xl sm:text-6xl text-[#2B4C3F]/30 font-serif leading-none select-none mt-2">
+                        ”
+                    </div>
+                </div>
+            </section>
 
         </div>
     </div>
-
-    <!-- Section: Souvenir Menu -->
-    <div class="space-y-6">
-        <div>
-            <h3 class="text-2xl font-serif font-semibold text-[#2C3E35]">Katalog Souvenir Terpopuler</h3>
-            <p class="text-xs text-[#5C6E65]">Bawa pulang buah tangan hasil kerajinan pengrajin lokal pilihan</p>
-        </div>
-
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-            
-            <!-- Souvenir Item 1 -->
-            <div class="bg-white rounded-2xl border border-[#E6E4DD] overflow-hidden p-4 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
-                <div>
-                    <div class="bg-[#FAF9F6] rounded-xl h-36 flex items-center justify-center text-5xl mb-4 border border-[#F2F0EA]">
-                        🏺
-                    </div>
-                    <h4 class="font-semibold text-sm text-[#2C3E35] mb-1">Guci Tanah Liat Klasik</h4>
-                    <span class="text-[10px] text-[#8A9C91]">Gerabah Lokal</span>
-                </div>
-                <div class="mt-4 pt-3 border-t border-[#F2F0EA] flex items-center justify-between">
-                    <span class="text-xs font-bold text-[#2B4C3F]">Rp 120.000</span>
-                    <button class="p-2 bg-[#EAF2EE] text-[#2B4C3F] hover:bg-[#2B4C3F] hover:text-white rounded-lg transition-colors">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Souvenir Item 2 -->
-            <div class="bg-white rounded-2xl border border-[#E6E4DD] overflow-hidden p-4 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
-                <div>
-                    <div class="bg-[#FAF9F6] rounded-xl h-36 flex items-center justify-center text-5xl mb-4 border border-[#F2F0EA]">
-                        🧣
-                    </div>
-                    <h4 class="font-semibold text-sm text-[#2C3E35] mb-1">Syal Kain Tenun Tradisional</h4>
-                    <span class="text-[10px] text-[#8A9C91]">Tekstil Lokal</span>
-                </div>
-                <div class="mt-4 pt-3 border-t border-[#F2F0EA] flex items-center justify-between">
-                    <span class="text-xs font-bold text-[#2B4C3F]">Rp 180.000</span>
-                    <button class="p-2 bg-[#EAF2EE] text-[#2B4C3F] hover:bg-[#2B4C3F] hover:text-white rounded-lg transition-colors">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-</div>
 @endsection
