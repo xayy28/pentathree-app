@@ -14,6 +14,6 @@ class HomestayController extends Controller
     public function index()
     {
         $homestays = Homestay::latest()->get();
-        return view('pelanggan.homestay', compact('homestays'));
+        return view('pelanggan.homestay.index', compact('homestays'));
     }
 }

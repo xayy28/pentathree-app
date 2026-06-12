@@ -21,6 +21,6 @@ class SouvenirController extends Controller
             $souvenirs = Souvenir::latest()->get();
         }
 
-        return view('pelanggan.souvenir', compact('souvenirs', 'kategori'));
+        return view('pelanggan.souvenir.index', compact('souvenirs', 'kategori'));
     }
 }

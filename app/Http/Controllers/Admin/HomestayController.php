@@ -14,7 +14,7 @@ class HomestayController extends Controller
     public function index()
     {
         $homestays = Homestay::latest()->get();
-        return view('admin.homestay', compact('homestays'));
+        return view('admin.homestay.index', compact('homestays'));
     }
 
     /**
@@ -22,7 +22,7 @@ class HomestayController extends Controller
      */
     public function create()
     {
-        return view('admin.tambahHomestay');
+        return view('admin.homestay.tambah');
     }
 
     /**
@@ -59,7 +59,7 @@ class HomestayController extends Controller
     public function edit($homestay_id)
     {
         $homestay = Homestay::findOrFail($homestay_id);
-        return view('admin.editHomestay', compact('homestay'));
+        return view('admin.homestay.edit', compact('homestay'));
     }
 
     /**

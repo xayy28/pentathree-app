@@ -16,7 +16,7 @@ class SouvenirController extends Controller
          $kategori = $request->query('kategori');
          $souvenirs = Souvenir::with('updater')->latest()->get();
  
-         return view('admin.souvenir', compact('souvenirs', 'kategori'));
+         return view('admin.souvenir.index', compact('souvenirs', 'kategori'));
      }
  
      /**
@@ -24,7 +24,7 @@ class SouvenirController extends Controller
       */
      public function create()
      {
-         return view('admin.tambahSouvenir');
+         return view('admin.souvenir.tambah');
      }
  
      /**
@@ -62,7 +62,7 @@ class SouvenirController extends Controller
      public function edit($souvenir_id)
      {
          $souvenir = Souvenir::findOrFail($souvenir_id);
-         return view('admin.editSouvenir', compact('souvenir'));
+         return view('admin.souvenir.edit', compact('souvenir'));
      }
 
     /**

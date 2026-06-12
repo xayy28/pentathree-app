@@ -12,6 +12,6 @@ class PembayaranController extends Controller
      */
     public function index()
     {
-        return view('admin.pembayaran');
+        return view('admin.pembayaran.index');
     }
 }
