@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Homestay;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Homestay;
@@ -14,7 +14,7 @@ class HomestayController extends Controller
     public function index()
     {
         $homestays = Homestay::latest()->get();
-        return view('homestay.index', compact('homestays'));
+        return view('admin.homestay.index', compact('homestays'));
     }
 
     /**
@@ -22,7 +22,7 @@ class HomestayController extends Controller
      */
     public function create()
     {
-        return view('homestay.tambahHomestay');
+        return view('admin.homestay.tambah');
     }
 
     /**
@@ -59,7 +59,7 @@ class HomestayController extends Controller
     public function edit($homestay_id)
     {
         $homestay = Homestay::findOrFail($homestay_id);
-        return view('homestay.editHomestay', compact('homestay'));
+        return view('admin.homestay.edit', compact('homestay'));
     }
 
     /**

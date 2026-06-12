@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Reservasi;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -8,10 +8,10 @@ use Illuminate\Http\Request;
 class ReservasiController extends Controller
 {
     /**
-     * Tampilkan daftar reservasi.
+     * Tampilkan daftar reservasi untuk admin.
      */
     public function index()
     {
-        return view('reservasi.index');
+        return view('admin.reservasi.index');
     }
 }
