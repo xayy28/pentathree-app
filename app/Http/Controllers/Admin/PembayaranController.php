@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Pembayaran;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -8,10 +8,10 @@ use Illuminate\Http\Request;
 class PembayaranController extends Controller
 {
     /**
-     * Tampilkan daftar pembayaran.
+     * Tampilkan daftar pembayaran untuk admin.
      */
     public function index()
     {
-        return view('pembayaran.index');
+        return view('admin.pembayaran');
     }
 }

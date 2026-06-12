@@ -1,13 +1,13 @@
-@extends(auth()->user()->role === 'admin' ? 'layouts.app' : 'layouts.user')
+@extends('layouts.user')
 
-@section('title', 'Kelola Souvenir')
+@section('title', 'Katalog Souvenir')
 
 @section('content')
     <div class="space-y-6">
         <div class="bg-white rounded-2xl border border-[#E6E4DD] p-8 shadow-sm">
-            <h1 class="text-3xl font-serif font-semibold text-[#2C3E35] mb-2">Kelola Souvenir</h1>
+            <h1 class="text-3xl font-serif font-semibold text-[#2C3E35] mb-2">Katalog Souvenir</h1>
             <p class="text-sm text-[#5C6E65] leading-relaxed mb-6">
-                Halaman pengelolaan Souvenir sedang dalam pengembangan untuk Project Base Learning (PBL).
+                Halaman katalog Souvenir sedang dalam pengembangan untuk Project Base Learning (PBL).
             </p>
 
             <div
@@ -15,8 +15,7 @@
                 <span class="text-5xl mb-4">🏺</span>
                 <h3 class="text-lg font-semibold text-[#2C3E35] mb-1">Fitur Souvenir Belum Tersedia</h3>
                 <p class="text-xs text-[#8A9C91] max-w-sm">
-                    Anda dapat menambahkan CRUD produk souvenir, form upload foto, pengaturan harga, dan manajemen stok di
-                    sini.
+                    Katalog souvenir untuk pelanggan segera hadir.
                 </p>
             </div>
         </div>

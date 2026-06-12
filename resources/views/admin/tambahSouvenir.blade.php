@@ -74,8 +74,6 @@
                     @enderror
                 </div>
 
-
-
                 <!-- Status -->
                 <div class="space-y-2">
                     <label for="status" class="text-xs font-bold uppercase tracking-wider text-[#8A9C91]">Status</label>
