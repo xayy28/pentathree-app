@@ -13,7 +13,8 @@ class HomestayController extends Controller
      */
     public function index()
     {
-        $homestays = Homestay::latest()->get();
-        return view('pelanggan.homestay.index', compact('homestays'));
+        $homestays = Homestay::with('kategori')->latest()->get();
+        $categories = \App\Models\KategoriHomestay::all();
+        return view('pelanggan.homestay.index', compact('homestays', 'categories'));
     }
 }

@@ -14,6 +14,7 @@ class Homestay extends Model
     protected $primaryKey = 'homestay_id';
 
     protected $fillable = [
+        'kategori_id',
         'nama_homestay',
         'harga_permalam',
         'kapasitas',
@@ -21,4 +22,12 @@ class Homestay extends Model
         'detail',
         'foto',
     ];
+
+    /**
+     * Dapatkan kategori dari homestay ini.
+     */
+    public function kategori()
+    {
+        return $this->belongsTo(KategoriHomestay::class, 'kategori_id', 'kategori_id');
+    }
 }

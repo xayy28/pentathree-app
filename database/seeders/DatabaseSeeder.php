@@ -32,6 +32,63 @@ class DatabaseSeeder extends Seeder
             'role' => 'user',
         ]);
 
+        // Seeding Kategori Homestay
+        $suites = \App\Models\KategoriHomestay::create([
+            'nama_kategori' => 'Suites',
+            'deskripsi' => 'Kamar tipe Suite dengan kenyamanan ekstra dan fasilitas premium.'
+        ]);
+
+        $deluxe = \App\Models\KategoriHomestay::create([
+            'nama_kategori' => 'Deluxe',
+            'deskripsi' => 'Kamar tipe Deluxe dengan perabotan lengkap dan desain modern.'
+        ]);
+
+        $standard = \App\Models\KategoriHomestay::create([
+            'nama_kategori' => 'Standard',
+            'deskripsi' => 'Kamar tipe Standard dengan harga terjangkau dan fasilitas dasar lengkap.'
+        ]);
+
+        // Seeding Homestay
+        \App\Models\Homestay::create([
+            'kategori_id' => $suites->kategori_id,
+            'nama_homestay' => 'Cendana Forest Suite',
+            'harga_permalam' => 1250000,
+            'kapasitas' => 2,
+            'status' => 'Tersedia',
+            'detail' => 'Rasakan ketenangan di tengah hutan pinus dengan fasilitas modern dan desain arsitektur kontemporer.',
+            'foto' => 'images/hero-banner1.png'
+        ]);
+
+        \App\Models\Homestay::create([
+            'kategori_id' => $deluxe->kategori_id,
+            'nama_homestay' => 'Jati Deluxe Room',
+            'harga_permalam' => 900000,
+            'kapasitas' => 2,
+            'status' => 'Tersedia',
+            'detail' => 'Kamar elegan dengan sentuhan kayu Jati otentik, memberikan kehangatan dan kenyamanan maksimal.',
+            'foto' => 'images/hero-banner1.png'
+        ]);
+
+        \App\Models\Homestay::create([
+            'kategori_id' => $standard->kategori_id,
+            'nama_homestay' => 'Mahoni Standard Room',
+            'harga_permalam' => 650000,
+            'kapasitas' => 2,
+            'status' => 'Tersedia',
+            'detail' => 'Pilihan tepat untuk pelancong bisnis maupun liburan singkat, menawarkan kesederhanaan yang berkelas.',
+            'foto' => 'images/hero-banner1.png'
+        ]);
+
+        \App\Models\Homestay::create([
+            'kategori_id' => $suites->kategori_id,
+            'nama_homestay' => 'Meranti Premiere Suite',
+            'harga_permalam' => 2100000,
+            'kapasitas' => 4,
+            'status' => 'Tersedia',
+            'detail' => 'Definisi kemewahan yang sesungguhnya dengan ruang tamu pribadi dan pemandangan taman tropis.',
+            'foto' => 'images/hero-banner1.png'
+        ]);
+
         // Ambil user_id admin untuk updated_by
         $adminId = User::where('role', 'admin')->first()->user_id;
 
