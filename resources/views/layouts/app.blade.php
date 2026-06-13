@@ -230,9 +230,11 @@
             <div class="flex items-center gap-2 sm:gap-4 flex-shrink-0">
                 <div class="text-right hidden sm:block">
                     <div class="text-xs sm:text-sm font-semibold text-[#2C3E35] leading-tight">
-                        {{ auth()->user()->nama }}</div>
+                        {{ auth()->user()->nama }}
+                    </div>
                     <div class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-[#8A9C91]">
-                        {{ auth()->user()->user_id }}</div>
+                        {{ auth()->user()->user_id }}
+                    </div>
                 </div>
                 <div
                     class="w-8 h-8 sm:w-10 sm:h-10 bg-[#EAF2EE] rounded-full flex items-center justify-center border border-[#A7C5B5] text-[#2B4C3F] font-semibold text-xs sm:text-sm flex-shrink-0">
@@ -389,38 +391,50 @@
 
         <!-- Dynamic Content -->
         <main class="flex-grow overflow-y-auto">
-            <div class="p-4 sm:p-6 lg:p-10">
-
-                <!-- Success/Error Toast Flash Notifications -->
-                @if(session('success'))
-                    <div
-                        class="mb-6 sm:mb-8 p-3 sm:p-4 bg-[#EAF2EE] border border-[#A7C5B5] text-[#2B4C3F] text-sm rounded-xl flex items-start gap-3 shadow-sm">
-                        <svg class="w-5 h-5 text-[#2B4C3F] mt-0.5 flex-shrink-0" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        <div>
-                            <span class="font-semibold">Sukses!</span> {{ session('success') }}
+            <div class="p-4 sm:p-6 lg:p-10 min-h-full flex flex-col justify-between">
+                <div class="flex-grow">
+                    <!-- Success/Error Toast Flash Notifications -->
+                    @if(session('success'))
+                        <div
+                            class="mb-6 sm:mb-8 p-3 sm:p-4 bg-[#EAF2EE] border border-[#A7C5B5] text-[#2B4C3F] text-sm rounded-xl flex items-start gap-3 shadow-sm">
+                            <svg class="w-5 h-5 text-[#2B4C3F] mt-0.5 flex-shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <div>
+                                <span class="font-semibold">Sukses!</span> {{ session('success') }}
+                            </div>
                         </div>
-                    </div>
-                @endif
+                    @endif
 
-                @if(session('error'))
-                    <div
-                        class="mb-6 sm:mb-8 p-3 sm:p-4 bg-[#FDF2F2] border border-[#F5C2C2] text-[#9B1C1C] text-sm rounded-xl flex items-start gap-3 shadow-sm">
-                        <svg class="w-5 h-5 text-[#9B1C1C] mt-0.5 flex-shrink-0" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        <div>
-                            <span class="font-semibold">Gagal!</span> {{ session('error') }}
+                    @if(session('error'))
+                        <div
+                            class="mb-6 sm:mb-8 p-3 sm:p-4 bg-[#FDF2F2] border border-[#F5C2C2] text-[#9B1C1C] text-sm rounded-xl flex items-start gap-3 shadow-sm">
+                            <svg class="w-5 h-5 text-[#9B1C1C] mt-0.5 flex-shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <div>
+                                <span class="font-semibold">Gagal!</span> {{ session('error') }}
+                            </div>
                         </div>
-                    </div>
-                @endif
+                    @endif
 
-                @yield('content')
+                    @yield('content')
+                </div>
+
+                <!-- Minimal Admin Footer -->
+                <footer
+                    class="mt-12 pt-6 border-t border-[#E6E4DD]/80 flex flex-col sm:flex-row justify-between items-center gap-2">
+                    <p class="text-xs text-[#8A9C91]">
+                        &copy; 2026 PentaThree. All Rights Reserved.
+                    </p>
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-[#8A9C91]/80">
+                        Admin Portal
+                    </span>
+                </footer>
             </div>
         </main>
     </div>
