@@ -20,8 +20,8 @@
         </div>
     </div>
 
-    <!-- Main Page Container (Cream Background) -->
-    <div class="bg-[#F8F7F4] py-16 sm:py-24">
+    <!-- Main Page Container (Cool Grey Background) -->
+    <div class="bg-[#F3F4F6] py-16 sm:py-24">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24">
 
             @include('pelanggan.homestay._preview')
@@ -31,7 +31,7 @@
             <!-- Section 3: Quote filosofis (Bottom) -->
             <section class="flex justify-center pt-8">
                 <div
-                    class="w-full max-w-4xl bg-[#F0EDE4] rounded-[40px] px-8 py-16 sm:px-16 sm:py-20 text-center space-y-6 shadow-sm border border-[#E6E4DD]/40 relative overflow-hidden">
+                    class="w-full max-w-4xl bg-white rounded-[40px] px-8 py-16 sm:px-16 sm:py-20 text-center space-y-6 shadow-sm border border-gray-200/60 relative overflow-hidden">
                     <!-- Subtle background light glow -->
                     <div
                         class="absolute -right-20 -bottom-20 w-80 h-80 rounded-full bg-white/30 blur-3xl pointer-events-none">
