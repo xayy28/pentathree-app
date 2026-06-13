@@ -26,11 +26,11 @@
     </div>
 
     <!-- Homestay Cards Grid (Asymmetrical Layout) -->
-    <div class="flex flex-col md:flex-row gap-8 items-end">
+    <div class="flex flex-col md:flex-row gap-8 items-stretch md:items-end">
 
         <!-- Card 1 (Active - Large Card) -->
         <div class="w-full md:w-[58%] transition-all duration-300 group">
-            <div class="h-80 sm:h-96 overflow-hidden rounded-[32px] relative bg-[#EAF2EE]/10">
+            <div class="h-48 sm:h-80 md:h-96 overflow-hidden rounded-[32px] relative bg-[#EAF2EE]/10">
                 <img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=800&q=80"
                     alt="Cabin Homestay Active"
                     class="w-full h-full object-cover rounded-[32px] group-hover:scale-105 transition-transform duration-700">
@@ -54,7 +54,7 @@
 
         <!-- Card 2 (Inactive - Small Card) -->
         <div class="w-full md:w-[42%] transition-all duration-300 group">
-            <div class="h-64 sm:h-72 overflow-hidden rounded-[32px] relative bg-[#EAF2EE]/10">
+            <div class="h-40 sm:h-64 md:h-72 overflow-hidden rounded-[32px] relative bg-[#EAF2EE]/10">
                 <img src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=800&q=80"
                     alt="Cabin Homestay Secondary"
                     class="w-full h-full object-cover rounded-[32px] group-hover:scale-105 transition-transform duration-700 opacity-90 group-hover:opacity-100">

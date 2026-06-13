@@ -25,11 +25,11 @@
     </div>
 
     <!-- Souvenirs Grid (Asymmetrical Layout Reversed) -->
-    <div class="flex flex-col md:flex-row gap-8 items-end">
+    <div class="flex flex-col md:flex-row gap-8 items-stretch md:items-end">
 
         <!-- Card 1 (Inactive - Small Card Left) -->
         <div class="w-full md:w-[42%] transition-all duration-300 group">
-            <div class="h-64 sm:h-72 overflow-hidden rounded-2xl relative bg-[#EAF2EE]/10">
+            <div class="h-40 sm:h-64 md:h-72 overflow-hidden rounded-2xl relative bg-[#EAF2EE]/10">
                 <img src="https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?auto=format&fit=crop&w=800&q=80"
                     alt="Souvenir Secondary"
                     class="w-full h-full object-cover rounded-2xl group-hover:scale-105 transition-transform duration-700 opacity-90 group-hover:opacity-100">
@@ -53,7 +53,7 @@
 
         <!-- Card 2 (Active - Large Card Right) -->
         <div class="w-full md:w-[58%] transition-all duration-300 group">
-            <div class="h-80 sm:h-96 overflow-hidden rounded-2xl relative bg-[#EAF2EE]/10">
+            <div class="h-48 sm:h-80 md:h-96 overflow-hidden rounded-2xl relative bg-[#EAF2EE]/10">
                 <img src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=800&q=80"
                     alt="Souvenir Active"
                     class="w-full h-full object-cover rounded-2xl group-hover:scale-105 transition-transform duration-700">

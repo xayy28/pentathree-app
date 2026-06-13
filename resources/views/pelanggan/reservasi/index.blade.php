@@ -3,7 +3,7 @@
 @section('title', 'Daftar Reservasi')
 
 @section('content')
-<div class="space-y-6">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6">
     <div class="bg-white rounded-2xl border border-[#E6E4DD] p-8 shadow-sm">
         <h1 class="text-3xl font-serif font-semibold text-[#2C3E35] mb-2">Riwayat Reservasi</h1>
         <p class="text-sm text-[#5C6E65] leading-relaxed mb-6">

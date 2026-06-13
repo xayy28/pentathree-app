@@ -53,7 +53,7 @@
                     <a href="/" class="flex items-center gap-2.5 hover:opacity-90 transition-opacity">
                         <img src="{{ asset('images/Logo-Natasha.jpg') }}" alt="Natasha Homestay Logo"
                             class="h-9 w-9 rounded-full object-cover border border-[#E6E4DD]/60">
-                        <span class="text-xs sm:text-sm font-serif font-semibold tracking-[0.15em] text-[#2B4C3F] uppercase">
+                        <span class="text-[11px] sm:text-sm font-serif font-semibold tracking-[0.15em] text-[#2B4C3F] uppercase whitespace-nowrap">
                             Natasha Homestay
                         </span>
                     </a>

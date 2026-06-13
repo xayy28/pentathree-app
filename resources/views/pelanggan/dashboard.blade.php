@@ -4,7 +4,7 @@
 
 @section('content')
     <!-- Hero Section (Seamless with navbar) -->
-    <div class="relative h-[450px] sm:h-[550px] bg-cover bg-center flex items-center justify-center -mt-6 sm:-mt-0"
+    <div class="relative h-[450px] sm:h-[550px] bg-cover bg-center flex items-center justify-center"
         style="background-image: url('{{ asset('images/hero-banner1.png') }}');">
         <!-- Dark overlay to ensure text contrast -->
         <div class="absolute inset-0 bg-black/30"></div>
@@ -14,7 +14,7 @@
             <span class="text-xs sm:text-sm font-semibold tracking-[0.25em] uppercase block drop-shadow-sm text-white/90">
                 The Art of Retreat
             </span>
-            <h1 class="font-cursive text-5xl sm:text-6xl md:text-7xl font-bold leading-tight drop-shadow-md">
+            <h1 class="font-cursive text-3xl sm:text-5xl md:text-7xl font-bold leading-tight drop-shadow-md">
                 Quiet spaces for intentional living.
             </h1>
         </div>

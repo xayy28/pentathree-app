@@ -19,25 +19,25 @@
     <div class="flex flex-col md:flex-row gap-10 items-start">
 
         <!-- Left Sidebar: Filter -->
-        <div class="w-full md:w-64 flex-shrink-0 space-y-6">
-            <h3 class="font-serif text-2xl text-[#2B4C3F] font-semibold tracking-wide border-b border-[#E6E4DD] pb-3">
+        <div class="w-full md:w-64 flex-shrink-0 md:space-y-6">
+            <h3 class="hidden md:block font-serif text-2xl text-[#2B4C3F] font-semibold tracking-wide border-b border-[#E6E4DD] pb-3">
                 Filter
             </h3>
-            <div class="flex flex-col gap-3" id="souvenir-filters">
-                <button data-filter="all" class="flex items-center gap-4 w-full px-5 py-4 rounded-2xl border transition-all text-left font-semibold shadow-sm bg-[#EAF2EE] border-[#A7C5B5] text-[#2B4C3F] active-filter-btn">
-                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <div class="flex flex-row md:flex-col gap-3 overflow-x-auto pb-3 md:pb-0 -mx-4 px-4 md:mx-0 md:px-0 scrollbar-none" id="souvenir-filters">
+                <button data-filter="all" class="flex items-center justify-center md:justify-start gap-2 md:gap-4 w-auto md:w-full px-4 md:px-5 py-2.5 md:py-4 rounded-xl md:rounded-2xl border transition-all text-center md:text-left font-semibold shadow-sm bg-[#EAF2EE] border-[#A7C5B5] text-[#2B4C3F] active-filter-btn whitespace-nowrap">
+                    <svg class="w-4 h-4 md:w-5 md:h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
                     </svg>
                     <span>Semua</span>
                 </button>
-                <button data-filter="tersedia" class="flex items-center gap-4 w-full px-5 py-4 rounded-2xl border transition-all text-left font-medium bg-white border-[#E6E4DD] text-[#5C6E65] hover:text-[#2B4C3F] hover:bg-[#FAF9F6] hover:shadow-sm">
-                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <button data-filter="tersedia" class="flex items-center justify-center md:justify-start gap-2 md:gap-4 w-auto md:w-full px-4 md:px-5 py-2.5 md:py-4 rounded-xl md:rounded-2xl border transition-all text-center md:text-left font-medium bg-white border-[#E6E4DD] text-[#5C6E65] hover:text-[#2B4C3F] hover:bg-[#FAF9F6] hover:shadow-sm whitespace-nowrap">
+                    <svg class="w-4 h-4 md:w-5 md:h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                     <span>Tersedia</span>
                 </button>
-                <button data-filter="habis" class="flex items-center gap-4 w-full px-5 py-4 rounded-2xl border transition-all text-left font-medium bg-white border-[#E6E4DD] text-[#5C6E65] hover:text-[#2B4C3F] hover:bg-[#FAF9F6] hover:shadow-sm">
-                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <button data-filter="habis" class="flex items-center justify-center md:justify-start gap-2 md:gap-4 w-auto md:w-full px-4 md:px-5 py-2.5 md:py-4 rounded-xl md:rounded-2xl border transition-all text-center md:text-left font-medium bg-white border-[#E6E4DD] text-[#5C6E65] hover:text-[#2B4C3F] hover:bg-[#FAF9F6] hover:shadow-sm whitespace-nowrap">
+                    <svg class="w-4 h-4 md:w-5 md:h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                     <span>Habis</span>
@@ -83,7 +83,7 @@
                                 </div>
 
                                 <!-- Souvenir Info -->
-                                <div class="p-6 space-y-3">
+                                <div class="p-4 sm:p-6 space-y-3">
                                     <h4 class="font-serif font-semibold text-xl text-[#2C3E35] pb-2.5 border-b border-[#F0EDE6]">
                                         {{ $souvenir->nama_souvenir }}
                                     </h4>
@@ -96,7 +96,7 @@
                             </div>
 
                             <!-- Price & Action -->
-                            <div class="p-6 pt-0">
+                            <div class="p-4 sm:p-6 pt-0">
                                 <div class="flex items-center justify-between border-t border-[#F2F0EA] pt-4">
                                     <div>
                                         <span class="text-[9px] text-[#8A9C91] block uppercase tracking-wider">Harga</span>
