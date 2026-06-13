@@ -25,19 +25,19 @@
                 Filter
             </h3>
             <div class="flex flex-row md:flex-col gap-3 overflow-x-auto pb-3 md:pb-0 -mx-4 px-4 md:mx-0 md:px-0 scrollbar-none" id="souvenir-filters">
-                <button data-filter="all" class="flex items-center justify-center md:justify-start gap-2 md:gap-4 w-auto md:w-full px-4 md:px-5 py-2.5 md:py-4 rounded-xl md:rounded-2xl border border-[#1E362C] transition-all text-center md:text-left font-semibold shadow-sm bg-[#1E362C] text-white active-filter-btn whitespace-nowrap cursor-pointer">
+                <button data-filter="all" class="flex items-center justify-center md:justify-start gap-2 md:gap-4 w-auto md:w-full px-4 md:px-5 py-2.5 md:py-4 rounded-xl md:rounded-2xl border border-[#1E362C] transition-all text-center md:text-left font-semibold shadow-sm bg-[#1E362C] text-white active-filter-btn whitespace-nowrap cursor-pointer hover:bg-[#152720] hover:text-white">
                     <svg class="w-4 h-4 md:w-5 md:h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
                     </svg>
                     <span>Semua</span>
                 </button>
-                <button data-filter="tersedia" class="flex items-center justify-center md:justify-start gap-2 md:gap-4 w-auto md:w-full px-4 md:px-5 py-2.5 md:py-4 rounded-xl md:rounded-2xl border border-gray-200 transition-all text-center md:text-left font-medium bg-white text-[#5C6E65] hover:text-[#1E362C] hover:bg-[#FAF9F6] hover:shadow-sm whitespace-nowrap cursor-pointer">
+                <button data-filter="tersedia" class="flex items-center justify-center md:justify-start gap-2 md:gap-4 w-auto md:w-full px-4 md:px-5 py-2.5 md:py-4 rounded-xl md:rounded-2xl border border-gray-200 transition-all text-center md:text-left font-medium bg-white text-[#5C6E65] hover:text-[#1E362C] hover:bg-[#EAF2EE] hover:border-[#B8DEC8] hover:shadow-sm whitespace-nowrap cursor-pointer">
                     <svg class="w-4 h-4 md:w-5 md:h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                     <span>Tersedia</span>
                 </button>
-                <button data-filter="habis" class="flex items-center justify-center md:justify-start gap-2 md:gap-4 w-auto md:w-full px-4 md:px-5 py-2.5 md:py-4 rounded-xl md:rounded-2xl border border-gray-200 transition-all text-center md:text-left font-medium bg-white text-[#5C6E65] hover:text-[#1E362C] hover:bg-[#FAF9F6] hover:shadow-sm whitespace-nowrap cursor-pointer">
+                <button data-filter="habis" class="flex items-center justify-center md:justify-start gap-2 md:gap-4 w-auto md:w-full px-4 md:px-5 py-2.5 md:py-4 rounded-xl md:rounded-2xl border border-gray-200 transition-all text-center md:text-left font-medium bg-white text-[#5C6E65] hover:text-[#1E362C] hover:bg-[#EAF2EE] hover:border-[#B8DEC8] hover:shadow-sm whitespace-nowrap cursor-pointer">
                     <svg class="w-4 h-4 md:w-5 md:h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
@@ -158,12 +158,12 @@
         filters.forEach(btn => {
             btn.addEventListener('click', function () {
                 filters.forEach(f => {
-                    f.classList.remove('bg-[#1E362C]', 'border-[#1E362C]', 'text-white', 'font-semibold', 'shadow-sm', 'active-filter-btn');
-                    f.classList.add('bg-white', 'border-gray-200', 'text-[#5C6E65]', 'font-medium');
+                    f.classList.remove('bg-[#1E362C]', 'border-[#1E362C]', 'text-white', 'font-semibold', 'shadow-sm', 'active-filter-btn', 'hover:bg-[#152720]', 'hover:text-white');
+                    f.classList.add('bg-white', 'border-gray-200', 'text-[#5C6E65]', 'font-medium', 'hover:text-[#1E362C]', 'hover:bg-[#EAF2EE]', 'hover:border-[#B8DEC8]', 'hover:shadow-sm');
                 });
 
-                this.classList.remove('bg-white', 'border-gray-200', 'text-[#5C6E65]', 'font-medium');
-                this.classList.add('bg-[#1E362C]', 'border-[#1E362C]', 'text-white', 'font-semibold', 'shadow-sm', 'active-filter-btn');
+                this.classList.remove('bg-white', 'border-gray-200', 'text-[#5C6E65]', 'font-medium', 'hover:text-[#1E362C]', 'hover:bg-[#EAF2EE]', 'hover:border-[#B8DEC8]', 'hover:shadow-sm');
+                this.classList.add('bg-[#1E362C]', 'border-[#1E362C]', 'text-white', 'font-semibold', 'shadow-sm', 'active-filter-btn', 'hover:bg-[#152720]', 'hover:text-white');
 
                 activeFilter = this.getAttribute('data-filter');
                 applyFilters();

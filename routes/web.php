@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin\HomestayController as AdminHomestayController;
+use App\Http\Controllers\Admin\KategoriHomestayController as AdminKategoriHomestayController;
 use App\Http\Controllers\Admin\SouvenirController as AdminSouvenirController;
 use App\Http\Controllers\Admin\ReservasiController as AdminReservasiController;
 use App\Http\Controllers\Admin\PembayaranController as AdminPembayaranController;
@@ -47,6 +48,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin/homestay/{homestay_id}/edit', [AdminHomestayController::class, 'edit'])->name('admin.homestay.edit');
         Route::put('/admin/homestay/{homestay_id}', [AdminHomestayController::class, 'update'])->name('admin.homestay.update');
         Route::delete('/admin/homestay/{homestay_id}', [AdminHomestayController::class, 'destroy'])->name('admin.homestay.destroy');
+
+        // Rute Kategori Homestay
+        Route::get('/admin/kategori-homestay', [AdminKategoriHomestayController::class, 'index'])->name('admin.kategori-homestay');
+        Route::get('/admin/kategori-homestay/create', [AdminKategoriHomestayController::class, 'create'])->name('admin.kategori-homestay.create');
+        Route::post('/admin/kategori-homestay', [AdminKategoriHomestayController::class, 'store'])->name('admin.kategori-homestay.store');
+        Route::get('/admin/kategori-homestay/{kategori_id}/edit', [AdminKategoriHomestayController::class, 'edit'])->name('admin.kategori-homestay.edit');
+        Route::put('/admin/kategori-homestay/{kategori_id}', [AdminKategoriHomestayController::class, 'update'])->name('admin.kategori-homestay.update');
+        Route::delete('/admin/kategori-homestay/{kategori_id}', [AdminKategoriHomestayController::class, 'destroy'])->name('admin.kategori-homestay.destroy');
         Route::get('/admin/souvenir', [AdminSouvenirController::class, 'index'])->name('admin.souvenir');
         Route::get('/admin/souvenir/create', [AdminSouvenirController::class, 'create'])->name('admin.souvenir.create');
         Route::post('/admin/souvenir', [AdminSouvenirController::class, 'store'])->name('admin.souvenir.store');

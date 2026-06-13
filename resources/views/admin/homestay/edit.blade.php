@@ -88,6 +88,24 @@
                         <p class="text-xs text-[#E65F5F] font-semibold mt-1">{{ $message }}</p>
                     @enderror
                 </div>
+
+                <!-- Kategori Homestay -->
+                <div class="space-y-2">
+                    <label for="kategori_id" class="text-xs font-bold uppercase tracking-wider text-[#8A9C91]">Kategori Homestay</label>
+                    <select id="kategori_id" 
+                            name="kategori_id" 
+                            class="w-full px-4 py-3 bg-[#FAF9F6] border border-[#E6E4DD] focus:border-[#2B4C3F] focus:ring-1 focus:ring-[#2B4C3F] rounded-xl text-[#2C3E35] text-sm outline-none transition-all @error('kategori_id') border-red-500 @enderror">
+                        <option value="">-- Pilih Kategori --</option>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->kategori_id }}" {{ old('kategori_id', $homestay->kategori_id) == $category->kategori_id ? 'selected' : '' }}>
+                                {{ $category->nama_kategori }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('kategori_id')
+                        <p class="text-xs text-[#E65F5F] font-semibold mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
             </div>
 
             <!-- Detail / Deskripsi -->

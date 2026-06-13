@@ -75,30 +75,32 @@
                 <h3 class="hidden md:block font-serif text-2xl text-[#1E362C] font-semibold tracking-wide border-b border-gray-200 pb-3">
                     Filter Stays
                 </h3>
-                <div class="flex flex-row md:flex-col gap-3 overflow-x-auto pb-3 md:pb-0 -mx-4 px-4 md:mx-0 md:px-0 scrollbar-none" id="floor-filters">
+                <div class="flex flex-row md:flex-col gap-3 overflow-x-auto pb-3 md:pb-0 -mx-4 px-4 md:mx-0 md:px-0 scrollbar-none" id="category-filters">
                     <!-- All Rooms (Active by default) -->
-                    <button data-filter="all" class="flex items-center justify-center md:justify-start gap-2 md:gap-4 w-auto md:w-full px-4 md:px-5 py-2.5 md:py-4 rounded-xl md:rounded-2xl border border-[#1E362C] transition-all text-center md:text-left font-semibold shadow-sm bg-[#1E362C] text-white active-filter-btn whitespace-nowrap cursor-pointer">
+                    <button data-filter="all" class="flex items-center justify-center md:justify-start gap-2 md:gap-4 w-auto md:w-full px-4 md:px-5 py-2.5 md:py-4 rounded-xl md:rounded-2xl border border-[#1E362C] transition-all text-center md:text-left font-semibold shadow-sm bg-[#1E362C] text-white active-filter-btn whitespace-nowrap cursor-pointer hover:bg-[#152720] hover:text-white">
                         <svg class="w-4 h-4 md:w-5 md:h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
                         </svg>
                         <span>All Rooms</span>
                     </button>
                     
-                    <!-- Lantai 1 -->
-                    <button data-filter="1" class="flex items-center justify-center md:justify-start gap-2 md:gap-4 w-auto md:w-full px-4 md:px-5 py-2.5 md:py-4 rounded-xl md:rounded-2xl border border-gray-200 transition-all text-center md:text-left font-medium bg-white text-[#5C6E65] hover:text-[#1E362C] hover:bg-[#FAF9F6] hover:shadow-sm whitespace-nowrap cursor-pointer">
-                        <svg class="w-4 h-4 md:w-5 md:h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-                        </svg>
-                        <span>Lantai 1</span>
-                    </button>
-
-                    <!-- Lantai 2 -->
-                    <button data-filter="2" class="flex items-center justify-center md:justify-start gap-2 md:gap-4 w-auto md:w-full px-4 md:px-5 py-2.5 md:py-4 rounded-xl md:rounded-2xl border border-gray-200 transition-all text-center md:text-left font-medium bg-white text-[#5C6E65] hover:text-[#1E362C] hover:bg-[#FAF9F6] hover:shadow-sm whitespace-nowrap cursor-pointer">
-                        <svg class="w-4 h-4 md:w-5 md:h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
-                        </svg>
-                        <span>Lantai 2</span>
-                    </button>
+                    @foreach($categories as $category)
+                        @php
+                            // Determine an icon based on category name
+                            $iconPath = 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6'; // default
+                            if (strtolower($category->nama_kategori) === 'suites') {
+                                $iconPath = 'M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z';
+                            } elseif (strtolower($category->nama_kategori) === 'deluxe') {
+                                $iconPath = 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z';
+                            }
+                        @endphp
+                        <button data-filter="{{ $category->kategori_id }}" class="flex items-center justify-center md:justify-start gap-2 md:gap-4 w-auto md:w-full px-4 md:px-5 py-2.5 md:py-4 rounded-xl md:rounded-2xl border border-gray-200 transition-all text-center md:text-left font-medium bg-white text-[#5C6E65] hover:text-[#1E362C] hover:bg-[#EAF2EE] hover:border-[#B8DEC8] hover:shadow-sm whitespace-nowrap cursor-pointer">
+                            <svg class="w-4 h-4 md:w-5 md:h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $iconPath }}"></path>
+                            </svg>
+                            <span>{{ $category->nama_kategori }}</span>
+                        </button>
+                    @endforeach
                 </div>
             </div>
 
@@ -120,24 +122,10 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-8" id="homestay-grid">
                         @foreach($homestays as $homestay)
                             @php
-                                $floor = 1;
-                                $lowercaseName = strtolower($homestay->nama_homestay);
-                                $lowercaseDetail = strtolower($homestay->detail);
-                                if (
-                                    str_contains($lowercaseName, 'lantai 2') || 
-                                    str_contains($lowercaseDetail, 'lantai 2') ||
-                                    str_contains($lowercaseName, 'kamar 3') || 
-                                    str_contains($lowercaseName, 'kamar 4') ||
-                                    str_contains($lowercaseName, 'rustic') ||
-                                    str_contains($lowercaseName, 'lodge')
-                                ) {
-                                    $floor = 2;
-                                }
-
                                 // Dynamic Star Rating calculation based on homestay ID for mockup aesthetic
                                 $rating = 4.5 + (($homestay->homestay_id % 5) * 0.1);
                             @endphp
-                            <div class="bg-white rounded-[32px] overflow-hidden border border-gray-200/60 shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-0.5 group flex flex-col justify-between p-4 homestay-card" data-floor="{{ $floor }}" data-capacity="{{ $homestay->kapasitas }}">
+                            <div class="bg-white rounded-[32px] overflow-hidden border border-gray-200/60 shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-0.5 group flex flex-col justify-between p-4 homestay-card" data-category="{{ $homestay->kategori_id }}" data-capacity="{{ $homestay->kapasitas }}">
                                 <div>
                                     <!-- Image Container -->
                                     <div class="h-60 overflow-hidden relative bg-[#EAF2EE]/50 rounded-2xl">
@@ -170,7 +158,7 @@
                                             {{ $homestay->nama_homestay }}
                                         </h4>
                                         <p class="text-xs text-[#8A9C91] leading-relaxed">
-                                            Kapasitas: {{ $homestay->kapasitas }} Orang &bull; Lantai {{ $floor }}
+                                            Kapasitas: {{ $homestay->kapasitas }} Orang &bull; {{ $homestay->kategori->nama_kategori ?? 'Standard' }}
                                         </p>
                                         @if($homestay->detail)
                                             <p class="text-xs text-[#5C6E65] line-clamp-2 leading-relaxed" title="{{ $homestay->detail }}">
@@ -209,26 +197,26 @@
     <!-- Javascript untuk Filtering Client-side yang Halus -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const filters = document.querySelectorAll('#floor-filters button');
+            const filters = document.querySelectorAll('#category-filters button');
             const cards = document.querySelectorAll('.homestay-card');
             const label = document.getElementById('room-count-label');
 
             const guestSelect = document.getElementById('guest-count-select');
             const guestText = document.getElementById('guest-count-text');
 
-            let activeFloor = 'all';
+            let activeCategory = 'all';
             let activeGuests = 0;
 
             function applyFilters() {
                 let visibleCount = 0;
                 cards.forEach(card => {
-                    const cardFloor = card.getAttribute('data-floor');
+                    const cardCategory = card.getAttribute('data-category');
                     const cardCapacity = parseInt(card.getAttribute('data-capacity') || '0', 10);
 
-                    const matchesFloor = (activeFloor === 'all' || cardFloor === activeFloor);
+                    const matchesCategory = (activeCategory === 'all' || cardCategory === activeCategory);
                     const matchesGuests = (cardCapacity >= activeGuests);
 
-                    if (matchesFloor && matchesGuests) {
+                    if (matchesCategory && matchesGuests) {
                         card.style.display = 'flex';
                         visibleCount++;
                     } else {
@@ -255,14 +243,14 @@
             filters.forEach(btn => {
                 btn.addEventListener('click', function () {
                     filters.forEach(f => {
-                        f.classList.remove('bg-[#1E362C]', 'border-[#1E362C]', 'text-white', 'font-semibold', 'shadow-sm', 'active-filter-btn');
-                        f.classList.add('bg-white', 'border-gray-200', 'text-[#5C6E65]', 'font-medium');
+                        f.classList.remove('bg-[#1E362C]', 'border-[#1E362C]', 'text-white', 'font-semibold', 'shadow-sm', 'active-filter-btn', 'hover:bg-[#152720]', 'hover:text-white');
+                        f.classList.add('bg-white', 'border-gray-200', 'text-[#5C6E65]', 'font-medium', 'hover:text-[#1E362C]', 'hover:bg-[#EAF2EE]', 'hover:border-[#B8DEC8]', 'hover:shadow-sm');
                     });
 
-                    this.classList.remove('bg-white', 'border-gray-200', 'text-[#5C6E65]', 'font-medium');
-                    this.classList.add('bg-[#1E362C]', 'border-[#1E362C]', 'text-white', 'font-semibold', 'shadow-sm', 'active-filter-btn');
+                    this.classList.remove('bg-white', 'border-gray-200', 'text-[#5C6E65]', 'font-medium', 'hover:text-[#1E362C]', 'hover:bg-[#EAF2EE]', 'hover:border-[#B8DEC8]', 'hover:shadow-sm');
+                    this.classList.add('bg-[#1E362C]', 'border-[#1E362C]', 'text-white', 'font-semibold', 'shadow-sm', 'active-filter-btn', 'hover:bg-[#152720]', 'hover:text-white');
 
-                    activeFloor = this.getAttribute('data-filter');
+                    activeCategory = this.getAttribute('data-filter');
                     applyFilters();
                 });
             });
