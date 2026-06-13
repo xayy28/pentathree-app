@@ -41,60 +41,60 @@
     </style>
 </head>
 
-<body class="bg-[#F8F7F4] text-[#2C3E35] font-sans min-h-screen flex flex-col">
+<body class="bg-[#F3F4F6] text-[#1E362C] font-sans min-h-screen flex flex-col">
 
     <!-- Top Navigation Bar -->
-    <header class="bg-white/90 backdrop-blur-md border-b border-[#E6E4DD]/40 sticky top-0 z-50">
+    <header class="bg-white/95 backdrop-blur-md border-b border-gray-200/50 shadow-sm sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
+            <div class="flex items-center justify-between h-18 md:h-20">
 
                 <!-- Left: Logo & Brand Name -->
                 <div class="flex-shrink-0">
-                    <a href="/" class="flex items-center gap-2.5 hover:opacity-90 transition-opacity">
+                    <a href="/" class="flex items-center gap-3 hover:opacity-90 transition-opacity">
                         <img src="{{ asset('images/Logo-Natasha.jpg') }}" alt="Natasha Homestay Logo"
-                            class="h-9 w-9 rounded-full object-cover border border-[#E6E4DD]/60">
-                        <span class="text-xs sm:text-sm font-serif font-semibold tracking-[0.15em] text-[#2B4C3F] uppercase">
+                            class="h-10 w-10 md:h-11 md:w-11 rounded-full object-cover border border-gray-200">
+                        <span class="text-xs sm:text-sm md:text-base lg:text-lg font-serif font-semibold tracking-[0.12em] md:tracking-[0.15em] text-[#1E362C] uppercase whitespace-nowrap">
                             Natasha Homestay
                         </span>
                     </a>
                 </div>
 
                 <!-- Center: Navigation Links (Desktop) -->
-                <nav class="hidden md:flex space-x-10">
+                <nav class="hidden md:flex space-x-8 lg:space-x-10">
                     <a href="{{ route('dashboard') }}"
-                        class="text-[11px] font-semibold tracking-[0.2em] uppercase pb-1.5 transition-all {{ request()->routeIs('dashboard') ? 'border-b border-[#2B4C3F] text-[#2B4C3F]' : 'text-[#8A9C91] hover:text-[#2B4C3F]' }}">
+                        class="text-xs md:text-[13px] lg:text-sm font-semibold tracking-[0.15em] uppercase pb-2 transition-all {{ request()->routeIs('dashboard') ? 'border-b-2 border-[#1E362C] text-[#1E362C]' : 'text-[#8A9C91] hover:text-[#1E362C]' }}">
                         Explore
                     </a>
                     <a href="{{ route('user.homestay') }}"
-                        class="text-[11px] font-semibold tracking-[0.2em] uppercase pb-1.5 transition-all {{ request()->routeIs('user.homestay') ? 'border-b border-[#2B4C3F] text-[#2B4C3F]' : 'text-[#8A9C91] hover:text-[#2B4C3F]' }}">
+                        class="text-xs md:text-[13px] lg:text-sm font-semibold tracking-[0.15em] uppercase pb-2 transition-all {{ request()->routeIs('user.homestay') ? 'border-b-2 border-[#1E362C] text-[#1E362C]' : 'text-[#8A9C91] hover:text-[#1E362C]' }}">
                         Homestay
                     </a>
                     <a href="{{ route('user.souvenir') }}"
-                        class="text-[11px] font-semibold tracking-[0.2em] uppercase pb-1.5 transition-all {{ request()->routeIs('user.souvenir') ? 'border-b border-[#2B4C3F] text-[#2B4C3F]' : 'text-[#8A9C91] hover:text-[#2B4C3F]' }}">
+                        class="text-xs md:text-[13px] lg:text-sm font-semibold tracking-[0.15em] uppercase pb-2 transition-all {{ request()->routeIs('user.souvenir') ? 'border-b-2 border-[#1E362C] text-[#1E362C]' : 'text-[#8A9C91] hover:text-[#1E362C]' }}">
                         Souvenir
                     </a>
                 </nav>
 
                 <!-- Right: Search Bar & Profile Avatar (Desktop) -->
-                <div class="hidden md:flex items-center gap-5">
+                <div class="hidden md:flex items-center gap-6">
                     <!-- Search Input -->
                     <div class="relative group">
                         <span
-                            class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-[#8A9C91] group-focus-within:text-[#2B4C3F] transition-colors duration-200">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-[#8A9C91] group-focus-within:text-[#1E362C] transition-colors duration-200">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                             </svg>
                         </span>
                         <input type="text" placeholder="Search..."
-                            class="bg-transparent text-[#2C3E35] placeholder-[#8A9C91]/70 text-xs rounded-full pl-9 pr-3.5 py-1.5 w-44 focus:w-56 border border-[#E6E4DD]/80 hover:border-[#2B4C3F]/30 focus:border-[#2B4C3F] focus:outline-none focus:ring-4 focus:ring-[#EAF2EE]/50 transition-all duration-300">
+                            class="bg-[#F3F4F6] text-[#1E362C] placeholder-[#8A9C91]/70 text-sm rounded-full pl-10 pr-4 py-2 w-48 focus:w-60 border border-transparent hover:border-gray-200 focus:border-[#1E362C] focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#EAF2EE]/50 transition-all duration-300">
                     </div>
 
                     <!-- Profile Avatar Dropdown (Initials in Green Circle) -->
                     <div class="relative" id="profile-dropdown-container">
                         <button id="profile-dropdown-btn"
-                            class="w-9 h-9 bg-[#EAF2EE] hover:bg-[#dcede5] rounded-full flex items-center justify-center border border-[#A7C5B5]/60 text-[#2B4C3F] font-semibold text-xs flex-shrink-0 transition-colors focus:outline-none">
+                            class="w-10 h-10 bg-[#EAF2EE] hover:bg-[#dcede5] rounded-full flex items-center justify-center border border-[#A7C5B5]/60 text-[#1E362C] font-semibold text-sm flex-shrink-0 transition-colors focus:outline-none cursor-pointer">
                             {{ strtoupper(substr(auth()->user()->nama, 0, 2)) }}
                         </button>
 

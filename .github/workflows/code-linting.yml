@@ -44,10 +44,11 @@ jobs:
               "color-hex-length": null,
               "shorthand-property-no-redundant-values": null,
               "declaration-block-no-redundant-longhand-properties": null,
-              "no-descending-specificity": null
+              "no-descending-specificity": null,
+              "at-rule-no-unknown": null
             }
           }
           EOF
 
       - name: Check CSS Files
-        run: stylelint "public/**/*.css"
+        run: stylelint "resources/**/*.css" --allow-empty-input
