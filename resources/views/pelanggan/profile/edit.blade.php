@@ -62,7 +62,8 @@
                             @enderror
                         </div>
                         <div class="sm:col-span-2">
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-[#5C6E65] mb-2">Foto Profil</label>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-[#5C6E65] mb-2">Foto
+                                Profil</label>
 
                             @if ($user->foto_profil)
                                 <div id="existing-image-container" class="mb-4">
@@ -74,29 +75,31 @@
                                 </div>
                             @endif
 
-                            <label for="foto_profil"
-                                id="upload-zone"
+                            <label for="foto_profil" id="upload-zone"
                                 class="flex flex-col items-center justify-center gap-3 rounded-3xl border-2 border-dashed border-[#D5D3C7] bg-[#FAF9F6] px-5 py-6 text-center cursor-pointer transition-all"
                                 onmouseover="this.style.borderColor='#2B4C3F'; this.style.background='#EEF7F2';"
                                 onmouseout="this.style.borderColor='#D5D3C7'; this.style.background='#FAF9F6';">
                                 <div class="w-12 h-12 rounded-2xl bg-[#EAF2EE] flex items-center justify-center">
                                     <svg width="20" height="20" fill="none" stroke="#2B4C3F" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 16M14 8h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 16M14 8h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                     </svg>
                                 </div>
                                 <div>
-                                    <span class="block text-sm font-semibold text-[#2C3E35]">Klik atau seret untuk pilih foto</span>
+                                    <span class="block text-sm font-semibold text-[#2C3E35]">Klik atau seret untuk pilih
+                                        foto</span>
                                     <span class="block text-xs text-[#8A9C91]">PNG, JPG, JPEG, WEBP hingga 2MB</span>
                                 </div>
-                                <input type="file" name="foto_profil" id="foto_profil"
-                                    class="hidden"
+                                <input type="file" name="foto_profil" id="foto_profil" class="hidden"
                                     accept="image/jpeg,image/png,image/jpg,image/webp"
                                     onchange="previewProfileImage(event)">
                             </label>
 
-                            <div id="file-name-display" class="hidden mt-3 flex items-center gap-2 rounded-2xl border border-[#B8DEC8] bg-[#EAF2EE] px-3 py-2 text-sm text-[#2B4C3F]">
+                            <div id="file-name-display"
+                                class="hidden mt-3 flex items-center gap-2 rounded-2xl border border-[#B8DEC8] bg-[#EAF2EE] px-3 py-2 text-sm text-[#2B4C3F]">
                                 <svg width="14" height="14" fill="none" stroke="#2B4C3F" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                                 <span id="file-name-text"></span>
                             </div>
@@ -104,7 +107,8 @@
                             <div id="image-preview-container" class="hidden mt-4">
                                 <p class="text-[0.7rem] text-[#8A9C91] mb-2">Pratinjau Foto Baru:</p>
                                 <div class="w-24 h-24 rounded-full overflow-hidden border border-[#E6E4DD] shadow-sm">
-                                    <img id="image-preview" src="#" alt="Pratinjau Foto" class="w-full h-full object-cover">
+                                    <img id="image-preview" src="#" alt="Pratinjau Foto"
+                                        class="w-full h-full object-cover">
                                 </div>
                             </div>
 
@@ -161,55 +165,6 @@
                     }
                 }
             </script>
-
-            <div class="bg-white rounded-[32px] border border-[#E6E4DD] shadow-sm p-8">
-                <div class="mb-8">
-                    <h1 class="text-3xl font-serif font-semibold text-[#2B4C3F]">Ubah Password</h1>
-                    <p class="text-sm text-[#5C6E65] mt-1">Ganti password Anda secara berkala untuk menjaga keamanan akun.
-                    </p>
-                </div>
-
-                <form action="{{ route('profile.password.update') }}" method="POST" class="space-y-6">
-                    @csrf
-                    @method('PUT')
-
-                    <div>
-                        <label for="current_password"
-                            class="block text-xs font-semibold uppercase tracking-wider text-[#5C6E65] mb-2">Password Saat
-                            Ini</label>
-                        <input type="password" name="current_password" id="current_password"
-                            value="{{ old('current_password') }}" required
-                            class="w-full rounded-3xl border border-[#D5D3C7] bg-[#FAF9F6] px-4 py-3 text-sm text-[#2C3E35] focus:border-[#2B4C3F] focus:outline-none focus:ring-1 focus:ring-[#2B4C3F]/20">
-                        @error('current_password')
-                            <p class="mt-2 text-xs text-[#9B1C1C]">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <div>
-                        <label for="password"
-                            class="block text-xs font-semibold uppercase tracking-wider text-[#5C6E65] mb-2">Password
-                            Baru</label>
-                        <input type="password" name="password" id="password" value="{{ old('password') }}" required
-                            class="w-full rounded-3xl border border-[#D5D3C7] bg-[#FAF9F6] px-4 py-3 text-sm text-[#2C3E35] focus:border-[#2B4C3F] focus:outline-none focus:ring-1 focus:ring-[#2B4C3F]/20">
-                        @error('password')
-                            <p class="mt-2 text-xs text-[#9B1C1C]">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <div>
-                        <label for="password_confirmation"
-                            class="block text-xs font-semibold uppercase tracking-wider text-[#5C6E65] mb-2">Konfirmasi
-                            Password Baru</label>
-                        <input type="password" name="password_confirmation" id="password_confirmation"
-                            value="{{ old('password_confirmation') }}" required
-                            class="w-full rounded-3xl border border-[#D5D3C7] bg-[#FAF9F6] px-4 py-3 text-sm text-[#2C3E35] focus:border-[#2B4C3F] focus:outline-none focus:ring-1 focus:ring-[#2B4C3F]/20">
-                    </div>
-
-                    <button type="submit"
-                        class="w-full rounded-full bg-[#2B4C3F] px-6 py-3 text-sm font-semibold text-white hover:bg-[#25382f] transition">Perbarui
-                        Password</button>
-                </form>
-            </div>
         </div>
     </div>
 @endsection

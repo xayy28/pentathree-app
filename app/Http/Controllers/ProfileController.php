@@ -24,6 +24,13 @@ class ProfileController extends Controller
         ]);
     }
 
+    public function editPassword()
+    {
+        return view('pelanggan.profile.password', [
+            'user' => Auth::user(),
+        ]);
+    }
+
     public function update(ProfileUpdateRequest $request)
     {
         $user = Auth::user();
@@ -59,6 +66,6 @@ class ProfileController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect()->route('profile.edit')->with('success', 'Password berhasil diubah.');
+        return redirect()->route('profile.password.edit')->with('success', 'Password berhasil diubah.');
     }
 }
