@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\HomestayController as AdminHomestayController;
 use App\Http\Controllers\Admin\KategoriHomestayController as AdminKategoriHomestayController;
 use App\Http\Controllers\Admin\SouvenirController as AdminSouvenirController;
@@ -16,8 +17,8 @@ use Illuminate\Support\Facades\Route;
 // Redirect Halaman Utama berdasarkan status login
 Route::get('/', function () {
     if (auth()->check()) {
-        return auth()->user()->role === 'admin' 
-            ? redirect()->route('admin.dashboard') 
+        return auth()->user()->role === 'admin'
+            ? redirect()->route('admin.dashboard')
             : redirect()->route('dashboard');
     }
     return redirect()->route('login');
@@ -72,6 +73,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/dashboard', function () {
             return view('pelanggan.dashboard');
         })->name('dashboard');
+
+        Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+        Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::get('/profile/password/edit', [ProfileController::class, 'editPassword'])->name('profile.password.edit');
+        Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
 
         // Rute Modul PBL untuk User
         Route::get('/homestay', [PelangganHomestayController::class, 'index'])->name('user.homestay');

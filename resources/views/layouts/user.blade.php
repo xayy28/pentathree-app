@@ -52,8 +52,9 @@
                 <div class="flex-shrink-0">
                     <a href="/" class="flex items-center gap-3 hover:opacity-90 transition-opacity">
                         <img src="{{ asset('images/Logo-Natasha.jpg') }}" alt="Natasha Homestay Logo"
-                            class="h-10 w-10 md:h-11 md:w-11 rounded-full object-cover border border-gray-200">
-                        <span class="text-xs sm:text-sm md:text-base lg:text-lg font-serif font-semibold tracking-[0.12em] md:tracking-[0.15em] text-[#1E362C] uppercase whitespace-nowrap">
+                            class="h-9 w-9 rounded-full object-cover border border-[#E6E4DD]/60">
+                        <span
+                            class="text-xs sm:text-sm font-serif font-semibold tracking-[0.15em] text-[#2B4C3F] uppercase">
                             Natasha Homestay
                         </span>
                     </a>
@@ -94,8 +95,13 @@
                     <!-- Profile Avatar Dropdown (Initials in Green Circle) -->
                     <div class="relative" id="profile-dropdown-container">
                         <button id="profile-dropdown-btn"
-                            class="w-10 h-10 bg-[#EAF2EE] hover:bg-[#dcede5] rounded-full flex items-center justify-center border border-[#A7C5B5]/60 text-[#1E362C] font-semibold text-sm flex-shrink-0 transition-colors focus:outline-none cursor-pointer">
-                            {{ strtoupper(substr(auth()->user()->nama, 0, 2)) }}
+                            class="w-9 h-9 bg-[#EAF2EE] hover:bg-[#dcede5] rounded-full overflow-hidden flex items-center justify-center border border-[#A7C5B5]/60 text-[#2B4C3F] font-semibold text-xs flex-shrink-0 transition-colors focus:outline-none">
+                            @if (auth()->user()->foto_profil)
+                                <img src="{{ asset('storage/' . auth()->user()->foto_profil) }}" alt="Avatar"
+                                    class="w-full h-full object-cover">
+                            @else
+                                {{ strtoupper(substr(auth()->user()->nama, 0, 2)) }}
+                            @endif
                         </button>
 
                         <!-- Dropdown Menu -->
@@ -108,8 +114,10 @@
                                 <p class="text-[9px] font-bold uppercase tracking-wider text-[#8A9C91] mt-0.5">
                                     {{ auth()->user()->user_id }}</p>
                             </div>
-                            <a href="{{ route('dashboard') }}"
+                            <a href="{{ route('profile.show') }}"
                                 class="block px-4 py-2 text-sm text-[#2C3E35] hover:bg-[#FAF9F6]">Profil</a>
+                            <a href="{{ route('profile.edit') }}"
+                                class="block px-4 py-2 text-sm text-[#2C3E35] hover:bg-[#FAF9F6]">Edit Profil</a>
                             <button onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
                                 class="w-full text-left block px-4 py-2 text-sm text-[#E65F5F] hover:bg-[#FDF2F2]">
                                 Logout
@@ -138,7 +146,8 @@
             class="hidden md:hidden border-t border-[#E6E4DD] bg-white px-4 pt-2 pb-4 space-y-3 shadow-md">
             <!-- Search for mobile -->
             <div class="relative mt-2 group">
-                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-[#8A9C91] group-focus-within:text-[#2B4C3F] transition-colors duration-200">
+                <span
+                    class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-[#8A9C91] group-focus-within:text-[#2B4C3F] transition-colors duration-200">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -162,6 +171,10 @@
                     class="px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('user.souvenir') ? 'bg-[#EAF2EE] text-[#2B4C3F]' : 'text-[#5C6E65] hover:bg-[#FAF9F6]' }}">
                     Souvenir
                 </a>
+                <a href="{{ route('profile.show') }}"
+                    class="px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('profile.*') ? 'bg-[#EAF2EE] text-[#2B4C3F]' : 'text-[#5C6E65] hover:bg-[#FAF9F6]' }}">
+                    Profil
+                </a>
             </nav>
 
             <div class="border-t border-[#F2F0EA] pt-3">
@@ -180,9 +193,9 @@
     <!-- Main Content Area -->
     <main class="flex-grow">
         <!-- Success/Error Toast Flash Notifications -->
-        @if(session('success') || session('error'))
+        @if (session('success') || session('error'))
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
-                @if(session('success'))
+                @if (session('success'))
                     <div
                         class="p-4 bg-[#EAF2EE] border border-[#A7C5B5] text-[#2B4C3F] text-sm rounded-xl flex items-start gap-3 shadow-sm mb-6">
                         <svg class="w-5 h-5 text-[#2B4C3F] mt-0.5 flex-shrink-0" fill="none" stroke="currentColor"
@@ -196,7 +209,7 @@
                     </div>
                 @endif
 
-                @if(session('error'))
+                @if (session('error'))
                     <div
                         class="p-4 bg-[#FDF2F2] border border-[#F5C2C2] text-[#9B1C1C] text-sm rounded-xl flex items-start gap-3 shadow-sm mb-6">
                         <svg class="w-5 h-5 text-[#9B1C1C] mt-0.5 flex-shrink-0" fill="none" stroke="currentColor"
@@ -222,19 +235,19 @@
 
     <!-- Navigation & Dropdown Scripts -->
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             // Profile Dropdown
             const dropdownBtn = document.getElementById('profile-dropdown-btn');
             const dropdownMenu = document.getElementById('profile-dropdown-menu');
             const dropdownContainer = document.getElementById('profile-dropdown-container');
 
             if (dropdownBtn && dropdownMenu) {
-                dropdownBtn.addEventListener('click', function (e) {
+                dropdownBtn.addEventListener('click', function(e) {
                     e.stopPropagation();
                     dropdownMenu.classList.toggle('hidden');
                 });
 
-                document.addEventListener('click', function (e) {
+                document.addEventListener('click', function(e) {
                     if (!dropdownContainer.contains(e.target)) {
                         dropdownMenu.classList.add('hidden');
                     }
@@ -247,7 +260,7 @@
             const mobileMenuIcon = document.getElementById('mobile-menu-icon');
 
             if (mobileMenuBtn && mobileMenu) {
-                mobileMenuBtn.addEventListener('click', function () {
+                mobileMenuBtn.addEventListener('click', function() {
                     mobileMenu.classList.toggle('hidden');
 
                     // Toggle menu icon between burger and close x
