@@ -42,6 +42,7 @@
                         <tr style="background: linear-gradient(135deg, #F7F6F2 0%, #EEF0EB 100%); border-bottom: 2px solid #E6E4DD;">
                             <th style="padding: 14px 16px; text-align: left; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #8A9C91; width: 90px;">Foto</th>
                             <th style="padding: 14px 16px; text-align: left; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #8A9C91;">Nama Homestay</th>
+                            <th style="padding: 14px 16px; text-align: left; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #8A9C91;">Kategori</th>
                             <th style="padding: 14px 16px; text-align: left; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #8A9C91;">Harga / Malam</th>
                             <th style="padding: 14px 16px; text-align: left; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #8A9C91;">Kapasitas</th>
                             <th style="padding: 14px 16px; text-align: left; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #8A9C91;">Status</th>
@@ -73,6 +74,13 @@
                                             {{ $homestay->detail }}
                                         </span>
                                     @endif
+                                </td>
+
+                                <!-- Kategori -->
+                                <td style="padding: 16px;">
+                                    <span style="display: inline-flex; align-items: center; gap: 5px; color: #5C6E65; font-weight: 600; font-size: 0.8rem; background: #FAF9F6; border: 1px solid #E6E4DD; padding: 4px 10px; border-radius: 8px;">
+                                        {{ $homestay->kategori->nama_kategori ?? '-' }}
+                                    </span>
                                 </td>
 
                                 <!-- Harga -->
@@ -150,7 +158,7 @@
                             @endif
                             <div class="min-w-0">
                                 <h4 class="font-serif font-semibold text-base text-[#2C3E35] truncate">{{ $homestay->nama_homestay }}</h4>
-                                <p class="text-xs text-[#8A9C91]">{{ $homestay->kapasitas }} Orang</p>
+                                <p class="text-xs text-[#8A9C91]">{{ $homestay->kapasitas }} Orang &bull; {{ $homestay->kategori->nama_kategori ?? '-' }}</p>
                             </div>
                         </div>
                         <div class="pt-3 border-t border-[#E6E4DD] flex items-center justify-between">
