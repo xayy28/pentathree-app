@@ -18,30 +18,54 @@
     <!-- Main Catalog Area (Sidebar + Souvenir Grid) -->
     <div class="flex flex-col md:flex-row gap-10 items-start">
 
-        <!-- Left Sidebar: Filter -->
-        <div class="w-full md:w-64 flex-shrink-0 space-y-6">
-            <h3 class="font-serif text-2xl text-[#2B4C3F] font-semibold tracking-wide border-b border-[#E6E4DD] pb-3">
-                Filter
-            </h3>
-            <div class="flex flex-col gap-3" id="souvenir-filters">
-                <button data-filter="all" class="flex items-center gap-4 w-full px-5 py-4 rounded-2xl border transition-all text-left font-semibold shadow-sm bg-[#EAF2EE] border-[#A7C5B5] text-[#2B4C3F] active-filter-btn">
-                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
-                    </svg>
-                    <span>Semua</span>
-                </button>
-                <button data-filter="tersedia" class="flex items-center gap-4 w-full px-5 py-4 rounded-2xl border transition-all text-left font-medium bg-white border-[#E6E4DD] text-[#5C6E65] hover:text-[#2B4C3F] hover:bg-[#FAF9F6] hover:shadow-sm">
-                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    <span>Tersedia</span>
-                </button>
-                <button data-filter="habis" class="flex items-center gap-4 w-full px-5 py-4 rounded-2xl border transition-all text-left font-medium bg-white border-[#E6E4DD] text-[#5C6E65] hover:text-[#2B4C3F] hover:bg-[#FAF9F6] hover:shadow-sm">
-                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    <span>Habis</span>
-                </button>
+        <!-- Left Sidebar: Filter & Sort -->
+        <div class="w-full md:w-64 flex-shrink-0 space-y-8">
+            <!-- Urutan Section -->
+            <div class="space-y-4">
+                <h3 class="font-serif text-2xl text-[#2B4C3F] font-semibold tracking-wide border-b border-[#E6E4DD] pb-3">
+                    Urutkan
+                </h3>
+                <div class="flex flex-col gap-3">
+                    <a href="{{ route('user.souvenir') }}" class="flex items-center gap-4 w-full px-5 py-4 rounded-2xl border transition-all text-left font-medium shadow-sm {{ $kategori !== 'terlaris' ? 'bg-[#EAF2EE] border-[#A7C5B5] text-[#2B4C3F] font-semibold' : 'bg-white border-[#E6E4DD] text-[#5C6E65] hover:text-[#2B4C3F] hover:bg-[#FAF9F6] hover:shadow-sm' }}">
+                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span>Terbaru</span>
+                    </a>
+                    <a href="{{ route('user.souvenir', ['kategori' => 'terlaris']) }}" class="flex items-center gap-4 w-full px-5 py-4 rounded-2xl border transition-all text-left font-medium shadow-sm {{ $kategori === 'terlaris' ? 'bg-[#EAF2EE] border-[#A7C5B5] text-[#2B4C3F] font-semibold' : 'bg-white border-[#E6E4DD] text-[#5C6E65] hover:text-[#2B4C3F] hover:bg-[#FAF9F6] hover:shadow-sm' }}">
+                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"></path>
+                        </svg>
+                        <span>Terlaris</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Status Section -->
+            <div class="space-y-4">
+                <h3 class="font-serif text-2xl text-[#2B4C3F] font-semibold tracking-wide border-b border-[#E6E4DD] pb-3">
+                    Status
+                </h3>
+                <div class="flex flex-col gap-3" id="souvenir-filters">
+                    <button data-filter="all" class="flex items-center gap-4 w-full px-5 py-4 rounded-2xl border transition-all text-left font-semibold shadow-sm bg-[#EAF2EE] border-[#A7C5B5] text-[#2B4C3F] active-filter-btn">
+                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                        </svg>
+                        <span>Semua</span>
+                    </button>
+                    <button data-filter="tersedia" class="flex items-center gap-4 w-full px-5 py-4 rounded-2xl border transition-all text-left font-medium bg-white border-[#E6E4DD] text-[#5C6E65] hover:text-[#2B4C3F] hover:bg-[#FAF9F6] hover:shadow-sm">
+                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span>Tersedia</span>
+                    </button>
+                    <button data-filter="habis" class="flex items-center gap-4 w-full px-5 py-4 rounded-2xl border transition-all text-left font-medium bg-white border-[#E6E4DD] text-[#5C6E65] hover:text-[#2B4C3F] hover:bg-[#FAF9F6] hover:shadow-sm">
+                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span>Habis</span>
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -102,8 +126,11 @@
                                         <span class="text-[9px] text-[#8A9C91] block uppercase tracking-wider">Harga</span>
                                         <span class="text-base font-semibold text-[#2B4C3F]">Rp {{ number_format($souvenir->harga, 0, ',', '.') }}</span>
                                     </div>
-                                    <div class="text-right">
+                                    <div class="text-right space-y-0.5">
                                         <span class="text-[10px] text-[#8A9C91] block">Stok: {{ $souvenir->stok }} pcs</span>
+                                        <span class="text-[10px] text-[#5C6E65] font-medium block">
+                                            <span class="inline-block w-1.5 h-1.5 rounded-full bg-[#E9C46A] mr-1"></span>{{ $souvenir->jumlah_terjual }} terjual
+                                        </span>
                                     </div>
                                 </div>
                             </div>
