@@ -1,0 +1,54 @@
+name: Code Linting
+
+on:
+  pull_request:
+    branches:
+      - testing
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+          extensions: mbstring, fileinfo, openssl, tokenizer, xml, ctype, json
+          coverage: none
+
+      - name: Check PHP Syntax
+        run: find app routes database tests -name "*.php" -print0 | xargs -0 -n1 php -l
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Stylelint
+        run: npm install -g stylelint stylelint-config-recommended
+
+      - name: Create Stylelint Config
+        run: |
+          cat > .stylelintrc.json << 'EOF'
+          {
+            "extends": "stylelint-config-recommended",
+            "rules": {
+              "comment-whitespace-inside": null,
+              "color-function-alias-notation": null,
+              "media-feature-range-notation": null,
+              "rule-empty-line-before": null,
+              "color-hex-length": null,
+              "shorthand-property-no-redundant-values": null,
+              "declaration-block-no-redundant-longhand-properties": null,
+              "no-descending-specificity": null,
+              "at-rule-no-unknown": null
+            }
+          }
+          EOF
+
+      - name: Check CSS Files
+        run: stylelint "resources/**/*.css" --allow-empty-input

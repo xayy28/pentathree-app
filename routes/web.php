@@ -1,18 +1,24 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Homestay\HomestayController;
-use App\Http\Controllers\Souvenir\SouvenirController;
-use App\Http\Controllers\Reservasi\ReservasiController;
-use App\Http\Controllers\Pembayaran\PembayaranController;
-use App\Http\Controllers\Laporan\LaporanController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\HomestayController as AdminHomestayController;
+use App\Http\Controllers\Admin\KategoriHomestayController as AdminKategoriHomestayController;
+use App\Http\Controllers\Admin\SouvenirController as AdminSouvenirController;
+use App\Http\Controllers\Admin\ReservasiController as AdminReservasiController;
+use App\Http\Controllers\Admin\PembayaranController as AdminPembayaranController;
+use App\Http\Controllers\Admin\LaporanController as AdminLaporanController;
+
+use App\Http\Controllers\Pelanggan\HomestayController as PelangganHomestayController;
+use App\Http\Controllers\Pelanggan\SouvenirController as PelangganSouvenirController;
+use App\Http\Controllers\Pelanggan\ReservasiController as PelangganReservasiController;
 use Illuminate\Support\Facades\Route;
 
 // Redirect Halaman Utama berdasarkan status login
 Route::get('/', function () {
     if (auth()->check()) {
-        return auth()->user()->role === 'admin' 
-            ? redirect()->route('admin.dashboard') 
+        return auth()->user()->role === 'admin'
+            ? redirect()->route('admin.dashboard')
             : redirect()->route('dashboard');
     }
     return redirect()->route('login');
@@ -37,32 +43,46 @@ Route::middleware('auth')->group(function () {
         })->name('admin.dashboard');
 
         // Scaffolding Rute Modul PBL Admin
-        Route::get('/admin/homestay', [HomestayController::class, 'index'])->name('admin.homestay');
-        Route::get('/admin/homestay/create', [HomestayController::class, 'create'])->name('admin.homestay.create');
-        Route::post('/admin/homestay', [HomestayController::class, 'store'])->name('admin.homestay.store');
-        Route::get('/admin/homestay/{homestay_id}/edit', [HomestayController::class, 'edit'])->name('admin.homestay.edit');
-        Route::put('/admin/homestay/{homestay_id}', [HomestayController::class, 'update'])->name('admin.homestay.update');
-        Route::delete('/admin/homestay/{homestay_id}', [HomestayController::class, 'destroy'])->name('admin.homestay.destroy');
-        Route::get('/admin/souvenir', [SouvenirController::class, 'index'])->name('admin.souvenir');
-        Route::get('/admin/souvenir/create', [SouvenirController::class, 'create'])->name('admin.souvenir.create');
-        Route::post('/admin/souvenir', [SouvenirController::class, 'store'])->name('admin.souvenir.store');
-        Route::get('/admin/souvenir/{souvenir_id}/edit', [SouvenirController::class, 'edit'])->name('admin.souvenir.edit');
-        Route::put('/admin/souvenir/{souvenir_id}', [SouvenirController::class, 'update'])->name('admin.souvenir.update');
-        Route::delete('/admin/souvenir/{souvenir_id}', [SouvenirController::class, 'destroy'])->name('admin.souvenir.destroy');
-        Route::get('/admin/reservasi', [ReservasiController::class, 'index'])->name('admin.reservasi');
-        Route::get('/admin/pembayaran', [PembayaranController::class, 'index'])->name('admin.pembayaran');
-        Route::get('/admin/laporan', [LaporanController::class, 'index'])->name('admin.laporan');
+        Route::get('/admin/homestay', [AdminHomestayController::class, 'index'])->name('admin.homestay');
+        Route::get('/admin/homestay/create', [AdminHomestayController::class, 'create'])->name('admin.homestay.create');
+        Route::post('/admin/homestay', [AdminHomestayController::class, 'store'])->name('admin.homestay.store');
+        Route::get('/admin/homestay/{homestay_id}/edit', [AdminHomestayController::class, 'edit'])->name('admin.homestay.edit');
+        Route::put('/admin/homestay/{homestay_id}', [AdminHomestayController::class, 'update'])->name('admin.homestay.update');
+        Route::delete('/admin/homestay/{homestay_id}', [AdminHomestayController::class, 'destroy'])->name('admin.homestay.destroy');
+
+        // Rute Kategori Homestay
+        Route::get('/admin/kategori-homestay', [AdminKategoriHomestayController::class, 'index'])->name('admin.kategori-homestay');
+        Route::get('/admin/kategori-homestay/create', [AdminKategoriHomestayController::class, 'create'])->name('admin.kategori-homestay.create');
+        Route::post('/admin/kategori-homestay', [AdminKategoriHomestayController::class, 'store'])->name('admin.kategori-homestay.store');
+        Route::get('/admin/kategori-homestay/{kategori_id}/edit', [AdminKategoriHomestayController::class, 'edit'])->name('admin.kategori-homestay.edit');
+        Route::put('/admin/kategori-homestay/{kategori_id}', [AdminKategoriHomestayController::class, 'update'])->name('admin.kategori-homestay.update');
+        Route::delete('/admin/kategori-homestay/{kategori_id}', [AdminKategoriHomestayController::class, 'destroy'])->name('admin.kategori-homestay.destroy');
+        Route::get('/admin/souvenir', [AdminSouvenirController::class, 'index'])->name('admin.souvenir');
+        Route::get('/admin/souvenir/create', [AdminSouvenirController::class, 'create'])->name('admin.souvenir.create');
+        Route::post('/admin/souvenir', [AdminSouvenirController::class, 'store'])->name('admin.souvenir.store');
+        Route::get('/admin/souvenir/{souvenir_id}/edit', [AdminSouvenirController::class, 'edit'])->name('admin.souvenir.edit');
+        Route::put('/admin/souvenir/{souvenir_id}', [AdminSouvenirController::class, 'update'])->name('admin.souvenir.update');
+        Route::delete('/admin/souvenir/{souvenir_id}', [AdminSouvenirController::class, 'destroy'])->name('admin.souvenir.destroy');
+        Route::get('/admin/reservasi', [AdminReservasiController::class, 'index'])->name('admin.reservasi');
+        Route::get('/admin/pembayaran', [AdminPembayaranController::class, 'index'])->name('admin.pembayaran');
+        Route::get('/admin/laporan', [AdminLaporanController::class, 'index'])->name('admin.laporan');
     });
 
     // Halaman khusus User
     Route::middleware('role:user')->group(function () {
         Route::get('/dashboard', function () {
-            return view('dashboard');
+            return view('pelanggan.dashboard');
         })->name('dashboard');
 
+        Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+        Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::get('/profile/password/edit', [ProfileController::class, 'editPassword'])->name('profile.password.edit');
+        Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
+
         // Rute Modul PBL untuk User
-        Route::get('/homestay', [HomestayController::class, 'index'])->name('user.homestay');
-        Route::get('/souvenir', [SouvenirController::class, 'index'])->name('user.souvenir');
-        Route::get('/reservasi', [ReservasiController::class, 'index'])->name('user.reservasi');
+        Route::get('/homestay', [PelangganHomestayController::class, 'index'])->name('user.homestay');
+        Route::get('/souvenir', [PelangganSouvenirController::class, 'index'])->name('user.souvenir');
+        Route::get('/reservasi', [PelangganReservasiController::class, 'index'])->name('user.reservasi');
     });
 });
