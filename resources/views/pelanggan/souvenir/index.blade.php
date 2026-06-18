@@ -166,6 +166,28 @@
                                             </span>
                                         </div>
                                     </div>
+
+                                    @if ($souvenir->status === 'Tersedia' && $souvenir->stok > 0)
+                                        <div class="mt-4 pt-4 border-t border-[#F2F0EA]">
+                                            <form action="{{ route('cart.add') }}" method="POST" class="flex items-center gap-3">
+                                                @csrf
+                                                <input type="hidden" name="souvenir_id" value="{{ $souvenir->souvenir_id }}">
+                                                <input type="hidden" name="quantity" value="1">
+                                                <button type="submit" class="w-full bg-[#2B4C3F] hover:bg-[#1E362C] text-white text-xs font-semibold py-2.5 px-4 rounded-xl shadow-sm transition-all duration-300 flex items-center justify-center gap-2">
+                                                    <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                                    </svg>
+                                                    <span>Tambah ke Keranjang</span>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    @else
+                                        <div class="mt-4 pt-4 border-t border-[#F2F0EA]">
+                                            <button disabled class="w-full bg-gray-100 text-gray-400 text-xs font-semibold py-2.5 px-4 rounded-xl cursor-not-allowed flex items-center justify-center gap-2">
+                                                <span>Stok Habis / Tidak Tersedia</span>
+                                            </button>
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                         @endforeach
