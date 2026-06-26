@@ -25,6 +25,25 @@ class KeranjangController extends Controller
     }
 
     /**
+     * Tampilkan halaman checkout.
+     */
+    public function checkout()
+    {
+        $keranjang = Keranjang::with('keranjangItems.souvenir')
+            ->where('user_id', auth()->user()->user_id)
+            ->first();
+
+        $items = $keranjang ? $keranjang->keranjangItems : collect();
+
+        // Jika kosong, redirect kembali ke keranjang
+        if ($items->isEmpty()) {
+            return redirect()->route('cart.index')->with('error', 'Keranjang Anda kosong.');
+        }
+
+        return view('pelanggan.souvenir.checkout', compact('items'));
+    }
+
+    /**
      * Tambahkan item baru atau perbarui jumlah item di keranjang.
      */
     public function addToCart(Request $request)

@@ -88,6 +88,7 @@ Route::middleware('auth')->group(function () {
 
         // Rute Keranjang Belanja User
         Route::get('/cart', [PelangganKeranjangController::class, 'index'])->name('cart.index');
+        Route::get('/cart/checkout', [PelangganKeranjangController::class, 'checkout'])->name('checkout.index');
         Route::post('/cart/add', [PelangganKeranjangController::class, 'addToCart'])->name('cart.add');
         Route::put('/cart/update', [PelangganKeranjangController::class, 'updateQuantity'])->name('cart.update');
         Route::delete('/cart/{id}', [PelangganKeranjangController::class, 'destroy'])->name('cart.destroy');
