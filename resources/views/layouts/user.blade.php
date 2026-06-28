@@ -52,9 +52,9 @@
                 <div class="flex-shrink-0">
                     <a href="/" class="flex items-center gap-3 hover:opacity-90 transition-opacity">
                         <img src="{{ asset('images/Logo-Natasha.jpg') }}" alt="Natasha Homestay Logo"
-                            class="h-9 w-9 rounded-full object-cover border border-[#E6E4DD]/60">
+                            class="h-10 w-10 md:h-11 md:w-11 rounded-full object-cover border border-gray-200">
                         <span
-                            class="text-xs sm:text-sm font-serif font-semibold tracking-[0.15em] text-[#2B4C3F] uppercase">
+                            class="text-xs sm:text-sm md:text-base lg:text-lg font-serif font-semibold tracking-[0.12em] md:tracking-[0.15em] text-[#1E362C] uppercase whitespace-nowrap">
                             Natasha Homestay
                         </span>
                     </a>
@@ -94,7 +94,10 @@
 
                     <!-- Profile Avatar Dropdown (Initials in Green Circle) -->
                     <div class="relative" id="profile-dropdown-container">
-                        <button id="profile-dropdown-btn"
+                        <button id="profile-dropdown-btn" <<<<<<<<< Temporary merge branch 1
+                            class="w-10 h-10 bg-[#EAF2EE] hover:bg-[#dcede5] rounded-full flex items-center justify-center border border-[#A7C5B5]/60 text-[#1E362C] font-semibold text-sm flex-shrink-0 transition-colors focus:outline-none cursor-pointer">
+                            {{ strtoupper(substr(auth()->user()->nama, 0, 2)) }}
+                            =========
                             class="w-9 h-9 bg-[#EAF2EE] hover:bg-[#dcede5] rounded-full overflow-hidden flex items-center justify-center border border-[#A7C5B5]/60 text-[#2B4C3F] font-semibold text-xs flex-shrink-0 transition-colors focus:outline-none">
                             @if (auth()->user()->foto_profil)
                                 <img src="{{ asset('storage/' . auth()->user()->foto_profil) }}" alt="Avatar"
@@ -102,6 +105,7 @@
                             @else
                                 {{ strtoupper(substr(auth()->user()->nama, 0, 2)) }}
                             @endif
+                            >>>>>>>>> Temporary merge branch 2
                         </button>
 
                         <!-- Dropdown Menu -->
