@@ -13,13 +13,27 @@ class PembayaranController extends Controller
     /**
      * Tampilkan daftar pembayaran untuk admin.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $kategori = $request->query('kategori');
+        $status = $request->query('status');
+        $kategoris = [
+            Pemesanan::JENIS_SOUVENIR => 'Souvenir',
+            Pemesanan::JENIS_HOMESTAY => 'Reservasi Homestay',
+        ];
+        $statuses = [
+            Pembayaran::STATUS_MENUNGGU_VERIFIKASI,
+            Pembayaran::STATUS_TERVERIFIKASI,
+            Pembayaran::STATUS_DITOLAK,
+        ];
+
         $pembayarans = Pembayaran::with('pemesanan.user')
+            ->when(array_key_exists((string) $kategori, $kategoris), fn ($query) => $query->whereHas('pemesanan', fn ($pemesananQuery) => $pemesananQuery->where('jenis_pemesanan', $kategori)))
+            ->when(in_array($status, $statuses, true), fn ($query) => $query->where('status_pembayaran', $status))
             ->latest()
             ->get();
 
-        return view('admin.pembayaran.index', compact('pembayarans'));
+        return view('admin.pembayaran.index', compact('pembayarans', 'kategori', 'kategoris', 'status', 'statuses'));
     }
 
     /**

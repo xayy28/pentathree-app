@@ -94,7 +94,7 @@
                     </a>
 
                     <a href="{{ route('admin.souvenir') }}"
-                        class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 {{ request()->routeIs('admin.souvenir') ? 'bg-[#3B5D50] text-white' : 'text-[#A7C5B5] hover:bg-[#325547] hover:text-white' }}">
+                        class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 {{ request()->routeIs('admin.souvenir*') ? 'bg-[#3B5D50] text-white' : 'text-[#A7C5B5] hover:bg-[#325547] hover:text-white' }}">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                             xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -104,7 +104,7 @@
                     </a>
 
                     <a href="{{ route('admin.reservasi') }}"
-                        class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 {{ request()->routeIs('admin.reservasi') ? 'bg-[#3B5D50] text-white' : 'text-[#A7C5B5] hover:bg-[#325547] hover:text-white' }}">
+                        class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 {{ request()->routeIs('admin.reservasi*') ? 'bg-[#3B5D50] text-white' : 'text-[#A7C5B5] hover:bg-[#325547] hover:text-white' }}">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                             xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -115,13 +115,13 @@
                     </a>
 
                     <a href="{{ route('admin.pembayaran') }}"
-                        class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 {{ request()->routeIs('admin.pembayaran') ? 'bg-[#3B5D50] text-white' : 'text-[#A7C5B5] hover:bg-[#325547] hover:text-white' }}">
+                        class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 {{ request()->routeIs('admin.pembayaran*') ? 'bg-[#3B5D50] text-white' : 'text-[#A7C5B5] hover:bg-[#325547] hover:text-white' }}">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                             xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9 8h6m-5 4h3m-7 8h10a2 2 0 002-2V6a2 2 0 00-2-2H9a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                         </svg>
-                        Pembayaran
+                        Pembayaran Souvenir
                     </a>
 
                     <a href="{{ route('admin.laporan') }}"
@@ -307,7 +307,7 @@
                             Kategori Homestay
                         </a>
                         <a href="{{ route('admin.souvenir') }}"
-                            class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 {{ request()->routeIs('admin.souvenir') ? 'bg-[#3B5D50] text-white' : 'text-[#A7C5B5] hover:bg-[#325547] hover:text-white' }}">
+                            class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 {{ request()->routeIs('admin.souvenir*') ? 'bg-[#3B5D50] text-white' : 'text-[#A7C5B5] hover:bg-[#325547] hover:text-white' }}">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
@@ -323,12 +323,12 @@
                             Reservasi Homestay
                         </a>
                         <a href="{{ route('admin.pembayaran') }}"
-                            class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 {{ request()->routeIs('admin.pembayaran') ? 'bg-[#3B5D50] text-white' : 'text-[#A7C5B5] hover:bg-[#325547] hover:text-white' }}">
+                            class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 {{ request()->routeIs('admin.pembayaran*') ? 'bg-[#3B5D50] text-white' : 'text-[#A7C5B5] hover:bg-[#325547] hover:text-white' }}">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M9 8h6m-5 4h3m-7 8h10a2 2 0 002-2V6a2 2 0 00-2-2H9a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
-                            Pembayaran
+                            Pembayaran Souvenir
                         </a>
                         <a href="{{ route('admin.laporan') }}"
                             class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 {{ request()->routeIs('admin.laporan') ? 'bg-[#3B5D50] text-white' : 'text-[#A7C5B5] hover:bg-[#325547] hover:text-white' }}">

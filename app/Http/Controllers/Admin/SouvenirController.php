@@ -13,10 +13,15 @@ class SouvenirController extends Controller
      */
     public function index(Request $request)
     {
-        $kategori = $request->query('kategori');
-        $souvenirs = Souvenir::with('updater')->latest()->get();
+        $status = $request->query('status');
+        $statuses = ['Tersedia', 'Habis'];
 
-        return view('admin.souvenir.index', compact('souvenirs', 'kategori'));
+        $souvenirs = Souvenir::with('updater')
+            ->when(in_array($status, $statuses, true), fn ($query) => $query->where('status', $status))
+            ->latest()
+            ->get();
+
+        return view('admin.souvenir.index', compact('souvenirs', 'status', 'statuses'));
     }
 
     /**

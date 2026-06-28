@@ -25,6 +25,36 @@ test('admin can access admin souvenir index', function () {
     $response->assertSee('Kelola Souvenir');
 });
 
+test('admin can filter souvenir listing by status', function () {
+    $admin = User::where('role', 'admin')->first();
+
+    Souvenir::query()->delete();
+
+    Souvenir::create([
+        'nama_souvenir' => 'Gantungan Tersedia',
+        'harga' => 15000,
+        'stok' => 25,
+        'status' => 'Tersedia',
+        'updated_by' => $admin->user_id,
+    ]);
+
+    Souvenir::create([
+        'nama_souvenir' => 'Tas Habis',
+        'harga' => 45000,
+        'stok' => 0,
+        'status' => 'Habis',
+        'updated_by' => $admin->user_id,
+    ]);
+
+    $response = $this->actingAs($admin)->get(route('admin.souvenir', [
+        'status' => 'Tersedia',
+    ]));
+
+    $response->assertStatus(200);
+    $response->assertSee('Gantungan Tersedia');
+    $response->assertDontSee('Tas Habis');
+});
+
 test('admin can create a souvenir with updated_by set automatically', function () {
     $admin = User::where('role', 'admin')->first();
 
@@ -106,6 +136,37 @@ test('user can view souvenir catalog sorted by jumlah_terjual for terlaris', fun
     // Item dengan jumlah_terjual 120 harus muncul pertama
     expect($dataSorted->first()->souvenir_id)->toBe($item2->souvenir_id);
     expect($dataSorted->last()->souvenir_id)->toBe($item1->souvenir_id);
+});
+
+test('user can filter souvenir catalog by status', function () {
+    $user = User::where('role', 'user')->first();
+    $admin = User::where('role', 'admin')->first();
+
+    Souvenir::query()->delete();
+
+    Souvenir::create([
+        'nama_souvenir' => 'Miniatur Rumah Gadang',
+        'harga' => 75000,
+        'stok' => 12,
+        'status' => 'Tersedia',
+        'updated_by' => $admin->user_id,
+    ]);
+
+    Souvenir::create([
+        'nama_souvenir' => 'Kaos Harau',
+        'harga' => 90000,
+        'stok' => 0,
+        'status' => 'Habis',
+        'updated_by' => $admin->user_id,
+    ]);
+
+    $response = $this->actingAs($user)->get(route('user.souvenir', [
+        'status' => 'Tersedia',
+    ]));
+
+    $response->assertStatus(200);
+    $response->assertSee('Miniatur Rumah Gadang');
+    $response->assertDontSee('Kaos Harau');
 });
 
 test('souvenir updater relation returns admin name', function () {

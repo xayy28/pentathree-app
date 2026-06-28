@@ -13,11 +13,20 @@ class HomestayController extends Controller
     /**
      * Tampilkan daftar homestay.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $homestays = Homestay::with('kategori')->latest()->get();
+        $kategori = $request->query('kategori');
+        $status = $request->query('status');
+        $statuses = ['Tersedia', 'Tidak Tersedia'];
+        $categories = KategoriHomestay::orderBy('nama_kategori')->get();
 
-        return view('admin.homestay.index', compact('homestays'));
+        $homestays = Homestay::with('kategori')
+            ->when($kategori, fn ($query) => $query->where('kategori_id', $kategori))
+            ->when(in_array($status, $statuses, true), fn ($query) => $query->where('status', $status))
+            ->latest()
+            ->get();
+
+        return view('admin.homestay.index', compact('homestays', 'categories', 'kategori', 'status', 'statuses'));
     }
 
     /**

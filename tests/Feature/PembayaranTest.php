@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\DetailPemesanan;
+use App\Models\Homestay;
 use App\Models\Pembayaran;
 use App\Models\Pemesanan;
 use App\Models\Souvenir;
@@ -35,6 +36,30 @@ function createSouvenirPemesananForPaymentTest(User $user, Souvenir $souvenir, i
         'harga' => $souvenir->harga,
         'jumlah' => $quantity,
         'subtotal' => $souvenir->harga * $quantity,
+    ]);
+
+    return $pemesanan;
+}
+
+function createHomestayPemesananForPaymentTest(User $user, Homestay $homestay): Pemesanan
+{
+    $pemesanan = Pemesanan::create([
+        'user_id' => $user->user_id,
+        'jenis_pemesanan' => Pemesanan::JENIS_HOMESTAY,
+        'total_harga' => $homestay->harga_permalam * 2,
+        'status_pemesanan' => Pemesanan::STATUS_MENUNGGU_PEMBAYARAN,
+    ]);
+
+    DetailPemesanan::create([
+        'pemesanan_id' => $pemesanan->pemesanan_id,
+        'homestay_id' => $homestay->homestay_id,
+        'nama_item' => $homestay->nama_homestay,
+        'harga' => $homestay->harga_permalam,
+        'jumlah' => 1,
+        'check_in' => now()->addDay()->toDateString(),
+        'check_out' => now()->addDays(3)->toDateString(),
+        'jumlah_malam' => 2,
+        'subtotal' => $homestay->harga_permalam * 2,
     ]);
 
     return $pemesanan;
@@ -103,6 +128,67 @@ test('admin can view payment list and detail', function () {
         ->assertStatus(200)
         ->assertSee($pemesanan->kode_pemesanan)
         ->assertSee($this->souvenir->nama_souvenir);
+});
+
+test('admin can filter payments by order category', function () {
+    $homestay = Homestay::where('status', 'Tersedia')->first();
+    $souvenirPemesanan = createSouvenirPemesananForPaymentTest($this->user, $this->souvenir);
+    $homestayPemesanan = createHomestayPemesananForPaymentTest($this->user, $homestay);
+
+    Pembayaran::create([
+        'pemesanan_id' => $souvenirPemesanan->pemesanan_id,
+        'metode_pembayaran' => 'transfer_bank',
+        'jumlah_bayar' => $souvenirPemesanan->total_harga,
+        'status_pembayaran' => Pembayaran::STATUS_MENUNGGU_VERIFIKASI,
+        'tanggal_pembayaran' => now(),
+    ]);
+
+    Pembayaran::create([
+        'pemesanan_id' => $homestayPemesanan->pemesanan_id,
+        'metode_pembayaran' => 'transfer_bank',
+        'jumlah_bayar' => $homestayPemesanan->total_harga,
+        'status_pembayaran' => Pembayaran::STATUS_MENUNGGU_VERIFIKASI,
+        'tanggal_pembayaran' => now(),
+    ]);
+
+    $this->actingAs($this->admin)
+        ->get(route('admin.pembayaran', ['kategori' => Pemesanan::JENIS_SOUVENIR]))
+        ->assertStatus(200)
+        ->assertSee($souvenirPemesanan->kode_pemesanan)
+        ->assertDontSee($homestayPemesanan->kode_pemesanan);
+
+    $this->actingAs($this->admin)
+        ->get(route('admin.pembayaran', ['kategori' => Pemesanan::JENIS_HOMESTAY]))
+        ->assertStatus(200)
+        ->assertSee($homestayPemesanan->kode_pemesanan)
+        ->assertDontSee($souvenirPemesanan->kode_pemesanan);
+});
+
+test('admin can filter payments by payment status', function () {
+    $waitingPemesanan = createSouvenirPemesananForPaymentTest($this->user, $this->souvenir);
+    $verifiedPemesanan = createSouvenirPemesananForPaymentTest($this->user, $this->souvenir);
+
+    Pembayaran::create([
+        'pemesanan_id' => $waitingPemesanan->pemesanan_id,
+        'metode_pembayaran' => 'transfer_bank',
+        'jumlah_bayar' => $waitingPemesanan->total_harga,
+        'status_pembayaran' => Pembayaran::STATUS_MENUNGGU_VERIFIKASI,
+        'tanggal_pembayaran' => now(),
+    ]);
+
+    Pembayaran::create([
+        'pemesanan_id' => $verifiedPemesanan->pemesanan_id,
+        'metode_pembayaran' => 'transfer_bank',
+        'jumlah_bayar' => $verifiedPemesanan->total_harga,
+        'status_pembayaran' => Pembayaran::STATUS_TERVERIFIKASI,
+        'tanggal_pembayaran' => now(),
+    ]);
+
+    $this->actingAs($this->admin)
+        ->get(route('admin.pembayaran', ['status' => Pembayaran::STATUS_TERVERIFIKASI]))
+        ->assertStatus(200)
+        ->assertSee($verifiedPemesanan->kode_pemesanan)
+        ->assertDontSee($waitingPemesanan->kode_pemesanan);
 });
 
 test('admin can verify payment and update stock once', function () {

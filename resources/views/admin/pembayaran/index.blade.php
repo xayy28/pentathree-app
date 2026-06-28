@@ -3,16 +3,39 @@
 @section('title', 'Kelola Pembayaran')
 
 @section('content')
+    @php
+        $statusLabels = [
+            \App\Models\Pembayaran::STATUS_MENUNGGU_VERIFIKASI => 'Menunggu Verifikasi',
+            \App\Models\Pembayaran::STATUS_TERVERIFIKASI => 'Terverifikasi',
+            \App\Models\Pembayaran::STATUS_DITOLAK => 'Ditolak',
+        ];
+    @endphp
+
     <div class="space-y-6">
         <div class="bg-white rounded-2xl border border-[#E6E4DD] p-8 shadow-sm">
-            <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
+            <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-6">
                 <div>
                     <h1 class="text-3xl font-serif font-semibold text-[#2C3E35] mb-2">Kelola Pembayaran</h1>
                     <p class="text-sm text-[#5C6E65] leading-relaxed">
                         Verifikasi pembayaran pelanggan dan pantau status pemesanan.
                     </p>
                 </div>
-                <span class="text-xs font-semibold text-[#8A9C91]">{{ $pembayarans->count() }} pembayaran</span>
+
+                <form action="{{ route('admin.pembayaran') }}" method="GET" class="flex flex-col sm:flex-row gap-3">
+                    <select name="status"
+                        class="bg-[#FAF9F6] text-[#2C3E35] border border-[#E6E4DD] rounded-xl px-4 py-2.5 text-sm focus:bg-white focus:border-[#2B4C3F] focus:outline-none">
+                        <option value="">Semua status</option>
+                        @foreach ($statuses as $statusOption)
+                            <option value="{{ $statusOption }}" @selected($status === $statusOption)>
+                                {{ $statusLabels[$statusOption] ?? str_replace('_', ' ', $statusOption) }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <button type="submit"
+                        class="bg-[#2B4C3F] hover:bg-[#1E362C] text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-all">
+                        Filter
+                    </button>
+                </form>
             </div>
 
             @if ($pembayarans->isEmpty())
@@ -48,7 +71,7 @@
                                     <td class="py-4 text-[#5C6E65]">{{ str_replace('_', ' ', $pembayaran->metode_pembayaran) }}</td>
                                     <td class="py-4">
                                         <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#EAF2EE] text-[#2B4C3F]">
-                                            {{ str_replace('_', ' ', $pembayaran->status_pembayaran) }}
+                                            {{ $statusLabels[$pembayaran->status_pembayaran] ?? str_replace('_', ' ', $pembayaran->status_pembayaran) }}
                                         </span>
                                     </td>
                                     <td class="py-4 text-right">
