@@ -84,4 +84,12 @@ class Pemesanan extends Model
     {
         return $this->hasMany(DetailPemesanan::class, 'pemesanan_id', 'pemesanan_id');
     }
+
+    /**
+     * Pembayaran untuk pemesanan ini.
+     */
+    public function pembayaran()
+    {
+        return $this->hasOne(Pembayaran::class, 'pemesanan_id', 'pemesanan_id');
+    }
 }

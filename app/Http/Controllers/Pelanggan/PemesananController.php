@@ -12,7 +12,8 @@ class PemesananController extends Controller
      */
     public function index()
     {
-        $pemesanans = Pemesanan::withCount('detailPemesanans')
+        $pemesanans = Pemesanan::with('pembayaran')
+            ->withCount('detailPemesanans')
             ->where('user_id', auth()->user()->user_id)
             ->latest()
             ->get();
@@ -25,7 +26,7 @@ class PemesananController extends Controller
      */
     public function show($pemesanan_id)
     {
-        $pemesanan = Pemesanan::with('detailPemesanans.souvenir', 'detailPemesanans.homestay')
+        $pemesanan = Pemesanan::with('detailPemesanans.souvenir', 'detailPemesanans.homestay', 'pembayaran')
             ->where('user_id', auth()->user()->user_id)
             ->where('pemesanan_id', $pemesanan_id)
             ->firstOrFail();

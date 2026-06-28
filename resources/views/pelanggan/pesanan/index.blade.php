@@ -50,7 +50,7 @@
                         </div>
                         <div class="flex items-center justify-between lg:justify-end gap-6">
                             <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#FAF9F6] border border-[#E6E4DD] text-[#5C6E65]">
-                                {{ str_replace('_', ' ', $pemesanan->status_pemesanan) }}
+                                {{ $pemesanan->pembayaran ? str_replace('_', ' ', $pemesanan->pembayaran->status_pembayaran) : str_replace('_', ' ', $pemesanan->status_pemesanan) }}
                             </span>
                             <span class="text-lg font-bold text-[#2B4C3F]">
                                 Rp {{ number_format($pemesanan->total_harga, 0, ',', '.') }}

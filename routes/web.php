@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\SouvenirController as AdminSouvenirController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Pelanggan\HomestayController as PelangganHomestayController;
 use App\Http\Controllers\Pelanggan\KeranjangController as PelangganKeranjangController;
+use App\Http\Controllers\Pelanggan\PembayaranController as PelangganPembayaranController;
 use App\Http\Controllers\Pelanggan\PemesananController as PelangganPemesananController;
 use App\Http\Controllers\Pelanggan\ReservasiController as PelangganReservasiController;
 use App\Http\Controllers\Pelanggan\SouvenirController as PelangganSouvenirController;
@@ -96,6 +97,9 @@ Route::middleware('auth')->group(function () {
         Route::delete('/admin/souvenir/{souvenir_id}', [AdminSouvenirController::class, 'destroy'])->name('admin.souvenir.destroy');
         Route::get('/admin/reservasi', [AdminReservasiController::class, 'index'])->name('admin.reservasi');
         Route::get('/admin/pembayaran', [AdminPembayaranController::class, 'index'])->name('admin.pembayaran');
+        Route::get('/admin/pembayaran/{pembayaran_id}', [AdminPembayaranController::class, 'show'])->name('admin.pembayaran.show');
+        Route::post('/admin/pembayaran/{pembayaran_id}/verify', [AdminPembayaranController::class, 'verify'])->name('admin.pembayaran.verify');
+        Route::post('/admin/pembayaran/{pembayaran_id}/reject', [AdminPembayaranController::class, 'reject'])->name('admin.pembayaran.reject');
         Route::get('/admin/laporan', [AdminLaporanController::class, 'index'])->name('admin.laporan');
     });
 
@@ -117,6 +121,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/reservasi', [PelangganReservasiController::class, 'index'])->name('user.reservasi');
         Route::get('/pesanan', [PelangganPemesananController::class, 'index'])->name('user.pesanan.index');
         Route::get('/pesanan/{pemesanan_id}', [PelangganPemesananController::class, 'show'])->name('user.pesanan.show');
+        Route::get('/pesanan/{pemesanan_id}/pembayaran', [PelangganPembayaranController::class, 'create'])->name('user.pembayaran.create');
+        Route::post('/pesanan/{pemesanan_id}/pembayaran', [PelangganPembayaranController::class, 'store'])->name('user.pembayaran.store');
 
         // Rute Keranjang Belanja User
         Route::get('/cart', [PelangganKeranjangController::class, 'index'])->name('cart.index');

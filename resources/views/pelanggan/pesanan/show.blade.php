@@ -61,6 +61,12 @@
                         <span class="font-semibold text-[#2C3E35] capitalize">{{ $pemesanan->jenis_pemesanan }}</span>
                     </div>
                     <div class="flex justify-between gap-4">
+                        <span class="text-[#8A9C91]">Pembayaran</span>
+                        <span class="font-semibold text-[#2C3E35]">
+                            {{ $pemesanan->pembayaran ? str_replace('_', ' ', $pemesanan->pembayaran->status_pembayaran) : 'belum dibayar' }}
+                        </span>
+                    </div>
+                    <div class="flex justify-between gap-4">
                         <span class="text-[#8A9C91]">Jumlah Item</span>
                         <span class="font-semibold text-[#2C3E35]">{{ $pemesanan->detailPemesanans->sum('jumlah') }}</span>
                     </div>
@@ -69,9 +75,26 @@
                         <span class="font-bold text-[#E65F5F]">Rp {{ number_format($pemesanan->total_harga, 0, ',', '.') }}</span>
                     </div>
                 </div>
-                <p class="text-[11px] leading-relaxed text-[#8A9C91] bg-[#FAF9F6] border border-[#E6E4DD] rounded-xl p-4">
-                    Pembayaran dan invoice akan aktif pada sprint berikutnya. Pesanan ini sudah tersimpan dan siap diproses ke alur pembayaran.
-                </p>
+                @if (! $pemesanan->pembayaran || $pemesanan->pembayaran->status_pembayaran === \App\Models\Pembayaran::STATUS_DITOLAK)
+                    <a href="{{ route('user.pembayaran.create', $pemesanan->pemesanan_id) }}"
+                        class="w-full bg-[#2B4C3F] hover:bg-[#1E362C] text-white text-sm font-semibold py-3 px-4 rounded-xl transition-all flex items-center justify-center">
+                        Bayar Sekarang
+                    </a>
+                @elseif ($pemesanan->pembayaran->status_pembayaran === \App\Models\Pembayaran::STATUS_MENUNGGU_VERIFIKASI)
+                    <p class="text-[11px] leading-relaxed text-[#8A9C91] bg-[#FAF9F6] border border-[#E6E4DD] rounded-xl p-4">
+                        Bukti pembayaran sudah dikirim dan sedang menunggu verifikasi admin.
+                    </p>
+                @elseif ($pemesanan->pembayaran->status_pembayaran === \App\Models\Pembayaran::STATUS_TERVERIFIKASI)
+                    <p class="text-[11px] leading-relaxed text-[#2B4C3F] bg-[#EAF2EE] border border-[#A7C5B5] rounded-xl p-4">
+                        Pembayaran sudah terverifikasi. Pesanan sedang diproses.
+                    </p>
+                @endif
+
+                @if ($pemesanan->pembayaran?->catatan_admin)
+                    <p class="text-[11px] leading-relaxed text-[#9B1C1C] bg-[#FDF2F2] border border-[#F5C2C2] rounded-xl p-4">
+                        Catatan admin: {{ $pemesanan->pembayaran->catatan_admin }}
+                    </p>
+                @endif
             </div>
         </div>
     </div>

@@ -70,4 +70,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Pemesanan::class, 'user_id', 'user_id');
     }
+
+    /**
+     * Pembayaran yang diverifikasi admin ini.
+     */
+    public function verifiedPembayarans()
+    {
+        return $this->hasMany(Pembayaran::class, 'verified_by', 'user_id');
+    }
 }
