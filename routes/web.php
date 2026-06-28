@@ -97,6 +97,8 @@ Route::middleware('auth')->group(function () {
         Route::put('/admin/souvenir/{souvenir_id}', [AdminSouvenirController::class, 'update'])->name('admin.souvenir.update');
         Route::delete('/admin/souvenir/{souvenir_id}', [AdminSouvenirController::class, 'destroy'])->name('admin.souvenir.destroy');
         Route::get('/admin/reservasi', [AdminReservasiController::class, 'index'])->name('admin.reservasi');
+        Route::get('/admin/reservasi/{pemesanan_id}', [AdminReservasiController::class, 'show'])->name('admin.reservasi.show');
+        Route::post('/admin/reservasi/{pemesanan_id}/status', [AdminReservasiController::class, 'updateStatus'])->name('admin.reservasi.status');
         Route::get('/admin/pembayaran', [AdminPembayaranController::class, 'index'])->name('admin.pembayaran');
         Route::get('/admin/pembayaran/{pembayaran_id}', [AdminPembayaranController::class, 'show'])->name('admin.pembayaran.show');
         Route::post('/admin/pembayaran/{pembayaran_id}/verify', [AdminPembayaranController::class, 'verify'])->name('admin.pembayaran.verify');

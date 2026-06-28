@@ -315,7 +315,7 @@
                             Kelola Souvenir
                         </a>
                         <a href="{{ route('admin.reservasi') }}"
-                            class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 {{ request()->routeIs('admin.reservasi') ? 'bg-[#3B5D50] text-white' : 'text-[#A7C5B5] hover:bg-[#325547] hover:text-white' }}">
+                            class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 {{ request()->routeIs('admin.reservasi*') ? 'bg-[#3B5D50] text-white' : 'text-[#A7C5B5] hover:bg-[#325547] hover:text-white' }}">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />

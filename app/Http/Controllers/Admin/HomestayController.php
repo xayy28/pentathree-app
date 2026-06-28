@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Homestay;
 use App\Models\KategoriHomestay;
+use App\Models\Pemesanan;
 use Illuminate\Http\Request;
 
 class HomestayController extends Controller
@@ -113,7 +114,20 @@ class HomestayController extends Controller
      */
     public function destroy($homestay_id)
     {
-        $homestay = Homestay::findOrFail($homestay_id);
+        $homestay = Homestay::with('detailPemesanans.pemesanan')->findOrFail($homestay_id);
+
+        $hasActiveReservation = $homestay->detailPemesanans
+            ->contains(fn ($detail) => $detail->pemesanan
+                && $detail->pemesanan->jenis_pemesanan === Pemesanan::JENIS_HOMESTAY
+                && ! in_array($detail->pemesanan->status_pemesanan, [
+                    Pemesanan::STATUS_DIBATALKAN,
+                    Pemesanan::STATUS_SELESAI,
+                ], true));
+
+        if ($hasActiveReservation) {
+            return redirect()->route('admin.homestay')
+                ->with('error', 'Homestay tidak dapat dihapus karena masih memiliki reservasi aktif.');
+        }
 
         if ($homestay->foto && file_exists(public_path($homestay->foto))) {
             @unlink(public_path($homestay->foto));
