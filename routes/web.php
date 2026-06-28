@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\SouvenirController as AdminSouvenirController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Pelanggan\HomestayController as PelangganHomestayController;
 use App\Http\Controllers\Pelanggan\KeranjangController as PelangganKeranjangController;
+use App\Http\Controllers\Pelanggan\PemesananController as PelangganPemesananController;
 use App\Http\Controllers\Pelanggan\ReservasiController as PelangganReservasiController;
 use App\Http\Controllers\Pelanggan\SouvenirController as PelangganSouvenirController;
 use App\Http\Controllers\ProfileController;
@@ -114,10 +115,13 @@ Route::middleware('auth')->group(function () {
         Route::get('/homestay', [PelangganHomestayController::class, 'index'])->name('user.homestay');
         Route::get('/souvenir', [PelangganSouvenirController::class, 'index'])->name('user.souvenir');
         Route::get('/reservasi', [PelangganReservasiController::class, 'index'])->name('user.reservasi');
+        Route::get('/pesanan', [PelangganPemesananController::class, 'index'])->name('user.pesanan.index');
+        Route::get('/pesanan/{pemesanan_id}', [PelangganPemesananController::class, 'show'])->name('user.pesanan.show');
 
         // Rute Keranjang Belanja User
         Route::get('/cart', [PelangganKeranjangController::class, 'index'])->name('cart.index');
         Route::get('/cart/checkout', [PelangganKeranjangController::class, 'checkout'])->name('checkout.index');
+        Route::post('/cart/checkout', [PelangganKeranjangController::class, 'storeCheckout'])->name('checkout.store');
         Route::post('/cart/add', [PelangganKeranjangController::class, 'addToCart'])->name('cart.add');
         Route::put('/cart/update', [PelangganKeranjangController::class, 'updateQuantity'])->name('cart.update');
         Route::delete('/cart/{id}', [PelangganKeranjangController::class, 'destroy'])->name('cart.destroy');
