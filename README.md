@@ -3,12 +3,12 @@
 ![Laravel](https://img.shields.io/badge/Laravel-13.8+-FF2D20?logo=laravel&logoColor=white)
 ![PHP](https://img.shields.io/badge/PHP-8.3+-777BB4?logo=php&logoColor=white)
 ![Blade](https://img.shields.io/badge/Blade-Laravel%20Blade-FF2D20)
-![Tailwind](https://img.shields.io/badge/TailwindCSS-3.4+-38BDF8?logo=tailwindcss&logoColor=white)
+![Tailwind](https://img.shields.io/badge/TailwindCSS-4.2+-38BDF8?logo=tailwindcss&logoColor=white)
 ![Status](https://img.shields.io/badge/Status-Dalam%20Pengembangan-F2C94C)
 
 Sistem Informasi Manajmen Homestay dan Penjualan Souvenir Berbasis WEB Pada Natasya Homestay dan Harau Souvenir merupakan aplikasi berbasis web yang dirancang untuk membantu pengelolaan usaha homestay dan penjualan suvenir secara terintegrasi. Sistem ini memungkinkan pelanggan melakukan reservasi homestay, pembelian suvenir, pengelolaan pembayaran, serta membantu pengelola dalam mengelola operasional dan laporan usaha.
 
-> **Status implementasi:** Saat ini proyek telah memiliki fondasi aplikasi berupa autentikasi pengguna, dashboard dasar, manajemen profil, serta struktur database awal menggunakan Laravel dan Blade Template Engine. Fitur utama bisnis masih dalam tahap pengembangan.
+> **Status implementasi:** Saat ini proyek telah memiliki autentikasi pengguna, middleware role admin/user, manajemen profil, dashboard admin berbasis data database, CRUD kategori homestay, CRUD homestay, CRUD suvenir, katalog pelanggan, keranjang belanja, halaman checkout awal, seeder, CI dasar, dan test feature untuk modul utama yang sudah berjalan. Alur pemesanan, pembayaran, invoice, reservasi, laporan, ulasan, dan payment gateway masih menjadi backlog sprint berikutnya.
 
 ---
 
@@ -46,8 +46,8 @@ Melalui Sistem Informasi Manajmen Homestay dan Penjualan Souvenir Berbasis WEB P
 | Fitur              | Status       |
 | ------------------ | ------------ |
 | Homepage           | Direncanakan |
-| Informasi Homestay | Direncanakan |
-| Katalog Suvenir    | Direncanakan |
+| Informasi Homestay | Tersedia untuk user login |
+| Katalog Suvenir    | Tersedia untuk user login |
 | Galeri             | Direncanakan |
 | Informasi Kontak   | Direncanakan |
 | Pencarian Homestay | Direncanakan |
@@ -56,11 +56,11 @@ Melalui Sistem Informasi Manajmen Homestay dan Penjualan Souvenir Berbasis WEB P
 
 | Fitur                   | Status           |
 | ----------------------- | ---------------- |
-| Login dan Registrasi    | Fondasi tersedia |
-| Manajemen Profil        | Fondasi tersedia |
+| Login dan Registrasi    | Tersedia         |
+| Manajemen Profil        | Tersedia         |
 | Reservasi Homestay      | Direncanakan     |
-| Pembelian Suvenir       | Direncanakan     |
-| Checkout dan Pembayaran | Direncanakan     |
+| Pembelian Suvenir       | Keranjang tersedia, pemesanan belum |
+| Checkout dan Pembayaran | Checkout awal tersedia, pembayaran belum |
 | Riwayat Transaksi       | Direncanakan     |
 | Ulasan Homestay         | Direncanakan     |
 
@@ -68,12 +68,12 @@ Melalui Sistem Informasi Manajmen Homestay dan Penjualan Souvenir Berbasis WEB P
 
 | Fitur                 | Status           |
 | --------------------- | ---------------- |
-| Dashboard Dasar       | Fondasi tersedia |
-| Manajemen Homestay    | Direncanakan     |
+| Dashboard Dasar       | Tersedia dengan statistik database |
+| Manajemen Homestay    | Tersedia         |
 | Manajemen Kamar       | Direncanakan     |
 | Manajemen Fasilitas   | Direncanakan     |
-| Manajemen Suvenir     | Direncanakan     |
-| Manajemen Stok        | Direncanakan     |
+| Manajemen Suvenir     | Tersedia         |
+| Manajemen Stok        | Tersedia pada CRUD suvenir |
 | Verifikasi Pembayaran | Direncanakan     |
 | Manajemen Transaksi   | Direncanakan     |
 | Laporan dan Statistik | Direncanakan     |
@@ -99,11 +99,11 @@ Melalui Sistem Informasi Manajmen Homestay dan Penjualan Souvenir Berbasis WEB P
 | Backend Framework | Laravel 13                    |
 | Bahasa Backend    | PHP 8.3                       |
 | Frontend          | Laravel Blade                 |
-| Styling           | Tailwind CSS                  |
+| Styling           | Tailwind CSS 4                |
 | Build Tool        | Vite                          |
 | Authentication    | Custom Authentication Laravel |
 | Database          | MySQL                         |
-| Testing           | PHPUnit                       |
+| Testing           | Pest dan PHPUnit              |
 | Code Formatter    | Laravel Pint                  |
 | Version Control   | Git & GitHub                  |
 
@@ -223,12 +223,10 @@ SIMHOSUV/
 
 | Dokumen                | Keterangan                               |
 | ---------------------- | ---------------------------------------- |
-| docs/installation.md   | Panduan instalasi dan konfigurasi sistem |
-| docs/features.md       | Dokumentasi fitur sistem                 |
+| docs/instalation.md    | Panduan instalasi dan konfigurasi sistem |
 | docs/dependency.md     | Daftar dependency yang digunakan         |
 | docs/refactoring.md    | Riwayat refactoring proyek               |
 | docs/github-actions.md | Dokumentasi CI/CD dan GitHub Actions     |
-| CHANGELOG.md           | Catatan perubahan proyek                 |
 
 ---
 
@@ -271,12 +269,12 @@ Screenshot aktual akan ditambahkan setelah fitur utama selesai diimplementasikan
 
 | Halaman            | Status                      |
 | ------------------ | --------------------------- |
-| Login & Registrasi | Menunggu Implementasi Final |
-| Dashboard          | Menunggu Implementasi Final |
-| Daftar Homestay    | Menunggu Implementasi       |
+| Login & Registrasi | Tersedia                    |
+| Dashboard          | Tersedia                    |
+| Daftar Homestay    | Tersedia                    |
 | Detail Homestay    | Menunggu Implementasi       |
-| Katalog Suvenir    | Menunggu Implementasi       |
-| Checkout           | Menunggu Implementasi       |
+| Katalog Suvenir    | Tersedia                    |
+| Checkout           | Tampilan awal tersedia      |
 | Laporan            | Menunggu Implementasi       |
 
 ---

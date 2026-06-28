@@ -18,7 +18,9 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     protected $primaryKey = 'user_id';
+
     public $incrementing = false;
+
     protected $keyType = 'string';
 
     /**
@@ -42,12 +44,12 @@ class User extends Authenticatable
         static::creating(function ($user) {
             if (empty($user->user_id)) {
                 $latestUser = static::orderBy('user_id', 'desc')->first();
-                if (!$latestUser) {
+                if (! $latestUser) {
                     $user->user_id = 'USR001';
                 } else {
                     $lastNumber = (int) substr($latestUser->user_id, 3);
                     $newNumber = $lastNumber + 1;
-                    $user->user_id = 'USR' . str_pad($newNumber, 3, '0', STR_PAD_LEFT);
+                    $user->user_id = 'USR'.str_pad($newNumber, 3, '0', STR_PAD_LEFT);
                 }
             }
         });

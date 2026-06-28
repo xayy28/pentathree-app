@@ -14,6 +14,7 @@ class KategoriHomestayController extends Controller
     public function index()
     {
         $categories = KategoriHomestay::withCount('homestays')->latest()->get();
+
         return view('admin.kategori-homestay.index', compact('categories'));
     }
 
@@ -49,6 +50,7 @@ class KategoriHomestayController extends Controller
     public function edit($kategori_id)
     {
         $category = KategoriHomestay::findOrFail($kategori_id);
+
         return view('admin.kategori-homestay.edit', compact('category'));
     }
 
@@ -60,7 +62,7 @@ class KategoriHomestayController extends Controller
         $category = KategoriHomestay::findOrFail($kategori_id);
 
         $request->validate([
-            'nama_kategori' => 'required|string|max:255|unique:kategori_homestays,nama_kategori,' . $kategori_id . ',kategori_id',
+            'nama_kategori' => 'required|string|max:255|unique:kategori_homestays,nama_kategori,'.$kategori_id.',kategori_id',
             'deskripsi' => 'nullable|string',
         ], [
             'nama_kategori.required' => 'Nama kategori wajib diisi.',

@@ -15,6 +15,7 @@ class HomestayController extends Controller
     public function index()
     {
         $homestays = Homestay::with('kategori')->latest()->get();
+
         return view('admin.homestay.index', compact('homestays'));
     }
 
@@ -24,6 +25,7 @@ class HomestayController extends Controller
     public function create()
     {
         $categories = KategoriHomestay::all();
+
         return view('admin.homestay.tambah', compact('categories'));
     }
 
@@ -46,9 +48,9 @@ class HomestayController extends Controller
 
         if ($request->hasFile('foto')) {
             $file = $request->file('foto');
-            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $filename = time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
             $file->move(public_path('uploads/homestays'), $filename);
-            $data['foto'] = 'uploads/homestays/' . $filename;
+            $data['foto'] = 'uploads/homestays/'.$filename;
         }
 
         Homestay::create($data);
@@ -63,6 +65,7 @@ class HomestayController extends Controller
     {
         $homestay = Homestay::findOrFail($homestay_id);
         $categories = KategoriHomestay::all();
+
         return view('admin.homestay.edit', compact('homestay', 'categories'));
     }
 
@@ -95,9 +98,9 @@ class HomestayController extends Controller
                 @unlink(public_path($homestay->foto));
             }
             $file = $request->file('foto');
-            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $filename = time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
             $file->move(public_path('uploads/homestays'), $filename);
-            $homestay->foto = 'uploads/homestays/' . $filename;
+            $homestay->foto = 'uploads/homestays/'.$filename;
         }
 
         $homestay->save();

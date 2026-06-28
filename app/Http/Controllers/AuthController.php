@@ -35,11 +35,11 @@ class AuthController extends Controller
             // Redirect berdasarkan role
             if ($user->role === 'admin') {
                 return redirect()->intended('/admin/dashboard')
-                    ->with('success', 'Selamat datang kembali, Admin ' . $user->nama . '!');
+                    ->with('success', 'Selamat datang kembali, Admin '.$user->nama.'!');
             }
 
             return redirect()->intended('/dashboard')
-                ->with('success', 'Selamat datang kembali, ' . $user->nama . '!');
+                ->with('success', 'Selamat datang kembali, '.$user->nama.'!');
         }
 
         // Jika login gagal
@@ -74,7 +74,7 @@ class AuthController extends Controller
 
         // Login otomatis setelah registrasi berhasil
         Auth::login($user);
-        
+
         $request->session()->regenerate();
 
         return redirect('/dashboard')->with('success', 'Registrasi berhasil! Selamat datang di Aura Stay & Style.');

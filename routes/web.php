@@ -1,19 +1,23 @@
 <?php
 
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\HomestayController as AdminHomestayController;
 use App\Http\Controllers\Admin\KategoriHomestayController as AdminKategoriHomestayController;
-use App\Http\Controllers\Admin\SouvenirController as AdminSouvenirController;
-use App\Http\Controllers\Admin\ReservasiController as AdminReservasiController;
-use App\Http\Controllers\Admin\PembayaranController as AdminPembayaranController;
 use App\Http\Controllers\Admin\LaporanController as AdminLaporanController;
-
+use App\Http\Controllers\Admin\PembayaranController as AdminPembayaranController;
+use App\Http\Controllers\Admin\ReservasiController as AdminReservasiController;
+use App\Http\Controllers\Admin\SouvenirController as AdminSouvenirController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Pelanggan\HomestayController as PelangganHomestayController;
-use App\Http\Controllers\Pelanggan\SouvenirController as PelangganSouvenirController;
-use App\Http\Controllers\Pelanggan\ReservasiController as PelangganReservasiController;
 use App\Http\Controllers\Pelanggan\KeranjangController as PelangganKeranjangController;
+use App\Http\Controllers\Pelanggan\ReservasiController as PelangganReservasiController;
+use App\Http\Controllers\Pelanggan\SouvenirController as PelangganSouvenirController;
+use App\Http\Controllers\ProfileController;
+use App\Models\Homestay;
+use App\Models\Souvenir;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Schema;
 
 // Redirect Halaman Utama berdasarkan status login
 Route::get('/', function () {
@@ -22,6 +26,7 @@ Route::get('/', function () {
             ? redirect()->route('admin.dashboard')
             : redirect()->route('dashboard');
     }
+
     return redirect()->route('login');
 });
 
@@ -40,7 +45,31 @@ Route::middleware('auth')->group(function () {
     // Halaman khusus Admin
     Route::middleware('role:admin')->group(function () {
         Route::get('/admin/dashboard', function () {
-            return view('admin.dashboard');
+            $totalHomestay = Homestay::count();
+            $homestayBaruBulanIni = Homestay::whereMonth('created_at', now()->month)
+                ->whereYear('created_at', now()->year)
+                ->count();
+            $totalSouvenir = Souvenir::count();
+            $souvenirTersedia = Souvenir::where('status', 'Tersedia')->count();
+            $totalReservasi = Schema::hasTable('pemesanans')
+                ? DB::table('pemesanans')->where('jenis_pemesanan', 'homestay')->count()
+                : 0;
+            $totalUser = User::count();
+            $userBaruBulanIni = User::whereMonth('created_at', now()->month)
+                ->whereYear('created_at', now()->year)
+                ->count();
+            $recentUsers = User::latest()->take(3)->get();
+
+            return view('admin.dashboard', compact(
+                'totalHomestay',
+                'homestayBaruBulanIni',
+                'totalSouvenir',
+                'souvenirTersedia',
+                'totalReservasi',
+                'totalUser',
+                'userBaruBulanIni',
+                'recentUsers',
+            ));
         })->name('admin.dashboard');
 
         // Scaffolding Rute Modul PBL Admin

@@ -12,12 +12,12 @@ class RoleMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param  Closure(Request): (Response)  $next
      */
     public function handle(Request $request, Closure $next, string $role): Response
     {
         // 1. Cek apakah user sudah login
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
         }
 
@@ -29,7 +29,7 @@ class RoleMiddleware
             if ($user->role === 'admin') {
                 return redirect('/admin/dashboard')->with('error', 'Anda tidak memiliki hak akses ke halaman tersebut.');
             }
-            
+
             return redirect('/dashboard')->with('error', 'Anda tidak memiliki hak akses ke halaman tersebut.');
         }
 
