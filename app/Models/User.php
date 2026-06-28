@@ -62,4 +62,12 @@ class User extends Authenticatable
     {
         return $this->hasOne(Keranjang::class, 'user_id', 'user_id');
     }
+
+    /**
+     * Hubungan ke model Pemesanan (User hasMany Orders).
+     */
+    public function pemesanans()
+    {
+        return $this->hasMany(Pemesanan::class, 'user_id', 'user_id');
+    }
 }
