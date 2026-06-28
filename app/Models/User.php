@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['user_id', 'nama', 'email', 'password', 'no_hp', 'alamat', 'role'])]
+#[Fillable(['user_id', 'nama', 'email', 'password', 'no_hp', 'alamat', 'role', 'foto_profil'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -51,5 +51,13 @@ class User extends Authenticatable
                 }
             }
         });
+    }
+
+    /**
+     * Hubungan ke model Keranjang (User hasOne Cart).
+     */
+    public function keranjang()
+    {
+        return $this->hasOne(Keranjang::class, 'user_id', 'user_id');
     }
 }

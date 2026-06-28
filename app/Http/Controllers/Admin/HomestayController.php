@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Homestay;
+use App\Models\KategoriHomestay;
 use Illuminate\Http\Request;
 
 class HomestayController extends Controller
@@ -13,7 +14,7 @@ class HomestayController extends Controller
      */
     public function index()
     {
-        $homestays = Homestay::latest()->get();
+        $homestays = Homestay::with('kategori')->latest()->get();
         return view('admin.homestay.index', compact('homestays'));
     }
 
@@ -22,7 +23,8 @@ class HomestayController extends Controller
      */
     public function create()
     {
-        return view('admin.homestay.tambah');
+        $categories = KategoriHomestay::all();
+        return view('admin.homestay.tambah', compact('categories'));
     }
 
     /**
@@ -31,6 +33,7 @@ class HomestayController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'kategori_id' => 'nullable|exists:kategori_homestays,kategori_id',
             'nama_homestay' => 'required|string|max:255',
             'harga_permalam' => 'required|numeric|min:0',
             'kapasitas' => 'required|integer|min:1',
@@ -39,7 +42,7 @@ class HomestayController extends Controller
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $data = $request->only(['nama_homestay', 'harga_permalam', 'kapasitas', 'status', 'detail']);
+        $data = $request->only(['kategori_id', 'nama_homestay', 'harga_permalam', 'kapasitas', 'status', 'detail']);
 
         if ($request->hasFile('foto')) {
             $file = $request->file('foto');
@@ -59,7 +62,8 @@ class HomestayController extends Controller
     public function edit($homestay_id)
     {
         $homestay = Homestay::findOrFail($homestay_id);
-        return view('admin.homestay.edit', compact('homestay'));
+        $categories = KategoriHomestay::all();
+        return view('admin.homestay.edit', compact('homestay', 'categories'));
     }
 
     /**
@@ -70,6 +74,7 @@ class HomestayController extends Controller
         $homestay = Homestay::findOrFail($homestay_id);
 
         $request->validate([
+            'kategori_id' => 'nullable|exists:kategori_homestays,kategori_id',
             'nama_homestay' => 'required|string|max:255',
             'harga_permalam' => 'required|numeric|min:0',
             'kapasitas' => 'required|integer|min:1',
@@ -78,6 +83,7 @@ class HomestayController extends Controller
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
+        $homestay->kategori_id = $request->kategori_id;
         $homestay->nama_homestay = $request->nama_homestay;
         $homestay->harga_permalam = $request->harga_permalam;
         $homestay->kapasitas = $request->kapasitas;
