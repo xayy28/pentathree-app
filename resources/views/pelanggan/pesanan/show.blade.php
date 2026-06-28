@@ -40,7 +40,11 @@
                             <div class="flex-1 min-w-0">
                                 <h3 class="font-semibold text-[#2C3E35] truncate">{{ $detail->nama_item }}</h3>
                                 <p class="text-xs text-[#8A9C91] mt-1">
-                                    {{ $detail->jumlah }} x Rp {{ number_format($detail->harga, 0, ',', '.') }}
+                                    @if ($detail->homestay_id)
+                                        {{ $detail->jumlah_malam }} malam · {{ $detail->check_in->format('d M Y') }} - {{ $detail->check_out->format('d M Y') }}
+                                    @else
+                                        {{ $detail->jumlah }} x Rp {{ number_format($detail->harga, 0, ',', '.') }}
+                                    @endif
                                 </p>
                             </div>
                             <div class="text-right font-semibold text-[#2B4C3F]">

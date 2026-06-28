@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\PembayaranController as AdminPembayaranController
 use App\Http\Controllers\Admin\ReservasiController as AdminReservasiController;
 use App\Http\Controllers\Admin\SouvenirController as AdminSouvenirController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Pelanggan\HomestayBookingController as PelangganHomestayBookingController;
 use App\Http\Controllers\Pelanggan\HomestayController as PelangganHomestayController;
 use App\Http\Controllers\Pelanggan\KeranjangController as PelangganKeranjangController;
 use App\Http\Controllers\Pelanggan\PembayaranController as PelangganPembayaranController;
@@ -117,6 +118,8 @@ Route::middleware('auth')->group(function () {
 
         // Rute Modul PBL untuk User
         Route::get('/homestay', [PelangganHomestayController::class, 'index'])->name('user.homestay');
+        Route::get('/homestay/{homestay_id}/booking', [PelangganHomestayBookingController::class, 'create'])->name('user.homestay.booking.create');
+        Route::post('/homestay/{homestay_id}/booking', [PelangganHomestayBookingController::class, 'store'])->name('user.homestay.booking.store');
         Route::get('/souvenir', [PelangganSouvenirController::class, 'index'])->name('user.souvenir');
         Route::get('/reservasi', [PelangganReservasiController::class, 'index'])->name('user.reservasi');
         Route::get('/pesanan', [PelangganPemesananController::class, 'index'])->name('user.pesanan.index');
