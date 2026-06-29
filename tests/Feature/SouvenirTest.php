@@ -76,6 +76,22 @@ test('admin can create a souvenir with updated_by set automatically', function (
     ]);
 });
 
+test('admin cannot create souvenir with invalid status', function () {
+    $admin = User::where('role', 'admin')->first();
+
+    $this->actingAs($admin)->post(route('admin.souvenir.store'), [
+        'nama_souvenir' => 'Souvenir Invalid Status',
+        'harga' => 25000,
+        'stok' => 100,
+        'status' => 'Preorder',
+        'detail' => 'Invalid status sample',
+    ])->assertSessionHasErrors('status');
+
+    $this->assertDatabaseMissing('souvenirs', [
+        'nama_souvenir' => 'Souvenir Invalid Status',
+    ]);
+});
+
 test('admin can update a souvenir with updated_by updated automatically', function () {
     $admin = User::where('role', 'admin')->first();
     $souvenir = Souvenir::first();

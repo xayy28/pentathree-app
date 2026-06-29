@@ -110,7 +110,7 @@ class KeranjangController extends Controller
 
         return redirect()
             ->route('user.pesanan.show', $pemesanan->pemesanan_id)
-            ->with('success', 'Pemesanan berhasil dibuat. Silakan lanjutkan pembayaran pada sprint berikutnya.');
+            ->with('success', 'Pemesanan berhasil dibuat. Silakan lanjutkan pembayaran.');
     }
 
     /**
@@ -121,6 +121,7 @@ class KeranjangController extends Controller
         $request->validate([
             'souvenir_id' => 'required|exists:souvenirs,souvenir_id',
             'quantity' => 'required|integer|min:1',
+            'redirect_to' => 'nullable|in:cart,checkout',
         ]);
 
         $souvenir = Souvenir::findOrFail($request->souvenir_id);
@@ -157,6 +158,10 @@ class KeranjangController extends Controller
                 'souvenir_id' => $souvenir->souvenir_id,
                 'quantity' => $quantityToAdd,
             ]);
+        }
+
+        if ($request->input('redirect_to') === 'checkout') {
+            return redirect()->route('checkout.index')->with('success', 'Souvenir berhasil ditambahkan ke keranjang.');
         }
 
         return redirect()->back()->with('success', 'Souvenir berhasil ditambahkan ke keranjang.');

@@ -41,7 +41,7 @@ class SouvenirController extends Controller
             'nama_souvenir' => 'required|string|max:255',
             'harga' => 'required|numeric|min:0',
             'stok' => 'required|integer|min:0',
-            'status' => 'required|string|max:50',
+            'status' => 'required|in:Tersedia,Habis',
             'detail' => 'nullable|string',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
@@ -82,7 +82,7 @@ class SouvenirController extends Controller
             'nama_souvenir' => 'required|string|max:255',
             'harga' => 'required|numeric|min:0',
             'stok' => 'required|integer|min:0',
-            'status' => 'required|string|max:50',
+            'status' => 'required|in:Tersedia,Habis',
             'detail' => 'nullable|string',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);

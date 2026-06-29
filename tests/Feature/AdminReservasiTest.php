@@ -114,6 +114,17 @@ test('admin can filter reservations by status', function () {
         ->assertDontSee($waitingReservation->kode_pemesanan);
 });
 
+test('admin can filter reservations by payment workflow statuses', function () {
+    $waitingVerification = createHomestayReservationForAdminTest($this->user, $this->homestay, Pemesanan::STATUS_MENUNGGU_VERIFIKASI);
+    $processedReservation = createHomestayReservationForAdminTest($this->user, $this->homestay, Pemesanan::STATUS_DIPROSES);
+
+    $this->actingAs($this->admin)
+        ->get(route('admin.reservasi', ['status' => Pemesanan::STATUS_MENUNGGU_VERIFIKASI]))
+        ->assertStatus(200)
+        ->assertSee($waitingVerification->kode_pemesanan)
+        ->assertDontSee($processedReservation->kode_pemesanan);
+});
+
 test('admin can update reservation status', function () {
     $reservasi = createHomestayReservationForAdminTest($this->user, $this->homestay);
 

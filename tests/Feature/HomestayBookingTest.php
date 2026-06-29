@@ -34,6 +34,16 @@ test('user can open homestay booking form', function () {
         ->assertSee($this->homestay->nama_homestay);
 });
 
+test('legacy reservation routes redirect to active order and booking flows', function () {
+    $this->actingAs($this->user)
+        ->get(route('user.reservasi'))
+        ->assertRedirect(route('user.pesanan.index'));
+
+    $this->actingAs($this->user)
+        ->get(route('user.reservasi.create', $this->homestay->homestay_id))
+        ->assertRedirect(route('user.homestay.booking.create', $this->homestay->homestay_id));
+});
+
 test('user can create homestay booking as pemesanan', function () {
     $checkIn = now()->addDay()->toDateString();
     $checkOut = now()->addDays(3)->toDateString();

@@ -49,7 +49,7 @@ class HomestayController extends Controller
             'nama_homestay' => 'required|string|max:255',
             'harga_permalam' => 'required|numeric|min:0',
             'kapasitas' => 'required|integer|min:1',
-            'status' => 'required|string|max:50',
+            'status' => 'required|in:Tersedia,Tidak Tersedia',
             'detail' => 'nullable|string',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
@@ -91,7 +91,7 @@ class HomestayController extends Controller
             'nama_homestay' => 'required|string|max:255',
             'harga_permalam' => 'required|numeric|min:0',
             'kapasitas' => 'required|integer|min:1',
-            'status' => 'required|string|max:50',
+            'status' => 'required|in:Tersedia,Tidak Tersedia',
             'detail' => 'nullable|string',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);

@@ -16,61 +16,61 @@
                     </h2>
                 </div>
 
-                <!-- Form Filter Tampilan Statis Sesuai Mockup -->
-                <div
-                    class="max-w-4xl mx-auto bg-white rounded-3xl sm:rounded-full border border-gray-200/80 shadow-md p-2 sm:p-3 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 sm:gap-2">
-                    <!-- Lokasi (Statis) -->
-                    <div class="flex-1 px-6 py-2 border-b sm:border-b-0 sm:border-r border-gray-100 text-left space-y-0.5">
-                        <span class="block text-[9px] font-bold uppercase tracking-widest text-[#8A9C91]">
-                            LOKASI
-                        </span>
-                        <span class="block text-sm font-medium text-[#1E362C] truncate">
-                            Lembah Harau, Payakumbuh
-                        </span>
-                    </div>
-
-                    <!-- Tanggal Check-in & Check-out -->
-                    <div
-                        class="flex-1 px-6 py-2 border-b sm:border-b-0 sm:border-r border-gray-100 text-left space-y-0.5 cursor-pointer hover:opacity-80 transition-opacity">
-                        <span class="block text-[9px] font-bold uppercase tracking-widest text-[#8A9C91]">
-                            CHECK-IN / OUT
-                        </span>
-                        <span class="block text-sm font-medium text-[#1E362C] truncate">
-                            Pilih Tanggal
-                        </span>
-                    </div>
-
-                    <!-- Jumlah Tamu (Interaktif) -->
-                    <div class="flex-1 px-6 py-2 text-left space-y-0.5 relative group hover:opacity-80 transition-opacity">
-                        <span class="block text-[9px] font-bold uppercase tracking-widest text-[#8A9C91]">
-                            TAMU
-                        </span>
-                        <span id="guest-count-text" class="block text-sm font-medium text-[#1E362C] truncate">
-                            Pilih Jumlah Tamu
-                        </span>
-                        <!-- Hidden Select Element overlaying the visual box -->
-                        <select id="guest-count-select"
-                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer bg-white text-[#1E362C]">
-                            <option value="" disabled selected hidden>Pilih Jumlah Tamu</option>
-                            <option value="1">1 Orang</option>
-                            <option value="2">2 Orang</option>
-                            <option value="3">3 Orang</option>
-                            <option value="4">4 Orang</option>
-                            <option value="5">5+ Orang</option>
+                <form action="{{ route('user.homestay') }}" method="GET"
+                    class="max-w-4xl mx-auto bg-white rounded-3xl sm:rounded-full border border-gray-200/80 shadow-md p-2 sm:p-3 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+                    <div class="flex-1 px-5 py-2 border-b sm:border-b-0 sm:border-r border-gray-100 text-left space-y-0.5">
+                        <span class="block text-[9px] font-bold uppercase tracking-widest text-[#8A9C91]">KATEGORI</span>
+                        <select name="kategori"
+                            class="w-full bg-transparent text-sm font-medium text-[#1E362C] border-0 p-0 focus:ring-0">
+                            <option value="">Semua kategori</option>
+                            @foreach ($categories as $category)
+                                <option value="{{ $category->kategori_id }}" @selected((string) $kategori === (string) $category->kategori_id)>
+                                    {{ $category->nama_kategori }}
+                                </option>
+                            @endforeach
                         </select>
                     </div>
 
-                    <!-- CARI Button -->
-                    <button
-                        class="bg-[#1E362C] hover:bg-[#152720] text-white font-semibold rounded-2xl sm:rounded-full px-8 py-3.5 flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer">
+                    <div class="flex-1 px-5 py-2 border-b sm:border-b-0 sm:border-r border-gray-100 text-left space-y-0.5">
+                        <span class="block text-[9px] font-bold uppercase tracking-widest text-[#8A9C91]">STATUS</span>
+                        <select name="status"
+                            class="w-full bg-transparent text-sm font-medium text-[#1E362C] border-0 p-0 focus:ring-0">
+                            <option value="">Semua status</option>
+                            @foreach ($statuses as $statusOption)
+                                <option value="{{ $statusOption }}" @selected($status === $statusOption)>{{ $statusOption }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="flex-1 px-5 py-2 text-left space-y-0.5">
+                        <span class="block text-[9px] font-bold uppercase tracking-widest text-[#8A9C91]">TAMU</span>
+                        <select name="tamu"
+                            class="w-full bg-transparent text-sm font-medium text-[#1E362C] border-0 p-0 focus:ring-0">
+                            <option value="">Semua kapasitas</option>
+                            @foreach ([1, 2, 3, 4, 5] as $guestCount)
+                                <option value="{{ $guestCount }}" @selected((string) $tamu === (string) $guestCount)>
+                                    {{ $guestCount === 5 ? '5+ Orang' : $guestCount . ' Orang' }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="flex gap-2">
+                        <button type="submit"
+                            class="bg-[#1E362C] hover:bg-[#152720] text-white font-semibold rounded-2xl sm:rounded-full px-6 py-3 flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                             xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
-                        <span class="text-xs uppercase tracking-widest">CARI</span>
-                    </button>
-                </div>
+                            <span class="text-xs uppercase tracking-widest">Filter</span>
+                        </button>
+                        <a href="{{ route('user.homestay') }}"
+                            class="bg-[#FAF9F6] hover:bg-[#F2F0EA] text-[#5C6E65] font-semibold rounded-2xl sm:rounded-full px-5 py-3 flex items-center justify-center text-xs uppercase tracking-widest border border-gray-200 transition-all">
+                            Reset
+                        </a>
+                    </div>
+                </form>
             </div>
 
             <!-- Main Catalog Area (Sidebar + Rooms Grid) -->
@@ -84,9 +84,8 @@
                     </h3>
                     <div class="flex flex-row md:flex-col gap-3 overflow-x-auto pb-3 md:pb-0 -mx-4 px-4 md:mx-0 md:px-0 scrollbar-none"
                         id="category-filters">
-                        <!-- All Rooms (Active by default) -->
-                        <button data-filter="all"
-                            class="flex items-center justify-center md:justify-start gap-2 md:gap-4 w-auto md:w-full px-4 md:px-5 py-2.5 md:py-4 rounded-xl md:rounded-2xl border border-[#1E362C] transition-all text-center md:text-left font-semibold shadow-sm bg-[#1E362C] text-white active-filter-btn whitespace-nowrap cursor-pointer hover:bg-[#152720] hover:text-white">
+                        <a href="{{ route('user.homestay', array_filter(['status' => $status, 'tamu' => $tamu], fn ($value) => filled($value))) }}"
+                            class="flex items-center justify-center md:justify-start gap-2 md:gap-4 w-auto md:w-full px-4 md:px-5 py-2.5 md:py-4 rounded-xl md:rounded-2xl border transition-all text-center md:text-left whitespace-nowrap {{ blank($kategori) ? 'border-[#1E362C] font-semibold shadow-sm bg-[#1E362C] text-white hover:bg-[#152720] hover:text-white' : 'border-gray-200 font-medium bg-white text-[#5C6E65] hover:text-[#1E362C] hover:bg-[#EAF2EE] hover:border-[#B8DEC8] hover:shadow-sm' }}">
                             <svg class="w-4 h-4 md:w-5 md:h-5 flex-shrink-0" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -94,7 +93,7 @@
                                 </path>
                             </svg>
                             <span>All Rooms</span>
-                        </button>
+                        </a>
 
                         @foreach ($categories as $category)
                             @php
@@ -108,15 +107,15 @@
                                     $iconPath = 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z';
                                 }
                             @endphp
-                            <button data-filter="{{ $category->kategori_id }}"
-                                class="flex items-center justify-center md:justify-start gap-2 md:gap-4 w-auto md:w-full px-4 md:px-5 py-2.5 md:py-4 rounded-xl md:rounded-2xl border border-gray-200 transition-all text-center md:text-left font-medium bg-white text-[#5C6E65] hover:text-[#1E362C] hover:bg-[#EAF2EE] hover:border-[#B8DEC8] hover:shadow-sm whitespace-nowrap cursor-pointer">
+                            <a href="{{ route('user.homestay', array_filter(['kategori' => $category->kategori_id, 'status' => $status, 'tamu' => $tamu], fn ($value) => filled($value))) }}"
+                                class="flex items-center justify-center md:justify-start gap-2 md:gap-4 w-auto md:w-full px-4 md:px-5 py-2.5 md:py-4 rounded-xl md:rounded-2xl border transition-all text-center md:text-left whitespace-nowrap {{ (string) $kategori === (string) $category->kategori_id ? 'border-[#1E362C] font-semibold shadow-sm bg-[#1E362C] text-white hover:bg-[#152720] hover:text-white' : 'border-gray-200 font-medium bg-white text-[#5C6E65] hover:text-[#1E362C] hover:bg-[#EAF2EE] hover:border-[#B8DEC8] hover:shadow-sm' }}">
                                 <svg class="w-4 h-4 md:w-5 md:h-5 flex-shrink-0" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="{{ $iconPath }}"></path>
                                 </svg>
                                 <span>{{ $category->nama_kategori }}</span>
-                            </button>
+                            </a>
                         @endforeach
                     </div>
                 </div>
@@ -228,76 +227,5 @@
                 </div>
             </div>
         </div>
-
-        <!-- Javascript untuk Filtering Client-side yang Halus -->
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const filters = document.querySelectorAll('#category-filters button');
-                const cards = document.querySelectorAll('.homestay-card');
-                const label = document.getElementById('room-count-label');
-
-                const guestSelect = document.getElementById('guest-count-select');
-                const guestText = document.getElementById('guest-count-text');
-
-                let activeCategory = 'all';
-                let activeGuests = 0;
-
-                function applyFilters() {
-                    let visibleCount = 0;
-                    cards.forEach(card => {
-                        const cardCategory = card.getAttribute('data-category');
-                        const cardCapacity = parseInt(card.getAttribute('data-capacity') || '0', 10);
-
-                        const matchesCategory = (activeCategory === 'all' || cardCategory === activeCategory);
-                        const matchesGuests = (cardCapacity >= activeGuests);
-
-                        if (matchesCategory && matchesGuests) {
-                            card.style.display = 'flex';
-                            visibleCount++;
-                        } else {
-                            card.style.display = 'none';
-                        }
-                    });
-
-                    if (label) {
-                        label.textContent = `Menampilkan ${visibleCount} Kamar yang Tersedia`;
-                    }
-                }
-
-                if (guestSelect && guestText) {
-                    guestSelect.addEventListener('change', function() {
-                        guestText.textContent = this.options[this.selectedIndex].text;
-                        guestText.classList.remove('text-[#1E362C]');
-                        guestText.classList.add('text-[#1E362C]', 'font-bold');
-
-                        activeGuests = parseInt(this.value || '0', 10);
-                        applyFilters();
-                    });
-                }
-
-                filters.forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        filters.forEach(f => {
-                            f.classList.remove('bg-[#1E362C]', 'border-[#1E362C]', 'text-white',
-                                'font-semibold', 'shadow-sm', 'active-filter-btn',
-                                'hover:bg-[#152720]', 'hover:text-white');
-                            f.classList.add('bg-white', 'border-gray-200', 'text-[#5C6E65]',
-                                'font-medium', 'hover:text-[#1E362C]', 'hover:bg-[#EAF2EE]',
-                                'hover:border-[#B8DEC8]', 'hover:shadow-sm');
-                        });
-
-                        this.classList.remove('bg-white', 'border-gray-200', 'text-[#5C6E65]',
-                            'font-medium', 'hover:text-[#1E362C]', 'hover:bg-[#EAF2EE]',
-                            'hover:border-[#B8DEC8]', 'hover:shadow-sm');
-                        this.classList.add('bg-[#1E362C]', 'border-[#1E362C]', 'text-white',
-                            'font-semibold', 'shadow-sm', 'active-filter-btn', 'hover:bg-[#152720]',
-                            'hover:text-white');
-
-                        activeCategory = this.getAttribute('data-filter');
-                        applyFilters();
-                    });
-                });
-            });
-        </script>
     </div>
 @endsection

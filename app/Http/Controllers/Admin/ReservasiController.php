@@ -16,6 +16,8 @@ class ReservasiController extends Controller
         $status = $request->query('status');
         $statuses = [
             Pemesanan::STATUS_MENUNGGU_PEMBAYARAN,
+            Pemesanan::STATUS_MENUNGGU_VERIFIKASI,
+            Pemesanan::STATUS_DIPROSES,
             Pemesanan::STATUS_DIKONFIRMASI,
             Pemesanan::STATUS_DIBATALKAN,
             Pemesanan::STATUS_SELESAI,

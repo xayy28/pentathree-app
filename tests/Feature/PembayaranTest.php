@@ -158,6 +158,36 @@ test('admin payment page only shows souvenir payments', function () {
         ->assertDontSee($homestayPemesanan->kode_pemesanan);
 });
 
+test('admin cannot access homestay payments from souvenir payment module', function () {
+    $homestay = Homestay::where('status', 'Tersedia')->first();
+    $homestayPemesanan = createHomestayPemesananForPaymentTest($this->user, $homestay);
+
+    $pembayaran = Pembayaran::create([
+        'pemesanan_id' => $homestayPemesanan->pemesanan_id,
+        'metode_pembayaran' => 'transfer_bank',
+        'jumlah_bayar' => $homestayPemesanan->total_harga,
+        'status_pembayaran' => Pembayaran::STATUS_MENUNGGU_VERIFIKASI,
+        'tanggal_pembayaran' => now(),
+    ]);
+
+    $this->actingAs($this->admin)
+        ->get(route('admin.pembayaran.show', $pembayaran->pembayaran_id))
+        ->assertNotFound();
+
+    $this->actingAs($this->admin)
+        ->post(route('admin.pembayaran.verify', $pembayaran->pembayaran_id))
+        ->assertNotFound();
+
+    $this->actingAs($this->admin)
+        ->post(route('admin.pembayaran.reject', $pembayaran->pembayaran_id), [
+            'catatan_admin' => 'Bukan pembayaran souvenir.',
+        ])
+        ->assertNotFound();
+
+    expect($pembayaran->fresh()->status_pembayaran)->toBe(Pembayaran::STATUS_MENUNGGU_VERIFIKASI);
+    expect($homestayPemesanan->fresh()->status_pemesanan)->toBe(Pemesanan::STATUS_MENUNGGU_PEMBAYARAN);
+});
+
 test('admin can filter payments by payment status', function () {
     $waitingPemesanan = createSouvenirPemesananForPaymentTest($this->user, $this->souvenir);
     $verifiedPemesanan = createSouvenirPemesananForPaymentTest($this->user, $this->souvenir);

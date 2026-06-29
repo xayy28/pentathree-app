@@ -90,6 +90,56 @@ test('admin can filter homestay listing by category and status', function () {
     $response->assertDontSee('Mahoni Room');
 });
 
+test('user can filter homestay catalog by category status and guest capacity', function () {
+    $otherCategory = KategoriHomestay::create([
+        'nama_kategori' => 'Budget Rooms',
+    ]);
+
+    Homestay::create([
+        'kategori_id' => $this->category->kategori_id,
+        'nama_homestay' => 'Cendana Suite',
+        'harga_permalam' => 1000000,
+        'kapasitas' => 4,
+        'status' => 'Tersedia',
+    ]);
+
+    Homestay::create([
+        'kategori_id' => $otherCategory->kategori_id,
+        'nama_homestay' => 'Mahoni Room',
+        'harga_permalam' => 500000,
+        'kapasitas' => 4,
+        'status' => 'Tersedia',
+    ]);
+
+    Homestay::create([
+        'kategori_id' => $this->category->kategori_id,
+        'nama_homestay' => 'Pinus Compact Room',
+        'harga_permalam' => 350000,
+        'kapasitas' => 2,
+        'status' => 'Tersedia',
+    ]);
+
+    Homestay::create([
+        'kategori_id' => $this->category->kategori_id,
+        'nama_homestay' => 'Akasia Maintenance Room',
+        'harga_permalam' => 400000,
+        'kapasitas' => 4,
+        'status' => 'Tidak Tersedia',
+    ]);
+
+    $response = $this->actingAs($this->user)->get(route('user.homestay', [
+        'kategori' => $this->category->kategori_id,
+        'status' => 'Tersedia',
+        'tamu' => 3,
+    ]));
+
+    $response->assertStatus(200);
+    $response->assertSee('Cendana Suite');
+    $response->assertDontSee('Mahoni Room');
+    $response->assertDontSee('Pinus Compact Room');
+    $response->assertDontSee('Akasia Maintenance Room');
+});
+
 test('admin can create a homestay with category', function () {
     $data = [
         'kategori_id' => $this->category->kategori_id,
@@ -107,6 +157,21 @@ test('admin can create a homestay with category', function () {
         'nama_homestay' => 'Jati Deluxe Room',
         'kategori_id' => $this->category->kategori_id,
         'harga_permalam' => 850000,
+    ]);
+});
+
+test('admin cannot create homestay with invalid status', function () {
+    $this->actingAs($this->admin)->post(route('admin.homestay.store'), [
+        'kategori_id' => $this->category->kategori_id,
+        'nama_homestay' => 'Invalid Status Room',
+        'harga_permalam' => 850000,
+        'kapasitas' => 3,
+        'status' => 'Maintenance',
+        'detail' => 'Invalid status sample',
+    ])->assertSessionHasErrors('status');
+
+    $this->assertDatabaseMissing('homestays', [
+        'nama_homestay' => 'Invalid Status Room',
     ]);
 });
 

@@ -163,29 +163,48 @@
 
             {{-- Tombol Aksi --}}
             @if($souvenir->status === 'Tersedia' && $souvenir->stok > 0)
-                <div class="flex flex-col sm:flex-row gap-3 pt-2">
-                    {{-- Tombol Pesan --}}
-                    <button
-                        onclick="pesanSekarang()"
-                        class="flex-1 py-4 bg-[#2B4C3F] hover:bg-[#1E362C] text-white text-sm font-semibold rounded-2xl transition-all shadow-sm flex items-center justify-center gap-2"
-                    >
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
-                        </svg>
-                        Pesan Sekarang
-                    </button>
-                    {{-- Tombol Tambah ke Keranjang --}}
-                    <button
-                        id="btn-keranjang"
-                        onclick="tambahKeKeranjang(this)"
-                        class="flex-1 py-4 border border-[#A7C5B5] text-[#2B4C3F] hover:bg-[#EAF2EE] text-sm font-semibold rounded-2xl transition-all flex items-center justify-center gap-2"
-                    >
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
-                        </svg>
-                        Tambahkan ke Keranjang
-                    </button>
-                </div>
+                <form action="{{ route('cart.add') }}" method="POST" class="space-y-4 pt-2">
+                    @csrf
+                    <input type="hidden" name="souvenir_id" value="{{ $souvenir->souvenir_id }}">
+
+                    <div class="flex items-center justify-between gap-4 rounded-2xl border border-[#E6E4DD] bg-[#FAF9F6] p-3">
+                        <span class="text-sm font-semibold text-[#5C6E65]">Kuantitas</span>
+                        <div class="flex items-center gap-3">
+                            <button type="button" onclick="decrementDetailQuantity()"
+                                class="w-9 h-9 flex items-center justify-center rounded-xl bg-white border border-[#E6E4DD] text-[#2C3E35] hover:bg-[#EAF2EE] hover:border-[#A7C5B5] transition-colors shadow-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/>
+                                </svg>
+                            </button>
+                            <input type="number" name="quantity" id="detail_quantity" value="1" min="1"
+                                max="{{ $souvenir->stok }}"
+                                class="w-14 text-center bg-white border border-[#E6E4DD] rounded-xl focus:ring-[#A7C5B5] focus:border-[#A7C5B5] text-[#2C3E35] font-bold py-2">
+                            <button type="button" onclick="incrementDetailQuantity()"
+                                class="w-9 h-9 flex items-center justify-center rounded-xl bg-white border border-[#E6E4DD] text-[#2C3E35] hover:bg-[#EAF2EE] hover:border-[#A7C5B5] transition-colors shadow-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <button type="submit" name="redirect_to" value="checkout"
+                            class="flex-1 py-4 bg-[#2B4C3F] hover:bg-[#1E362C] text-white text-sm font-semibold rounded-2xl transition-all shadow-sm flex items-center justify-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                            </svg>
+                            Pesan Sekarang
+                        </button>
+                        <button type="submit" name="redirect_to" value="cart"
+                            class="flex-1 py-4 border border-[#A7C5B5] text-[#2B4C3F] hover:bg-[#EAF2EE] text-sm font-semibold rounded-2xl transition-all flex items-center justify-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                            </svg>
+                            Tambahkan ke Keranjang
+                        </button>
+                    </div>
+                </form>
             @else
                 <div class="space-y-3 pt-2">
                     <button disabled class="w-full py-4 bg-[#F3F4F6] border border-[#E6E4DD] text-[#8A9C91] text-sm font-semibold rounded-2xl cursor-not-allowed flex items-center justify-center gap-2">
@@ -200,13 +219,6 @@
                 </div>
             @endif
 
-            {{-- Toast notifikasi keranjang --}}
-            <div id="toast-keranjang" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-[#2B4C3F] text-white text-sm font-semibold px-6 py-3.5 rounded-2xl shadow-lg flex items-center gap-2.5 transition-all">
-                <svg class="w-4 h-4 text-[#A7C5B5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
-                </svg>
-                Ditambahkan ke keranjang!
-            </div>
         </div>
     </div>
 

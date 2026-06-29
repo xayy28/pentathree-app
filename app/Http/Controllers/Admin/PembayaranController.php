@@ -36,8 +36,11 @@ class PembayaranController extends Controller
      */
     public function show($pembayaran_id)
     {
-        $pembayaran = Pembayaran::with('pemesanan.user', 'pemesanan.detailPemesanans.souvenir', 'verifier')
-            ->findOrFail($pembayaran_id);
+        $pembayaran = $this->findSouvenirPaymentOrFail($pembayaran_id, [
+            'pemesanan.user',
+            'pemesanan.detailPemesanans.souvenir',
+            'verifier',
+        ]);
 
         return view('admin.pembayaran.show', compact('pembayaran'));
     }
@@ -47,8 +50,9 @@ class PembayaranController extends Controller
      */
     public function verify($pembayaran_id)
     {
-        $pembayaran = Pembayaran::with('pemesanan.detailPemesanans.souvenir')
-            ->findOrFail($pembayaran_id);
+        $pembayaran = $this->findSouvenirPaymentOrFail($pembayaran_id, [
+            'pemesanan.detailPemesanans.souvenir',
+        ]);
 
         if ($pembayaran->status_pembayaran === Pembayaran::STATUS_TERVERIFIKASI) {
             return redirect()->route('admin.pembayaran.show', $pembayaran->pembayaran_id)
@@ -104,8 +108,9 @@ class PembayaranController extends Controller
             'catatan_admin' => 'nullable|string|max:1000',
         ]);
 
-        $pembayaran = Pembayaran::with('pemesanan')
-            ->findOrFail($pembayaran_id);
+        $pembayaran = $this->findSouvenirPaymentOrFail($pembayaran_id, [
+            'pemesanan',
+        ]);
 
         if ($pembayaran->status_pembayaran === Pembayaran::STATUS_TERVERIFIKASI) {
             return redirect()->route('admin.pembayaran.show', $pembayaran->pembayaran_id)
@@ -125,5 +130,12 @@ class PembayaranController extends Controller
 
         return redirect()->route('admin.pembayaran.show', $pembayaran->pembayaran_id)
             ->with('success', 'Pembayaran berhasil ditolak.');
+    }
+
+    private function findSouvenirPaymentOrFail($pembayaran_id, array $relations = []): Pembayaran
+    {
+        return Pembayaran::with($relations)
+            ->whereHas('pemesanan', fn ($query) => $query->where('jenis_pemesanan', Pemesanan::JENIS_SOUVENIR))
+            ->findOrFail($pembayaran_id);
     }
 }
