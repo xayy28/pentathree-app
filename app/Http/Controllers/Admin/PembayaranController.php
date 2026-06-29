@@ -15,12 +15,7 @@ class PembayaranController extends Controller
      */
     public function index(Request $request)
     {
-        $kategori = $request->query('kategori');
         $status = $request->query('status');
-        $kategoris = [
-            Pemesanan::JENIS_SOUVENIR => 'Souvenir',
-            Pemesanan::JENIS_HOMESTAY => 'Reservasi Homestay',
-        ];
         $statuses = [
             Pembayaran::STATUS_MENUNGGU_VERIFIKASI,
             Pembayaran::STATUS_TERVERIFIKASI,
@@ -28,12 +23,12 @@ class PembayaranController extends Controller
         ];
 
         $pembayarans = Pembayaran::with('pemesanan.user')
-            ->when(array_key_exists((string) $kategori, $kategoris), fn ($query) => $query->whereHas('pemesanan', fn ($pemesananQuery) => $pemesananQuery->where('jenis_pemesanan', $kategori)))
+            ->whereHas('pemesanan', fn ($query) => $query->where('jenis_pemesanan', Pemesanan::JENIS_SOUVENIR))
             ->when(in_array($status, $statuses, true), fn ($query) => $query->where('status_pembayaran', $status))
             ->latest()
             ->get();
 
-        return view('admin.pembayaran.index', compact('pembayarans', 'kategori', 'kategoris', 'status', 'statuses'));
+        return view('admin.pembayaran.index', compact('pembayarans', 'status', 'statuses'));
     }
 
     /**

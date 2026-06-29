@@ -130,7 +130,7 @@ test('admin can view payment list and detail', function () {
         ->assertSee($this->souvenir->nama_souvenir);
 });
 
-test('admin can filter payments by order category', function () {
+test('admin payment page only shows souvenir payments', function () {
     $homestay = Homestay::where('status', 'Tersedia')->first();
     $souvenirPemesanan = createSouvenirPemesananForPaymentTest($this->user, $this->souvenir);
     $homestayPemesanan = createHomestayPemesananForPaymentTest($this->user, $homestay);
@@ -152,16 +152,10 @@ test('admin can filter payments by order category', function () {
     ]);
 
     $this->actingAs($this->admin)
-        ->get(route('admin.pembayaran', ['kategori' => Pemesanan::JENIS_SOUVENIR]))
+        ->get(route('admin.pembayaran'))
         ->assertStatus(200)
         ->assertSee($souvenirPemesanan->kode_pemesanan)
         ->assertDontSee($homestayPemesanan->kode_pemesanan);
-
-    $this->actingAs($this->admin)
-        ->get(route('admin.pembayaran', ['kategori' => Pemesanan::JENIS_HOMESTAY]))
-        ->assertStatus(200)
-        ->assertSee($homestayPemesanan->kode_pemesanan)
-        ->assertDontSee($souvenirPemesanan->kode_pemesanan);
 });
 
 test('admin can filter payments by payment status', function () {
