@@ -7,6 +7,8 @@ use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Schema;
+use Spatie\Permission\Models\Role;
 
 class AuthController extends Controller
 {
@@ -71,6 +73,11 @@ class AuthController extends Controller
             'alamat' => $request->alamat,
             'role' => 'user', // otomatis sebagai user
         ]);
+
+        if (Schema::hasTable('roles')) {
+            Role::findOrCreate('user', 'web');
+            $user->assignRole('user');
+        }
 
         // Login otomatis setelah registrasi berhasil
         Auth::login($user);

@@ -7,6 +7,7 @@ use App\Models\KategoriHomestay;
 use App\Models\Souvenir;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,8 +16,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $adminRole = Role::findOrCreate('admin', 'web');
+        $userRole = Role::findOrCreate('user', 'web');
+
         // Seeding Akun Admin
-        User::create([
+        $admin = User::create([
             'nama' => 'Aura Administrator',
             'email' => 'admin@aura.com',
             'password' => 'admin123', // Otomatis di-hash oleh model User (casts hashed)
@@ -24,9 +28,10 @@ class DatabaseSeeder extends Seeder
             'alamat' => 'Kantor Pusat Aura Stay & Style, Bandung',
             'role' => 'admin',
         ]);
+        $admin->assignRole($adminRole);
 
         // Seeding Akun User Biasa
-        User::create([
+        $user = User::create([
             'nama' => 'Evelyn Thorne',
             'email' => 'user@aura.com',
             'password' => 'user123', // Otomatis di-hash oleh model User (casts hashed)
@@ -34,6 +39,7 @@ class DatabaseSeeder extends Seeder
             'alamat' => 'Jl. Kemuning No. 12, Jakarta Selatan',
             'role' => 'user',
         ]);
+        $user->assignRole($userRole);
 
         // Seeding Kategori Homestay
         $suites = KategoriHomestay::create([
