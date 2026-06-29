@@ -176,7 +176,7 @@
                                             <span class="text-base font-bold text-[#1E362C]">Rp {{ number_format($homestay->harga_permalam, 0, ',', '.') }}<span class="text-[10px] text-[#8A9C91] font-normal uppercase tracking-normal">/malam</span></span>
                                         </div>
                                         @if($homestay->status === 'Tersedia')
-                                            <a href="{{ route('user.reservasi', ['homestay_id' => $homestay->homestay_id]) }}" class="px-6 py-2.5 bg-[#1E362C] hover:bg-[#152720] text-white text-xs font-semibold rounded-xl transition-all shadow-sm cursor-pointer">
+                                            <a href="{{ route('user.reservasi.create', ['homestay_id' => $homestay->homestay_id]) }}" class="px-6 py-2.5 bg-[#1E362C] hover:bg-[#152720] text-white text-xs font-semibold rounded-xl transition-all shadow-sm cursor-pointer">
                                                 PESAN
                                             </a>
                                         @else

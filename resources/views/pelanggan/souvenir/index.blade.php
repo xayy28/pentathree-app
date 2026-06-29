@@ -149,23 +149,23 @@
 
                                 <!-- Price & Action -->
                                 <div class="p-6 pt-0">
-                                    <div class="flex items-center justify-between border-t border-[#F2F0EA] pt-4">
+                                    <div class="flex items-center justify-between border-t border-[#F2F0EA] pt-4 mb-4">
                                         <div>
-                                            <span
-                                                class="text-[9px] text-[#8A9C91] block uppercase tracking-wider">Harga</span>
-                                            <span class="text-base font-semibold text-[#2B4C3F]">Rp
-                                                {{ number_format($souvenir->harga, 0, ',', '.') }}</span>
+                                            <span class="text-[9px] text-[#8A9C91] block uppercase tracking-wider">Harga</span>
+                                            <span class="text-base font-semibold text-[#2B4C3F]">Rp {{ number_format($souvenir->harga, 0, ',', '.') }}</span>
                                         </div>
                                         <div class="text-right space-y-0.5">
-                                            <span class="text-[10px] text-[#8A9C91] block">Stok: {{ $souvenir->stok }}
-                                                pcs</span>
+                                            <span class="text-[10px] text-[#8A9C91] block">Stok: {{ $souvenir->stok }} pcs</span>
                                             <span class="text-[10px] text-[#5C6E65] font-medium block">
-                                                <span
-                                                    class="inline-block w-1.5 h-1.5 rounded-full bg-[#E9C46A] mr-1"></span>{{ $souvenir->jumlah_terjual }}
-                                                terjual
+                                                <span class="inline-block w-1.5 h-1.5 rounded-full bg-[#E9C46A] mr-1"></span>{{ $souvenir->jumlah_terjual }} terjual
                                             </span>
                                         </div>
                                     </div>
+                                    <a href="{{ route('user.souvenir.show', $souvenir->souvenir_id) }}"
+                                        class="w-full py-2.5 rounded-2xl border border-[#A7C5B5] text-[#2B4C3F] text-xs font-semibold tracking-wide bg-[#EAF2EE] hover:bg-[#2B4C3F] hover:text-white transition-all duration-200 flex items-center justify-center gap-2">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                        Lihat Detail
+                                    </a>
                                 </div>
                             </div>
                         @endforeach
