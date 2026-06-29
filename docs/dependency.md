@@ -14,8 +14,8 @@ Dependency digunakan untuk membantu proses pengembangan sistem agar lebih cepat,
 
 |  No | Package / Dependency      | Fungsi                                                   | Alasan Digunakan                                                           | Versi / Status      | Risiko                                       |
 | --: | ------------------------- | -------------------------------------------------------- | -------------------------------------------------------------------------- | ------------------- | -------------------------------------------- |
-|   1 | Laravel Breeze            | Autentikasi login, register, logout, dan dashboard dasar | Mempercepat pembuatan sistem autentikasi untuk admin dan customer          | Digunakan / Rencana | Perlu penyesuaian tampilan dan role redirect |
-|   2 | Spatie Laravel Permission | Mengelola role dan permission user                       | Membedakan akses antara admin dan customer                                 | Digunakan / Rencana | Role harus dikonfigurasi dengan benar        |
+|   1 | Laravel Breeze            | Autentikasi login, register, logout, dan dashboard dasar | Mempercepat pembuatan sistem autentikasi untuk admin dan customer          | Digunakan            | Scaffolding tidak dijalankan ulang agar tidak menimpa auth custom |
+|   2 | Spatie Laravel Permission | Mengelola role dan permission user                       | Membedakan akses antara admin dan customer                                 | Digunakan            | Role harus dikonfigurasi dan di-seed dengan benar |
 |   3 | Laravel DomPDF            | Generate PDF dari data Laravel                           | Dibutuhkan untuk invoice, laporan pemesanan, dan laporan penjualan         | Digunakan / Rencana | Generate PDF bisa berat jika data besar      |
 |   4 | Midtrans Payment Gateway  | Pembayaran digital QRIS dan Virtual Account              | Memudahkan pembayaran online untuk booking homestay dan pembelian souvenir | Rencana             | Membutuhkan API key dan pengujian sandbox    |
 |   5 | Intervention Image        | Resize, crop, dan optimasi gambar                        | Dibutuhkan untuk gambar homestay, kamar, souvenir, dan katalog             | Rencana             | Perlu validasi ukuran dan tipe file          |
@@ -56,6 +56,8 @@ Laravel Breeze diterapkan pada halaman:
 - Logout
 - Dashboard customer
 - Dashboard admin
+
+Catatan implementasi: package Laravel Breeze sudah terpasang sebagai dependency development. Alur auth project tetap memakai `AuthController`, form request, dan view custom agar field lokal seperti `nama`, `no_hp`, `alamat`, serta redirect role admin/customer tidak tertimpa scaffold bawaan.
 
 #### Cara Install
 
@@ -112,6 +114,8 @@ Spatie Laravel Permission diterapkan pada:
 - Verifikasi pembayaran
 - Generate laporan
 - Riwayat transaksi customer
+
+Pada kode saat ini, Spatie digunakan melalui trait `HasRoles` di model `User`, tabel `roles`, `permissions`, `model_has_roles`, `model_has_permissions`, dan `role_has_permissions`, serta proses assign role pada registrasi dan seeder. Kolom `users.role` tetap dipertahankan sebagai data legacy agar user lama tidak langsung rusak.
 
 #### Cara Install
 
