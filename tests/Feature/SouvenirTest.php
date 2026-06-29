@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\KeranjangItem;
 use App\Models\Souvenir;
 use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
@@ -183,6 +184,45 @@ test('user can filter souvenir catalog by status', function () {
     $response->assertStatus(200);
     $response->assertSee('Miniatur Rumah Gadang');
     $response->assertDontSee('Kaos Harau');
+});
+
+test('user can add souvenir to cart from detail page', function () {
+    $user = User::where('role', 'user')->first();
+    $souvenir = Souvenir::where('status', 'Tersedia')->where('stok', '>', 0)->first();
+
+    $this->actingAs($user)
+        ->get(route('user.souvenir.show', $souvenir->souvenir_id))
+        ->assertStatus(200)
+        ->assertSee('Tambahkan ke Keranjang')
+        ->assertSee('Pesan Sekarang');
+
+    $this->actingAs($user)->post(route('cart.add'), [
+        'souvenir_id' => $souvenir->souvenir_id,
+        'quantity' => 2,
+        'redirect_to' => 'cart',
+    ])->assertSessionHas('success');
+
+    $cartItem = KeranjangItem::whereHas('keranjang', fn ($query) => $query->where('user_id', $user->user_id))
+        ->where('souvenir_id', $souvenir->souvenir_id)
+        ->first();
+
+    expect($cartItem)->not->toBeNull();
+    expect($cartItem->quantity)->toBe(2);
+});
+
+test('user can order now from souvenir detail and go to checkout', function () {
+    $user = User::where('role', 'user')->first();
+    $souvenir = Souvenir::where('status', 'Tersedia')->where('stok', '>', 0)->first();
+
+    $this->actingAs($user)->post(route('cart.add'), [
+        'souvenir_id' => $souvenir->souvenir_id,
+        'quantity' => 1,
+        'redirect_to' => 'checkout',
+    ])->assertRedirect(route('checkout.index'));
+
+    expect(KeranjangItem::whereHas('keranjang', fn ($query) => $query->where('user_id', $user->user_id))
+        ->where('souvenir_id', $souvenir->souvenir_id)
+        ->exists())->toBeTrue();
 });
 
 test('souvenir updater relation returns admin name', function () {

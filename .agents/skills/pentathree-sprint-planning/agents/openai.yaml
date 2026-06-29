@@ -1,0 +1,4 @@
+interface:
+  display_name: "PentaThree Sprint Planning"
+  short_description: "Sprint roadmap for SIMHOSUV project"
+  default_prompt: "Use $pentathree-sprint-planning to plan the next sprint for this Laravel PBL project."
