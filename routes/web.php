@@ -84,7 +84,9 @@ Route::middleware('auth')->group(function () {
         // Rute Modul PBL untuk User
         Route::get('/homestay', [PelangganHomestayController::class, 'index'])->name('user.homestay');
         Route::get('/souvenir', [PelangganSouvenirController::class, 'index'])->name('user.souvenir');
+        Route::get('/souvenir/{souvenir_id}', [PelangganSouvenirController::class, 'show'])->name('user.souvenir.show');
         Route::get('/reservasi', [PelangganReservasiController::class, 'index'])->name('user.reservasi');
+        Route::get('/reservasi/{homestay_id}', [PelangganReservasiController::class, 'create'])->name('user.reservasi.create');
 
         // Rute Keranjang Belanja User
         Route::get('/cart', [PelangganKeranjangController::class, 'index'])->name('cart.index');

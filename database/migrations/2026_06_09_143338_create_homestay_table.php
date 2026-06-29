@@ -18,7 +18,7 @@ return new class extends Migration
             $table->decimal('harga_permalam', 10, 2);
             $table->integer('kapasitas');
             $table->string('status');
-            $table->string('detail')->nullable();
+            $table->text('detail')->nullable();
             $table->string('foto')->nullable();
             $table->timestamps();
         });
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('homestay');
+        Schema::dropIfExists('homestays');
     }
 };

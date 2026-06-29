@@ -23,4 +23,23 @@ class SouvenirController extends Controller
 
         return view('pelanggan.souvenir.index', compact('souvenirs', 'kategori'));
     }
+
+    /**
+     * Tampilkan halaman detail souvenir.
+     */
+    public function show($souvenir_id)
+    {
+        $souvenir = Souvenir::findOrFail($souvenir_id);
+
+        // Ambil souvenir lain sebagai rekomendasi (exclude yang sedang dilihat)
+        $rekomendasi = Souvenir::where('souvenir_id', '!=', $souvenir_id)
+            ->where('status', 'Tersedia')
+            ->inRandomOrder()
+            ->limit(3)
+            ->get();
+
+        return view('pelanggan.souvenir.show', compact('souvenir', 'rekomendasi'));
+    }
+
+
 }
