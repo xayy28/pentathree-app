@@ -56,7 +56,7 @@
                 </div>
                 <div class="text-3xl font-serif font-semibold text-[#2C3E35] mb-1">{{ $totalReservasi }}</div>
                 <p class="text-xs text-[#5C6E65] flex items-center gap-1">
-                    <span class="text-[#2B4C3F] font-bold">Aktif setelah Sprint 1</span> saat pemesanan tersedia
+                    <span class="text-[#2B4C3F] font-bold">{{ $reservasiAktif }} reservasi aktif</span> perlu dipantau
                 </p>
             </div>
 
@@ -73,6 +73,24 @@
                 <p class="text-xs text-[#5C6E65] flex items-center gap-1">
                     <span class="text-[#2B4C3F] font-bold">{{ $userBaruBulanIni }} user baru</span> bulan ini
                 </p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white rounded-2xl border border-[#E6E4DD] p-6 shadow-sm">
+                <span class="text-xs font-bold uppercase tracking-wider text-[#8A9C91]">Pendapatan Bulan Ini</span>
+                <div class="mt-3 text-3xl font-serif font-semibold text-[#2B4C3F]">
+                    Rp {{ number_format((float) $pendapatanBulanIni, 0, ',', '.') }}
+                </div>
+                <p class="text-xs text-[#5C6E65] mt-2">Dihitung dari pembayaran terverifikasi.</p>
+            </div>
+
+            <div class="bg-white rounded-2xl border border-[#E6E4DD] p-6 shadow-sm">
+                <span class="text-xs font-bold uppercase tracking-wider text-[#8A9C91]">Pembayaran Menunggu</span>
+                <div class="mt-3 text-3xl font-serif font-semibold text-[#2B4C3F]">
+                    {{ $pembayaranMenunggu }}
+                </div>
+                <p class="text-xs text-[#5C6E65] mt-2">Bukti pembayaran yang belum diverifikasi admin.</p>
             </div>
         </div>
 

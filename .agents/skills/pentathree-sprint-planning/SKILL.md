@@ -333,7 +333,7 @@ Done outputs:
 - Removed stale sprint/placeholder wording from checkout, reservation, and report pages.
 - Added feature test coverage for the stabilization fixes.
 
-### Sprint 7 - Reports - Next
+### Sprint 7 - Reports - Done
 
 Goal: create useful owner/admin reports.
 
@@ -352,7 +352,17 @@ Acceptance:
 - Report totals match verified payments/invoices.
 - Dashboard no longer uses dummy business numbers.
 
-### Sprint 8 - Midtrans Sandbox Integration
+Done outputs:
+
+- Added admin report queries for verified revenue.
+- Added souvenir sales report from verified souvenir payments.
+- Added homestay reservation status report.
+- Added date range filters.
+- Added latest verified payment table.
+- Updated admin dashboard with monthly verified revenue, pending payment count, and active reservation count.
+- Added report feature tests.
+
+### Sprint 8 - Midtrans Sandbox Integration - Next
 
 Goal: replace or complement manual payment with Midtrans Snap Sandbox after the internal payment flow is stable.
 
