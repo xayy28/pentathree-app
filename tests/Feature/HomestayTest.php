@@ -1,8 +1,8 @@
 <?php
 
-use App\Models\User;
-use App\Models\KategoriHomestay;
 use App\Models\Homestay;
+use App\Models\KategoriHomestay;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -57,6 +57,37 @@ test('admin can access homestay listing', function () {
     $response->assertStatus(200);
     $response->assertSee('Cendana Suite');
     $response->assertSee('Exclusive Cabins');
+});
+
+test('admin can filter homestay listing by category and status', function () {
+    $otherCategory = KategoriHomestay::create([
+        'nama_kategori' => 'Budget Rooms',
+    ]);
+
+    $availableHomestay = Homestay::create([
+        'kategori_id' => $this->category->kategori_id,
+        'nama_homestay' => 'Cendana Suite',
+        'harga_permalam' => 1000000,
+        'kapasitas' => 2,
+        'status' => 'Tersedia',
+    ]);
+
+    Homestay::create([
+        'kategori_id' => $otherCategory->kategori_id,
+        'nama_homestay' => 'Mahoni Room',
+        'harga_permalam' => 500000,
+        'kapasitas' => 2,
+        'status' => 'Tidak Tersedia',
+    ]);
+
+    $response = $this->actingAs($this->admin)->get(route('admin.homestay', [
+        'kategori' => $availableHomestay->kategori_id,
+        'status' => 'Tersedia',
+    ]));
+
+    $response->assertStatus(200);
+    $response->assertSee('Cendana Suite');
+    $response->assertDontSee('Mahoni Room');
 });
 
 test('admin can create a homestay with category', function () {

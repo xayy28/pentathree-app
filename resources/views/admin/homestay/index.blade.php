@@ -23,12 +23,44 @@
             </a>
         </div>
 
+        <form action="{{ route('admin.homestay') }}" method="GET" class="mb-6 p-4 bg-[#FAF9F6] border border-[#E6E4DD] rounded-2xl">
+            <div class="grid grid-cols-1 md:grid-cols-[1fr_1fr_auto_auto] gap-3">
+                <select name="kategori"
+                    class="w-full bg-white text-[#2C3E35] border border-[#E6E4DD] rounded-xl px-4 py-2.5 text-sm focus:border-[#2B4C3F] focus:outline-none">
+                    <option value="">Semua kategori</option>
+                    @foreach ($categories as $category)
+                        <option value="{{ $category->kategori_id }}" @selected((string) $kategori === (string) $category->kategori_id)>
+                            {{ $category->nama_kategori }}
+                        </option>
+                    @endforeach
+                </select>
+
+                <select name="status"
+                    class="w-full bg-white text-[#2C3E35] border border-[#E6E4DD] rounded-xl px-4 py-2.5 text-sm focus:border-[#2B4C3F] focus:outline-none">
+                    <option value="">Semua status</option>
+                    @foreach ($statuses as $statusOption)
+                        <option value="{{ $statusOption }}" @selected($status === $statusOption)>{{ $statusOption }}</option>
+                    @endforeach
+                </select>
+
+                <button type="submit"
+                    class="bg-[#2B4C3F] hover:bg-[#1E362C] text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-all">
+                    Filter
+                </button>
+
+                <a href="{{ route('admin.homestay') }}"
+                    class="bg-white hover:bg-[#F2F0EA] text-[#5C6E65] border border-[#E6E4DD] text-sm font-semibold px-5 py-2.5 rounded-xl transition-all text-center">
+                    Reset
+                </a>
+            </div>
+        </form>
+
         @if($homestays->isEmpty())
             <div class="p-8 sm:p-12 bg-[#FAF9F6] border border-dashed border-[#D5D3C7] rounded-2xl flex flex-col items-center justify-center text-center">
                 <span class="text-5xl mb-4">🏠</span>
                 <h3 class="text-lg font-semibold text-[#2C3E35] mb-1">Belum Ada Homestay</h3>
                 <p class="text-xs text-[#8A9C91] max-w-sm mb-6">
-                    Belum ada data homestay yang terdaftar di database. Silakan klik tombol di bawah untuk menambahkan.
+                    Belum ada data homestay yang sesuai dengan filter saat ini.
                 </p>
                 <a href="{{ route('admin.homestay.create') }}" class="px-4 py-2 bg-[#2B4C3F] hover:bg-[#1E362C] text-white text-xs font-semibold rounded-lg transition-colors">
                     Tambah Homestay Pertama

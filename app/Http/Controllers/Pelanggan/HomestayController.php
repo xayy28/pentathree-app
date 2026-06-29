@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Pelanggan;
 
 use App\Http\Controllers\Controller;
 use App\Models\Homestay;
-use Illuminate\Http\Request;
+use App\Models\KategoriHomestay;
 
 class HomestayController extends Controller
 {
@@ -14,7 +14,8 @@ class HomestayController extends Controller
     public function index()
     {
         $homestays = Homestay::with('kategori')->latest()->get();
-        $categories = \App\Models\KategoriHomestay::all();
+        $categories = KategoriHomestay::all();
+
         return view('pelanggan.homestay.index', compact('homestays', 'categories'));
     }
 }

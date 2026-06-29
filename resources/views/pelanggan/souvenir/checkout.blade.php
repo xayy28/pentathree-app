@@ -12,7 +12,7 @@
         </h2>
     </div>
 
-    <form action="#" method="POST" class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+    <form action="{{ route('checkout.store') }}" method="POST" class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
         @csrf
         
         <!-- Kolom Kiri: Alamat, Produk, Pengiriman, Pembayaran -->
@@ -33,8 +33,8 @@
                 
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <div class="text-[#2C3E35]">
-                        <p class="font-bold mb-1">{{ auth()->check() ? auth()->user()->nama : 'Pelanggan' }} <span class="font-normal text-[#8A9C91]">(+62) 812-3456-7890</span></p>
-                        <p class="text-sm text-[#5C6E65]">Jl. Merdeka No. 123, Kelurahan Maju, Kecamatan Jaya, Kota Contoh, Provinsi Demo, 12345</p>
+                        <p class="font-bold mb-1">{{ auth()->user()->nama }} <span class="font-normal text-[#8A9C91]">{{ auth()->user()->no_hp }}</span></p>
+                        <p class="text-sm text-[#5C6E65]">{{ auth()->user()->alamat }}</p>
                     </div>
                     <button type="button" class="text-sm text-[#2B4C3F] font-semibold hover:underline border border-[#2B4C3F] px-4 py-1.5 rounded-lg">Ubah</button>
                 </div>
@@ -205,7 +205,7 @@
             </div>
 
             <div class="pt-6">
-                <button type="button" onclick="alert('Ini adalah simulasi front-end Checkout.')" class="w-full bg-[#2B4C3F] hover:bg-[#1E362C] text-white text-sm font-semibold py-4 px-4 rounded-xl shadow-sm transition-all duration-300 flex items-center justify-center gap-2">
+                <button type="submit" class="w-full bg-[#2B4C3F] hover:bg-[#1E362C] text-white text-sm font-semibold py-4 px-4 rounded-xl shadow-sm transition-all duration-300 flex items-center justify-center gap-2">
                     Buat Pesanan
                 </button>
             </div>

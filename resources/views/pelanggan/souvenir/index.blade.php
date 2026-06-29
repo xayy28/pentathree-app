@@ -13,6 +13,45 @@
             <p class="text-sm text-[#5C6E65] max-w-2xl mx-auto leading-relaxed">
                 Bawa pulang buah tangan khas hasil karya seni pengrajin lokal terbaik di sekitar Harau.
             </p>
+
+            <form action="{{ route('user.souvenir') }}" method="GET"
+                class="max-w-4xl mx-auto bg-white rounded-3xl sm:rounded-full border border-[#E6E4DD] shadow-md p-2 sm:p-3 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+                <div class="flex-1 px-5 py-2 border-b sm:border-b-0 sm:border-r border-[#F2F0EA] text-left space-y-0.5">
+                    <span class="block text-[9px] font-bold uppercase tracking-widest text-[#8A9C91]">URUTKAN</span>
+                    <select name="kategori"
+                        class="w-full bg-transparent text-sm font-medium text-[#2B4C3F] border-0 p-0 focus:ring-0">
+                        <option value="" @selected($kategori !== 'terlaris')>Terbaru</option>
+                        <option value="terlaris" @selected($kategori === 'terlaris')>Terlaris</option>
+                    </select>
+                </div>
+
+                <div class="flex-1 px-5 py-2 text-left space-y-0.5">
+                    <span class="block text-[9px] font-bold uppercase tracking-widest text-[#8A9C91]">STATUS</span>
+                    <select name="status"
+                        class="w-full bg-transparent text-sm font-medium text-[#2B4C3F] border-0 p-0 focus:ring-0">
+                        <option value="">Semua status</option>
+                        @foreach ($statuses as $statusOption)
+                            <option value="{{ $statusOption }}" @selected($status === $statusOption)>{{ $statusOption }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="flex gap-2">
+                    <button type="submit"
+                        class="bg-[#2B4C3F] hover:bg-[#1E362C] text-white font-semibold rounded-2xl sm:rounded-full px-6 py-3 flex items-center justify-center gap-2 shadow-sm transition-all">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        <span class="text-xs uppercase tracking-widest">Filter</span>
+                    </button>
+                    <a href="{{ route('user.souvenir') }}"
+                        class="bg-[#FAF9F6] hover:bg-[#F2F0EA] text-[#5C6E65] font-semibold rounded-2xl sm:rounded-full px-5 py-3 flex items-center justify-center text-xs uppercase tracking-widest border border-[#E6E4DD] transition-all">
+                        Reset
+                    </a>
+                </div>
+            </form>
         </div>
 
         <!-- Main Catalog Area (Sidebar + Souvenir Grid) -->
@@ -27,7 +66,7 @@
                         Urutkan
                     </h3>
                     <div class="flex flex-col gap-3">
-                        <a href="{{ route('user.souvenir') }}"
+                        <a href="{{ route('user.souvenir', array_filter(['status' => $status])) }}"
                             class="flex items-center gap-4 w-full px-5 py-4 rounded-2xl border transition-all text-left font-medium shadow-sm {{ $kategori !== 'terlaris' ? 'bg-[#EAF2EE] border-[#A7C5B5] text-[#2B4C3F] font-semibold' : 'bg-white border-[#E6E4DD] text-[#5C6E65] hover:text-[#2B4C3F] hover:bg-[#FAF9F6] hover:shadow-sm' }}">
                             <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                 xmlns="http://www.w3.org/2000/svg">
@@ -36,7 +75,7 @@
                             </svg>
                             <span>Terbaru</span>
                         </a>
-                        <a href="{{ route('user.souvenir', ['kategori' => 'terlaris']) }}"
+                        <a href="{{ route('user.souvenir', array_filter(['kategori' => 'terlaris', 'status' => $status])) }}"
                             class="flex items-center gap-4 w-full px-5 py-4 rounded-2xl border transition-all text-left font-medium shadow-sm {{ $kategori === 'terlaris' ? 'bg-[#EAF2EE] border-[#A7C5B5] text-[#2B4C3F] font-semibold' : 'bg-white border-[#E6E4DD] text-[#5C6E65] hover:text-[#2B4C3F] hover:bg-[#FAF9F6] hover:shadow-sm' }}">
                             <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                 xmlns="http://www.w3.org/2000/svg">
