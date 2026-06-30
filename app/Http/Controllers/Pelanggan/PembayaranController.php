@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Pelanggan;
 use App\Http\Controllers\Controller;
 use App\Models\Pembayaran;
 use App\Models\Pemesanan;
+use App\Services\ImageUploadService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -31,7 +32,7 @@ class PembayaranController extends Controller
     /**
      * Simpan pembayaran pelanggan.
      */
-    public function store(Request $request, $pemesanan_id)
+    public function store(Request $request, $pemesanan_id, ImageUploadService $imageUploadService)
     {
         $pemesanan = Pemesanan::with('pembayaran')
             ->where('user_id', auth()->user()->user_id)
@@ -59,7 +60,13 @@ class PembayaranController extends Controller
             Storage::disk('public')->delete($pemesanan->pembayaran->bukti_pembayaran);
         }
 
-        $validated['bukti_pembayaran'] = $request->file('bukti_pembayaran')->store('uploads/bukti_pembayaran', 'public');
+        $validated['bukti_pembayaran'] = $imageUploadService->storeDisk(
+            $request->file('bukti_pembayaran'),
+            'uploads/bukti_pembayaran',
+            maxWidth: 1800,
+            maxHeight: 1800,
+            quality: 90
+        );
         $validated['tanggal_pembayaran'] = now();
         $validated['status_pembayaran'] = Pembayaran::STATUS_MENUNGGU_VERIFIKASI;
         $validated['catatan_admin'] = null;

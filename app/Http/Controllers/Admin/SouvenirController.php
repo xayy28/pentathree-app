@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Souvenir;
+use App\Services\ImageUploadService;
 use Illuminate\Http\Request;
 
 class SouvenirController extends Controller
@@ -35,7 +36,7 @@ class SouvenirController extends Controller
     /**
      * Simpan souvenir baru.
      */
-    public function store(Request $request)
+    public function store(Request $request, ImageUploadService $imageUploadService)
     {
         $request->validate([
             'nama_souvenir' => 'required|string|max:255',
@@ -43,17 +44,19 @@ class SouvenirController extends Controller
             'stok' => 'required|integer|min:0',
             'status' => 'required|in:Tersedia,Habis',
             'detail' => 'nullable|string',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ]);
 
         $data = $request->only(['nama_souvenir', 'harga', 'stok', 'status', 'detail']);
         $data['updated_by'] = auth()->user()->user_id;
 
         if ($request->hasFile('foto')) {
-            $file = $request->file('foto');
-            $filename = time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
-            $file->move(public_path('uploads/souvenirs'), $filename);
-            $data['foto'] = 'uploads/souvenirs/'.$filename;
+            $data['foto'] = $imageUploadService->storePublic(
+                $request->file('foto'),
+                'uploads/souvenirs',
+                maxWidth: 1200,
+                maxHeight: 1200
+            );
         }
 
         Souvenir::create($data);
@@ -74,7 +77,7 @@ class SouvenirController extends Controller
     /**
      * Update data souvenir.
      */
-    public function update(Request $request, $souvenir_id)
+    public function update(Request $request, $souvenir_id, ImageUploadService $imageUploadService)
     {
         $souvenir = Souvenir::findOrFail($souvenir_id);
 
@@ -84,7 +87,7 @@ class SouvenirController extends Controller
             'stok' => 'required|integer|min:0',
             'status' => 'required|in:Tersedia,Habis',
             'detail' => 'nullable|string',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ]);
 
         $souvenir->nama_souvenir = $request->nama_souvenir;
@@ -98,10 +101,12 @@ class SouvenirController extends Controller
             if ($souvenir->foto && file_exists(public_path($souvenir->foto))) {
                 @unlink(public_path($souvenir->foto));
             }
-            $file = $request->file('foto');
-            $filename = time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
-            $file->move(public_path('uploads/souvenirs'), $filename);
-            $souvenir->foto = 'uploads/souvenirs/'.$filename;
+            $souvenir->foto = $imageUploadService->storePublic(
+                $request->file('foto'),
+                'uploads/souvenirs',
+                maxWidth: 1200,
+                maxHeight: 1200
+            );
         }
 
         $souvenir->save();

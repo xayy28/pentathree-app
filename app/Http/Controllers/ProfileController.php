@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Http\Requests\UpdatePasswordRequest;
+use App\Services\ImageUploadService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -31,7 +32,7 @@ class ProfileController extends Controller
         ]);
     }
 
-    public function update(ProfileUpdateRequest $request)
+    public function update(ProfileUpdateRequest $request, ImageUploadService $imageUploadService)
     {
         $user = Auth::user();
         $validated = $request->validated();
@@ -41,7 +42,12 @@ class ProfileController extends Controller
                 Storage::disk('public')->delete($user->foto_profil);
             }
 
-            $validated['foto_profil'] = $request->file('foto_profil')->store('uploads/foto_profil', 'public');
+            $validated['foto_profil'] = $imageUploadService->storeDisk(
+                $request->file('foto_profil'),
+                'uploads/foto_profil',
+                maxWidth: 640,
+                maxHeight: 640
+            );
         }
 
         $user->update($validated);
