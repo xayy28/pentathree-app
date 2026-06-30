@@ -16,17 +16,17 @@ Dependency digunakan untuk membantu proses pengembangan sistem agar lebih cepat,
 | --: | ------------------------- | -------------------------------------------------------- | -------------------------------------------------------------------------- | ------------------- | -------------------------------------------- |
 |   1 | Laravel Breeze            | Autentikasi login, register, logout, dan dashboard dasar | Mempercepat pembuatan sistem autentikasi untuk admin dan customer          | Digunakan            | Scaffolding tidak dijalankan ulang agar tidak menimpa auth custom |
 |   2 | Spatie Laravel Permission | Mengelola role dan permission user                       | Membedakan akses antara admin dan customer                                 | Digunakan            | Role harus dikonfigurasi dan di-seed dengan benar |
-|   3 | Laravel DomPDF            | Generate PDF dari data Laravel                           | Dibutuhkan untuk invoice, laporan pemesanan, dan laporan penjualan         | Digunakan / Rencana | Generate PDF bisa berat jika data besar      |
+|   3 | Laravel DomPDF            | Generate PDF dari data Laravel                           | Dibutuhkan untuk invoice, laporan pemesanan, dan laporan penjualan         | Rencana             | Generate PDF bisa berat jika data besar      |
 |   4 | Midtrans Payment Gateway  | Pembayaran digital QRIS dan Virtual Account              | Memudahkan pembayaran online untuk booking homestay dan pembelian souvenir | Rencana             | Membutuhkan API key dan pengujian sandbox    |
-|   5 | Intervention Image        | Resize, crop, dan optimasi gambar                        | Dibutuhkan untuk gambar homestay, kamar, souvenir, dan katalog             | Rencana             | Perlu validasi ukuran dan tipe file          |
-|   6 | Font Awesome              | Library icon untuk tampilan website                      | Mempercantik menu, tombol, dashboard, dan sosial media                     | Digunakan / Rencana | Jika memakai CDN, butuh koneksi internet     |
-|   7 | Tailwind CSS              | Framework CSS utility-first                              | Membuat tampilan website lebih cepat, responsive, dan modern               | Digunakan / Rencana | Class bisa berantakan jika tidak konsisten   |
+|   5 | Intervention Image        | Resize dan optimasi gambar upload                        | Mengurangi ukuran file foto profil, homestay, souvenir, dan bukti pembayaran | Digunakan            | Perlu menjaga kualitas gambar agar tetap jelas |
+|   6 | Font Awesome              | Library icon untuk tampilan website                      | Mempercantik menu, tombol, dashboard, dan sosial media                     | Rencana             | Jika memakai CDN, butuh koneksi internet     |
+|   7 | Tailwind CSS              | Framework CSS utility-first                              | Membuat tampilan website lebih cepat, responsive, dan modern               | Digunakan            | Class bisa berantakan jika tidak konsisten   |
 |   8 | Laravel Validation        | Validasi input form                                      | Mencegah data kosong, salah format, atau tidak valid                       | Bawaan Laravel      | Rule validasi harus sesuai kebutuhan form    |
 |   9 | Laravel File Storage      | Menyimpan file upload                                    | Dibutuhkan untuk upload gambar homestay dan souvenir                       | Bawaan Laravel      | Permission folder storage harus benar        |
 
 ---
 
-## 3. Dependency yang Digunakan
+## 3. Dependency yang Digunakan dan Direncanakan
 
 ### 3.1 Laravel Breeze
 
@@ -153,7 +153,7 @@ role_has_permissions
 
 ```php
 Role::firstOrCreate(['name' => 'admin']);
-Role::firstOrCreate(['name' => 'customer']);
+Role::firstOrCreate(['name' => 'user']);
 ```
 
 #### Contoh Penggunaan pada Model User
@@ -174,8 +174,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 });
 
-Route::middleware(['auth', 'role:customer'])->prefix('customer')->name('customer.')->group(function () {
-    Route::get('/dashboard', [CustomerDashboardController::class, 'index'])->name('dashboard');
+Route::middleware(['auth', 'role:user'])->prefix('user')->name('user.')->group(function () {
+    Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
 });
 ```
 
@@ -211,9 +211,9 @@ Dependency ini digunakan oleh:
 - Customer
 - Admin
 
-#### Penerapan pada Project
+#### Rencana Penerapan pada Project
 
-DomPDF diterapkan pada fitur:
+DomPDF direncanakan untuk fitur:
 
 - Cetak invoice booking homestay
 - Cetak invoice pembelian souvenir
@@ -275,9 +275,9 @@ Dependency ini digunakan oleh:
 - Admin saat memverifikasi status pembayaran
 - Sistem saat menerima callback atau notifikasi pembayaran
 
-#### Penerapan pada Project
+#### Rencana Penerapan pada Project
 
-Midtrans diterapkan pada:
+Midtrans direncanakan untuk:
 
 - Halaman checkout
 - Halaman pembayaran
@@ -325,7 +325,7 @@ Intervention Image adalah package yang digunakan untuk memproses gambar, seperti
 
 #### Alasan Digunakan
 
-Project ini memiliki banyak kebutuhan upload gambar, seperti foto kamar homestay, foto fasilitas, foto souvenir, banner, dan gambar katalog. Agar gambar tidak terlalu besar dan website tetap ringan, gambar perlu dioptimasi.
+Project ini memiliki banyak kebutuhan upload gambar, seperti foto profil, foto homestay, foto souvenir, dan bukti pembayaran. Agar gambar tidak terlalu besar dan website tetap ringan, gambar dioptimasi sebelum disimpan.
 
 #### Pengguna
 
@@ -339,11 +339,13 @@ Dependency ini digunakan oleh:
 
 Intervention Image diterapkan pada fitur:
 
-- Upload foto kamar
+- Upload foto profil customer
 - Upload foto homestay
 - Upload foto souvenir
-- Upload banner website
-- Optimasi gambar katalog
+- Upload bukti pembayaran
+- Optimasi ukuran gambar ke format WebP
+
+Pada kode saat ini, Intervention Image digunakan melalui `ImageUploadService`. Service ini membaca file upload, melakukan `scaleDown`, mengubah hasil menjadi format WebP, lalu menyimpan file ke folder upload project.
 
 #### Cara Install
 
@@ -357,6 +359,7 @@ composer require intervention/image-laravel
 - Website menjadi lebih ringan.
 - Storage lebih hemat.
 - Tampilan katalog homestay dan souvenir menjadi lebih rapi.
+- Bukti pembayaran tetap disimpan sebagai gambar, tetapi ukuran file lebih terkendali.
 
 #### Risiko
 
@@ -380,9 +383,9 @@ Font Awesome digunakan agar tampilan website lebih menarik dan mudah dipahami ol
 
 Dependency ini digunakan oleh seluruh pengguna website, baik admin maupun customer.
 
-#### Penerapan pada Project
+#### Rencana Penerapan pada Project
 
-Font Awesome diterapkan pada:
+Font Awesome direncanakan untuk:
 
 - Sidebar dashboard
 - Navbar
@@ -527,26 +530,24 @@ $request->validate([
 
 #### Fungsi
 
-Laravel File Storage digunakan untuk menyimpan dan mengelola file upload pada project Laravel.
+Laravel File Storage digunakan untuk menyimpan dan mengelola file upload pada project Laravel, terutama file yang disimpan melalui disk `public`.
 
 #### Alasan Digunakan
 
-Project ini membutuhkan upload file gambar untuk homestay, kamar, souvenir, dan kemungkinan bukti pembayaran.
+Project ini membutuhkan upload file gambar untuk foto profil dan bukti pembayaran. Untuk foto homestay dan souvenir, project menyimpan file pada folder `public/uploads` agar tetap kompatibel dengan tampilan katalog yang memakai `asset($foto)`.
 
 #### Contoh Penerapan
 
 File Storage digunakan pada:
 
-- Upload foto kamar
-- Upload foto homestay
-- Upload foto souvenir
+- Upload foto profil
 - Upload bukti pembayaran
-- Upload banner website
+- Penyimpanan file upload pada disk `public`
 
 #### Contoh Kode
 
 ```php
-$path = $request->file('foto')->store('homestay', 'public');
+$path = $request->file('foto_profil')->store('uploads/foto_profil', 'public');
 ```
 
 #### Perintah Storage Link
@@ -665,6 +666,6 @@ Solusi:
 
 Dependency/package Laravel pada project **Sistem Informasi Manajemen Homestay dan Penjualan Souvenir Berbasis Web pada Natasha Homestay & Harau Souvenir** digunakan untuk mendukung kebutuhan fitur utama sistem.
 
-Dependency seperti **Laravel Breeze** digunakan untuk autentikasi, **Spatie Laravel Permission** digunakan untuk mengatur role dan hak akses, **Laravel DomPDF** digunakan untuk mencetak invoice dan laporan, **Midtrans Payment Gateway** digunakan untuk pembayaran online, **Intervention Image** digunakan untuk optimasi gambar, **Font Awesome** digunakan untuk icon website, dan **Tailwind CSS** digunakan untuk membangun tampilan frontend yang responsive dan modern.
+Dependency seperti **Laravel Breeze** digunakan sebagai package autentikasi pendukung, **Spatie Laravel Permission** digunakan untuk mengatur role dan hak akses, **Intervention Image** digunakan untuk optimasi gambar upload, dan **Tailwind CSS** digunakan untuk membangun tampilan frontend yang responsive dan modern. Dependency seperti **Laravel DomPDF**, **Midtrans Payment Gateway**, dan **Font Awesome** masih dapat ditambahkan pada sprint berikutnya sesuai kebutuhan fitur.
 
 Dengan penggunaan dependency yang tepat, proses pengembangan sistem dapat menjadi lebih cepat, rapi, aman, dan mudah dikembangkan oleh anggota tim.
