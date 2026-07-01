@@ -14,6 +14,7 @@
         "intervention/image-laravel": "^4.0",
         "laravel/framework": "^13.0",
         "laravel/tinker": "^3.0",
+        "midtrans/midtrans-php": "^2.6",
         "spatie/laravel-permission": "^8.1"
     },
     "require-dev": {
@@ -60,8 +61,7 @@
             "@php artisan package:discover --ansi"
         ],
         "post-update-cmd": [
-            "@php artisan vendor:publish --tag=laravel-assets --ansi --force",
-            "@php artisan boost:update --ansi"
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
         ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""

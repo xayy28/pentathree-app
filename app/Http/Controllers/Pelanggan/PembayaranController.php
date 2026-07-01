@@ -21,7 +21,7 @@ class PembayaranController extends Controller
             ->where('pemesanan_id', $pemesanan_id)
             ->firstOrFail();
 
-        if ($pemesanan->pembayaran && $pemesanan->pembayaran->status_pembayaran !== Pembayaran::STATUS_DITOLAK) {
+        if (! $this->canOpenPaymentPage($pemesanan)) {
             return redirect()->route('user.pesanan.show', $pemesanan->pemesanan_id)
                 ->with('error', 'Pembayaran untuk pesanan ini sudah dikirim atau sudah diverifikasi.');
         }
@@ -39,7 +39,7 @@ class PembayaranController extends Controller
             ->where('pemesanan_id', $pemesanan_id)
             ->firstOrFail();
 
-        if ($pemesanan->pembayaran && $pemesanan->pembayaran->status_pembayaran !== Pembayaran::STATUS_DITOLAK) {
+        if (! $this->canOpenPaymentPage($pemesanan)) {
             return redirect()->route('user.pesanan.show', $pemesanan->pemesanan_id)
                 ->with('error', 'Pembayaran untuk pesanan ini sudah dikirim atau sudah diverifikasi.');
         }
@@ -72,6 +72,17 @@ class PembayaranController extends Controller
         $validated['catatan_admin'] = null;
         $validated['verified_at'] = null;
         $validated['verified_by'] = null;
+        $validated['midtrans_order_id'] = null;
+        $validated['midtrans_transaction_id'] = null;
+        $validated['midtrans_transaction_status'] = null;
+        $validated['midtrans_fraud_status'] = null;
+        $validated['midtrans_payment_type'] = null;
+        $validated['midtrans_va_number'] = null;
+        $validated['midtrans_payment_code'] = null;
+        $validated['midtrans_snap_token'] = null;
+        $validated['midtrans_redirect_url'] = null;
+        $validated['midtrans_payload'] = null;
+        $validated['paid_at'] = null;
 
         Pembayaran::updateOrCreate(
             ['pemesanan_id' => $pemesanan->pemesanan_id],
@@ -84,5 +95,15 @@ class PembayaranController extends Controller
 
         return redirect()->route('user.pesanan.show', $pemesanan->pemesanan_id)
             ->with('success', 'Bukti pembayaran berhasil dikirim dan menunggu verifikasi admin.');
+    }
+
+    private function canOpenPaymentPage(Pemesanan $pemesanan): bool
+    {
+        if (! $pemesanan->pembayaran || $pemesanan->pembayaran->status_pembayaran === Pembayaran::STATUS_DITOLAK) {
+            return true;
+        }
+
+        return $pemesanan->pembayaran->metode_pembayaran === 'midtrans'
+            && $pemesanan->pembayaran->status_pembayaran === Pembayaran::STATUS_MENUNGGU_PEMBAYARAN;
     }
 }

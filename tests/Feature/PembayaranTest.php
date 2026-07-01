@@ -86,6 +86,20 @@ test('user can upload payment proof for own order', function () {
     Storage::disk('public')->assertExists($pembayaran->bukti_pembayaran);
 });
 
+test('payment page separates midtrans and manual transfer options', function () {
+    $pemesanan = createSouvenirPemesananForPaymentTest($this->user, $this->souvenir);
+
+    $this->actingAs($this->user)
+        ->get(route('user.pembayaran.create', $pemesanan->pemesanan_id))
+        ->assertStatus(200)
+        ->assertSee('Midtrans Online')
+        ->assertSee('Transfer Manual')
+        ->assertSee('Bayar Sekarang')
+        ->assertSee('Kirim Bukti Pembayaran')
+        ->assertSee('data-payment-panel="manual"', false)
+        ->assertSee('hidden', false);
+});
+
 test('user cannot upload payment for another users order', function () {
     Storage::fake('public');
     $pemesanan = createSouvenirPemesananForPaymentTest($this->user, $this->souvenir);

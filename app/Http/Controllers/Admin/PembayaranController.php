@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Pembayaran;
 use App\Models\Pemesanan;
+use App\Services\PaymentSettlementService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class PembayaranController extends Controller
 {
@@ -17,6 +17,7 @@ class PembayaranController extends Controller
     {
         $status = $request->query('status');
         $statuses = [
+            Pembayaran::STATUS_MENUNGGU_PEMBAYARAN,
             Pembayaran::STATUS_MENUNGGU_VERIFIKASI,
             Pembayaran::STATUS_TERVERIFIKASI,
             Pembayaran::STATUS_DITOLAK,
@@ -48,7 +49,7 @@ class PembayaranController extends Controller
     /**
      * Verifikasi pembayaran dan proses efek transaksi.
      */
-    public function verify($pembayaran_id)
+    public function verify($pembayaran_id, PaymentSettlementService $paymentSettlementService)
     {
         $pembayaran = $this->findSouvenirPaymentOrFail($pembayaran_id, [
             'pemesanan.detailPemesanans.souvenir',
@@ -60,39 +61,15 @@ class PembayaranController extends Controller
         }
 
         try {
-            DB::transaction(function () use ($pembayaran) {
-                $pembayaran->refresh();
-                if ($pembayaran->status_pembayaran === Pembayaran::STATUS_TERVERIFIKASI) {
-                    throw new \RuntimeException('Pembayaran sudah diverifikasi sebelumnya.');
-                }
-
-                $pemesanan = $pembayaran->pemesanan;
-
-                foreach ($pemesanan->detailPemesanans as $detail) {
-                    if ($detail->souvenir_id && $detail->souvenir) {
-                        if ($detail->souvenir->stok < $detail->jumlah) {
-                            throw new \RuntimeException("Stok {$detail->souvenir->nama_souvenir} tidak mencukupi untuk verifikasi.");
-                        }
-
-                        $detail->souvenir->decrement('stok', $detail->jumlah);
-                        $detail->souvenir->increment('jumlah_terjual', $detail->jumlah);
-                    }
-                }
-
-                $pembayaran->update([
-                    'status_pembayaran' => Pembayaran::STATUS_TERVERIFIKASI,
-                    'verified_at' => now(),
-                    'verified_by' => auth()->user()->user_id,
-                    'catatan_admin' => null,
-                ]);
-
-                $pemesanan->update([
-                    'status_pemesanan' => Pemesanan::STATUS_DIPROSES,
-                ]);
-            });
+            $verified = $paymentSettlementService->verify($pembayaran, auth()->user()->user_id);
         } catch (\RuntimeException $exception) {
             return redirect()->route('admin.pembayaran.show', $pembayaran->pembayaran_id)
                 ->with('error', $exception->getMessage());
+        }
+
+        if (! $verified) {
+            return redirect()->route('admin.pembayaran.show', $pembayaran->pembayaran_id)
+                ->with('error', 'Pembayaran sudah diverifikasi sebelumnya.');
         }
 
         return redirect()->route('admin.pembayaran.show', $pembayaran->pembayaran_id)

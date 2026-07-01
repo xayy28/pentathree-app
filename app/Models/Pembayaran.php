@@ -11,6 +11,8 @@ class Pembayaran extends Model
 
     public const STATUS_DITOLAK = 'ditolak';
 
+    public const STATUS_MENUNGGU_PEMBAYARAN = 'menunggu_pembayaran';
+
     public const STATUS_MENUNGGU_VERIFIKASI = 'menunggu_verifikasi';
 
     public const STATUS_TERVERIFIKASI = 'terverifikasi';
@@ -29,6 +31,17 @@ class Pembayaran extends Model
         'catatan_admin',
         'verified_at',
         'verified_by',
+        'midtrans_order_id',
+        'midtrans_transaction_id',
+        'midtrans_transaction_status',
+        'midtrans_fraud_status',
+        'midtrans_payment_type',
+        'midtrans_va_number',
+        'midtrans_payment_code',
+        'midtrans_snap_token',
+        'midtrans_redirect_url',
+        'midtrans_payload',
+        'paid_at',
     ];
 
     protected function casts(): array
@@ -37,6 +50,8 @@ class Pembayaran extends Model
             'jumlah_bayar' => 'decimal:2',
             'tanggal_pembayaran' => 'datetime',
             'verified_at' => 'datetime',
+            'midtrans_payload' => 'array',
+            'paid_at' => 'datetime',
         ];
     }
 

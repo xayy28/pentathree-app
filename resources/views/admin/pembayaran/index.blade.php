@@ -5,6 +5,7 @@
 @section('content')
     @php
         $statusLabels = [
+            \App\Models\Pembayaran::STATUS_MENUNGGU_PEMBAYARAN => 'Menunggu Pembayaran',
             \App\Models\Pembayaran::STATUS_MENUNGGU_VERIFIKASI => 'Menunggu Verifikasi',
             \App\Models\Pembayaran::STATUS_TERVERIFIKASI => 'Terverifikasi',
             \App\Models\Pembayaran::STATUS_DITOLAK => 'Ditolak',

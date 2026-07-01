@@ -59,6 +59,18 @@ test('user can checkout cart into pemesanan and detail pemesanan', function () {
     expect($this->souvenir->fresh()->stok)->toBe($initialStock);
 });
 
+test('souvenir checkout does not show disconnected payment method choices', function () {
+    addSouvenirToCart($this->user, $this->souvenir, 1);
+
+    $this->actingAs($this->user)
+        ->get(route('checkout.index'))
+        ->assertStatus(200)
+        ->assertSee('Buat Pesanan')
+        ->assertSee('Pembayaran dipilih setelah pesanan dibuat.')
+        ->assertDontSee('Metode Pembayaran')
+        ->assertDontSee('E-Money');
+});
+
 test('checkout redirects back when cart is empty', function () {
     $response = $this->actingAs($this->user)->post(route('checkout.store'), [
         'pengiriman' => 'pickup',

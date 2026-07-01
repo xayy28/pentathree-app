@@ -84,6 +84,24 @@
                         class="w-full bg-[#2B4C3F] hover:bg-[#1E362C] text-white text-sm font-semibold py-3 px-4 rounded-xl transition-all flex items-center justify-center">
                         Bayar Sekarang
                     </a>
+                @elseif ($pemesanan->pembayaran->status_pembayaran === \App\Models\Pembayaran::STATUS_MENUNGGU_PEMBAYARAN)
+                    <div class="space-y-3">
+                        <p class="text-[11px] leading-relaxed text-[#8A5A10] bg-[#FFF8E8] border border-[#F2D8A8] rounded-xl p-4">
+                            Pembayaran Midtrans masih menunggu penyelesaian atau sinkronisasi status. Jika sudah membayar, cek status pembayaran.
+                        </p>
+                        @if ($pemesanan->pembayaran->metode_pembayaran === 'midtrans')
+                            <a href="{{ route('user.pembayaran.create', $pemesanan->pemesanan_id) }}"
+                                class="w-full bg-[#B7791F] hover:bg-[#975A16] text-white text-sm font-semibold py-3 px-4 rounded-xl transition-all flex items-center justify-center">
+                                Lanjutkan Pembayaran
+                            </a>
+                            <button type="button" id="midtrans-status-button"
+                                data-status-url="{{ route('user.pembayaran.midtrans.status', $pemesanan->pemesanan_id) }}"
+                                class="w-full border border-[#C9D8D0] bg-white hover:bg-[#F3F7F5] text-[#2B4C3F] text-sm font-semibold py-3 px-4 rounded-xl transition-all flex items-center justify-center disabled:cursor-not-allowed disabled:opacity-60">
+                                Cek Status Pembayaran
+                            </button>
+                            <p id="midtrans-status-message" class="hidden text-[11px] leading-relaxed"></p>
+                        @endif
+                    </div>
                 @elseif ($pemesanan->pembayaran->status_pembayaran === \App\Models\Pembayaran::STATUS_MENUNGGU_VERIFIKASI)
                     <p class="text-[11px] leading-relaxed text-[#8A9C91] bg-[#FAF9F6] border border-[#E6E4DD] rounded-xl p-4">
                         Bukti pembayaran sudah dikirim dan sedang menunggu verifikasi admin.
@@ -102,4 +120,55 @@
             </div>
         </div>
     </div>
+
+    @if (
+        $pemesanan->pembayaran?->metode_pembayaran === 'midtrans' &&
+            $pemesanan->pembayaran->status_pembayaran === \App\Models\Pembayaran::STATUS_MENUNGGU_PEMBAYARAN)
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const statusButton = document.getElementById('midtrans-status-button');
+                const statusMessage = document.getElementById('midtrans-status-message');
+
+                if (!statusButton || !statusMessage) return;
+
+                const showStatusMessage = function (message, isError = false) {
+                    statusMessage.textContent = message;
+                    statusMessage.className = isError
+                        ? 'text-[11px] leading-relaxed text-[#9B1C1C]'
+                        : 'text-[11px] leading-relaxed text-[#2B4C3F]';
+                };
+
+                statusButton.addEventListener('click', async function () {
+                    statusButton.disabled = true;
+                    showStatusMessage('Mengecek status pembayaran Midtrans...');
+
+                    try {
+                        const response = await fetch(statusButton.dataset.statusUrl, {
+                            method: 'POST',
+                            headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': @json(csrf_token()),
+                            },
+                        });
+                        const data = await response.json();
+
+                        if (!response.ok) {
+                            throw new Error(data.message || 'Gagal mengecek status pembayaran Midtrans.');
+                        }
+
+                        showStatusMessage(data.message || 'Status pembayaran berhasil diperbarui.');
+
+                        if (data.pembayaran_status !== @json(\App\Models\Pembayaran::STATUS_MENUNGGU_PEMBAYARAN)) {
+                            window.location.reload();
+                        }
+                    } catch (error) {
+                        showStatusMessage(error.message, true);
+                    } finally {
+                        statusButton.disabled = false;
+                    }
+                });
+            });
+        </script>
+    @endif
 @endsection

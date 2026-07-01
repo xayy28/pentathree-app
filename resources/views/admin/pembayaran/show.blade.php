@@ -42,6 +42,24 @@
                         <div class="text-[#8A9C91] text-xs mb-1">Verifier</div>
                         <div class="font-semibold text-[#2C3E35]">{{ $pembayaran->verifier?->nama ?? '-' }}</div>
                     </div>
+                    @if ($pembayaran->metode_pembayaran === 'midtrans')
+                        <div>
+                            <div class="text-[#8A9C91] text-xs mb-1">Midtrans Order ID</div>
+                            <div class="font-mono text-xs font-semibold text-[#2C3E35] break-all">{{ $pembayaran->midtrans_order_id ?? '-' }}</div>
+                        </div>
+                        <div>
+                            <div class="text-[#8A9C91] text-xs mb-1">Status Gateway</div>
+                            <div class="font-semibold text-[#2C3E35]">{{ $pembayaran->midtrans_transaction_status ?? '-' }}</div>
+                        </div>
+                        <div>
+                            <div class="text-[#8A9C91] text-xs mb-1">Payment Type</div>
+                            <div class="font-semibold text-[#2C3E35]">{{ $pembayaran->midtrans_payment_type ?? '-' }}</div>
+                        </div>
+                        <div>
+                            <div class="text-[#8A9C91] text-xs mb-1">VA / Kode Bayar</div>
+                            <div class="font-mono text-xs font-semibold text-[#2C3E35]">{{ $pembayaran->midtrans_va_number ?? $pembayaran->midtrans_payment_code ?? '-' }}</div>
+                        </div>
+                    @endif
                 </div>
 
                 <div>
@@ -75,7 +93,7 @@
                     </a>
                 @else
                     <div class="p-6 bg-[#FAF9F6] border border-dashed border-[#D5D3C7] rounded-xl text-center text-xs text-[#8A9C91]">
-                        Tidak ada bukti pembayaran.
+                        {{ $pembayaran->metode_pembayaran === 'midtrans' ? 'Pembayaran diproses otomatis melalui Midtrans.' : 'Tidak ada bukti pembayaran.' }}
                     </div>
                 @endif
 

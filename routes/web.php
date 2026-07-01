@@ -7,9 +7,11 @@ use App\Http\Controllers\Admin\PembayaranController as AdminPembayaranController
 use App\Http\Controllers\Admin\ReservasiController as AdminReservasiController;
 use App\Http\Controllers\Admin\SouvenirController as AdminSouvenirController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\MidtransWebhookController;
 use App\Http\Controllers\Pelanggan\HomestayBookingController as PelangganHomestayBookingController;
 use App\Http\Controllers\Pelanggan\HomestayController as PelangganHomestayController;
 use App\Http\Controllers\Pelanggan\KeranjangController as PelangganKeranjangController;
+use App\Http\Controllers\Pelanggan\MidtransPaymentController as PelangganMidtransPaymentController;
 use App\Http\Controllers\Pelanggan\PembayaranController as PelangganPembayaranController;
 use App\Http\Controllers\Pelanggan\PemesananController as PelangganPemesananController;
 use App\Http\Controllers\Pelanggan\ReservasiController as PelangganReservasiController;
@@ -20,9 +22,14 @@ use App\Models\Pembayaran;
 use App\Models\Pemesanan;
 use App\Models\Souvenir;
 use App\Models\User;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
+
+Route::post('/midtrans/notification', [MidtransWebhookController::class, 'handle'])
+    ->withoutMiddleware([VerifyCsrfToken::class])
+    ->name('midtrans.notification');
 
 // Redirect Halaman Utama berdasarkan status login
 Route::get('/', function () {
@@ -153,6 +160,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/pesanan/{pemesanan_id}', [PelangganPemesananController::class, 'show'])->name('user.pesanan.show');
         Route::get('/pesanan/{pemesanan_id}/pembayaran', [PelangganPembayaranController::class, 'create'])->name('user.pembayaran.create');
         Route::post('/pesanan/{pemesanan_id}/pembayaran', [PelangganPembayaranController::class, 'store'])->name('user.pembayaran.store');
+        Route::post('/pesanan/{pemesanan_id}/midtrans-token', [PelangganMidtransPaymentController::class, 'token'])->name('user.pembayaran.midtrans.token');
+        Route::post('/pesanan/{pemesanan_id}/midtrans-status', [PelangganMidtransPaymentController::class, 'status'])->name('user.pembayaran.midtrans.status');
         Route::get('/reservasi/{homestay_id}', [PelangganReservasiController::class, 'create'])->name('user.reservasi.create');
 
         // Rute Keranjang Belanja User
