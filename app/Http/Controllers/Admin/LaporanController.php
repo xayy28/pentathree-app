@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\DetailPemesanan;
 use App\Models\Pembayaran;
 use App\Models\Pemesanan;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -16,6 +17,25 @@ class LaporanController extends Controller
      * Tampilkan laporan untuk admin.
      */
     public function index(Request $request)
+    {
+        return view('admin.laporan.index', $this->reportData($request));
+    }
+
+    /**
+     * Unduh laporan admin dalam format PDF.
+     */
+    public function downloadPdf(Request $request)
+    {
+        $pdf = Pdf::loadView('admin.laporan.pdf', $this->reportData($request))
+            ->setPaper('a4', 'portrait');
+
+        return $pdf->download('laporan-natasha-'.now()->format('Ymd-His').'.pdf');
+    }
+
+    /**
+     * Data laporan yang dipakai halaman web dan PDF.
+     */
+    private function reportData(Request $request): array
     {
         $validated = $request->validate([
             'date_from' => ['nullable', 'date'],
@@ -95,13 +115,13 @@ class LaporanController extends Controller
             ->limit(5)
             ->get();
 
-        return view('admin.laporan.index', compact(
+        return compact(
             'dateFrom',
             'dateTo',
             'summary',
             'souvenirSales',
             'reservationStatusCounts',
-            'recentPayments',
-        ));
+            'recentPayments'
+        );
     }
 }

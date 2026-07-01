@@ -116,9 +116,14 @@ function createReportHomestayOrder(User $user, Homestay $homestay, string $payme
 
 test('guest and normal user cannot access admin report', function () {
     $this->get(route('admin.laporan'))->assertRedirect(route('login'));
+    $this->get(route('admin.laporan.pdf'))->assertRedirect(route('login'));
 
     $this->actingAs($this->user)
         ->get(route('admin.laporan'))
+        ->assertRedirect(route('dashboard'));
+
+    $this->actingAs($this->user)
+        ->get(route('admin.laporan.pdf'))
         ->assertRedirect(route('dashboard'));
 });
 
@@ -177,4 +182,19 @@ test('admin dashboard shows report metrics', function () {
         ->assertSee('Rp 100.000')
         ->assertSee('Pembayaran Menunggu')
         ->assertSee('1');
+});
+
+test('admin can download report as pdf', function () {
+    createReportSouvenirOrder($this->user, $this->souvenir, Pembayaran::STATUS_TERVERIFIKASI, '2026-06-05 10:00:00', 2);
+
+    $response = $this->actingAs($this->admin)->get(route('admin.laporan.pdf', [
+        'date_from' => '2026-06-01',
+        'date_to' => '2026-06-30',
+    ]));
+
+    $response->assertOk();
+
+    expect($response->headers->get('content-type'))->toContain('application/pdf');
+    expect($response->headers->get('content-disposition'))->toContain('laporan-natasha-');
+    expect(substr($response->getContent(), 0, 4))->toBe('%PDF');
 });

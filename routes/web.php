@@ -127,6 +127,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/admin/pembayaran/{pembayaran_id}/verify', [AdminPembayaranController::class, 'verify'])->name('admin.pembayaran.verify');
         Route::post('/admin/pembayaran/{pembayaran_id}/reject', [AdminPembayaranController::class, 'reject'])->name('admin.pembayaran.reject');
         Route::get('/admin/laporan', [AdminLaporanController::class, 'index'])->name('admin.laporan');
+        Route::get('/admin/laporan/pdf', [AdminLaporanController::class, 'downloadPdf'])->name('admin.laporan.pdf');
     });
 
     // Halaman khusus User

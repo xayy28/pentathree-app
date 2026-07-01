@@ -25,7 +25,7 @@
                 </div>
 
                 <form action="{{ route('admin.laporan') }}" method="GET"
-                    class="grid grid-cols-1 sm:grid-cols-[1fr_1fr_auto_auto] gap-3">
+                    class="grid grid-cols-1 sm:grid-cols-[1fr_1fr_auto_auto_auto] gap-3">
                     <div>
                         <label for="date_from" class="block text-[10px] font-bold uppercase tracking-widest text-[#8A9C91] mb-1">
                             Dari
@@ -41,12 +41,16 @@
                             class="w-full bg-[#FAF9F6] text-[#2C3E35] border border-[#E6E4DD] rounded-xl px-4 py-2.5 text-sm focus:bg-white focus:border-[#2B4C3F] focus:outline-none">
                     </div>
                     <button type="submit"
-                        class="self-end bg-[#2B4C3F] hover:bg-[#1E362C] text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-all">
+                        class="self-end inline-flex h-11 min-w-[112px] items-center justify-center whitespace-nowrap bg-[#2B4C3F] hover:bg-[#1E362C] text-white text-sm font-semibold px-5 rounded-xl transition-all">
                         Filter
                     </button>
                     <a href="{{ route('admin.laporan') }}"
-                        class="self-end bg-[#FAF9F6] hover:bg-[#F2F0EA] text-[#5C6E65] text-sm font-semibold px-5 py-2.5 rounded-xl border border-[#E6E4DD] transition-all text-center">
+                        class="self-end inline-flex h-11 min-w-[112px] items-center justify-center whitespace-nowrap bg-[#FAF9F6] hover:bg-[#F2F0EA] text-[#5C6E65] text-sm font-semibold px-5 rounded-xl border border-[#E6E4DD] transition-all text-center">
                         Reset
+                    </a>
+                    <a href="{{ route('admin.laporan.pdf', request()->only(['date_from', 'date_to'])) }}"
+                        class="self-end inline-flex h-11 min-w-[112px] items-center justify-center whitespace-nowrap bg-[#B7791F] hover:bg-[#975A16] text-white text-sm font-semibold px-5 rounded-xl transition-all text-center">
+                        Unduh PDF
                     </a>
                 </form>
             </div>
