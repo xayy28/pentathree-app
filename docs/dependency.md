@@ -17,7 +17,7 @@ Dependency digunakan untuk membantu proses pengembangan sistem agar lebih cepat,
 |   1 | Laravel Breeze            | Autentikasi login, register, logout, dan dashboard dasar | Mempercepat pembuatan sistem autentikasi untuk admin dan customer          | Digunakan            | Scaffolding tidak dijalankan ulang agar tidak menimpa auth custom |
 |   2 | Spatie Laravel Permission | Mengelola role dan permission user                       | Membedakan akses antara admin dan customer                                 | Digunakan            | Role harus dikonfigurasi dan di-seed dengan benar |
 |   3 | Laravel DomPDF            | Generate PDF dari data Laravel                           | Dibutuhkan untuk mengunduh laporan admin dalam format PDF                  | Digunakan           | Generate PDF bisa berat jika data besar      |
-|   4 | Midtrans Payment Gateway  | Pembayaran digital QRIS dan Virtual Account              | Memudahkan pembayaran online untuk booking homestay dan pembelian souvenir | Rencana             | Membutuhkan API key dan pengujian sandbox    |
+|   4 | Midtrans Payment Gateway  | Pembayaran digital QRIS dan Virtual Account              | Memudahkan pembayaran online untuk booking homestay dan pembelian souvenir | Digunakan Sandbox   | Membutuhkan API key dan webhook valid        |
 |   5 | Intervention Image        | Resize dan optimasi gambar upload                        | Mengurangi ukuran file foto profil, homestay, souvenir, dan bukti pembayaran | Digunakan            | Perlu menjaga kualitas gambar agar tetap jelas |
 |   6 | Font Awesome              | Library icon untuk tampilan website                      | Mempercantik menu, tombol, dashboard, dan sosial media                     | Rencana             | Jika memakai CDN, butuh koneksi internet     |
 |   7 | Tailwind CSS              | Framework CSS utility-first                              | Membuat tampilan website lebih cepat, responsive, dan modern               | Digunakan            | Class bisa berantakan jika tidak konsisten   |
@@ -275,15 +275,19 @@ Dependency ini digunakan oleh:
 - Admin saat memverifikasi status pembayaran
 - Sistem saat menerima callback atau notifikasi pembayaran
 
-#### Rencana Penerapan pada Project
+#### Penerapan pada Project
 
-Midtrans direncanakan untuk:
+Midtrans diterapkan pada:
 
-- Halaman checkout
 - Halaman pembayaran
-- Status pembayaran
-- Verifikasi pembayaran admin
-- Invoice transaksi
+- Generate Snap token pembayaran
+- Popup pembayaran Snap Sandbox
+- Webhook/notifikasi status pembayaran
+- Cek ulang status transaksi dari backend sebagai fallback saat webhook tidak bisa menjangkau localhost
+- Update status pembayaran otomatis
+- Update stok souvenir setelah transaksi settlement/capture berhasil
+
+Pada kode saat ini, Midtrans digunakan melalui package `midtrans/midtrans-php`, konfigurasi `config/midtrans.php`, endpoint token pembayaran customer, endpoint cek status transaksi customer, dan endpoint webhook `midtrans.notification`.
 
 #### Cara Install
 
@@ -305,8 +309,8 @@ MIDTRANS_IS_3DS=true
 
 - Customer dapat membayar secara online.
 - Sistem dapat menerima status pembayaran otomatis.
-- Admin lebih mudah melakukan pengecekan pembayaran.
-- Invoice dapat diperbarui berdasarkan status pembayaran.
+- Admin lebih mudah melakukan pengecekan pembayaran dari data gateway.
+- Stok souvenir tetap diproses satu kali setelah pembayaran berhasil.
 
 #### Risiko
 
@@ -639,6 +643,7 @@ Solusi:
 
 - Menyimpan API key pada file `.env`.
 - Membuat route khusus callback Midtrans.
+- Menyediakan tombol cek status transaksi sebagai fallback saat memakai localhost.
 - Menguji pembayaran menggunakan mode sandbox.
 - Memastikan status transaksi diperbarui di database.
 
@@ -666,6 +671,6 @@ Solusi:
 
 Dependency/package Laravel pada project **Sistem Informasi Manajemen Homestay dan Penjualan Souvenir Berbasis Web pada Natasha Homestay & Harau Souvenir** digunakan untuk mendukung kebutuhan fitur utama sistem.
 
-Dependency seperti **Laravel Breeze** digunakan sebagai package autentikasi pendukung, **Spatie Laravel Permission** digunakan untuk mengatur role dan hak akses, **Laravel DomPDF** digunakan untuk mengunduh laporan admin dalam format PDF, **Intervention Image** digunakan untuk optimasi gambar upload, dan **Tailwind CSS** digunakan untuk membangun tampilan frontend yang responsive dan modern. Dependency seperti **Midtrans Payment Gateway** dan **Font Awesome** masih dapat ditambahkan pada sprint berikutnya sesuai kebutuhan fitur.
+Dependency seperti **Laravel Breeze** digunakan sebagai package autentikasi pendukung, **Spatie Laravel Permission** digunakan untuk mengatur role dan hak akses, **Laravel DomPDF** digunakan untuk mengunduh laporan admin dalam format PDF, **Midtrans Payment Gateway** digunakan untuk pembayaran online mode sandbox, **Intervention Image** digunakan untuk optimasi gambar upload, dan **Tailwind CSS** digunakan untuk membangun tampilan frontend yang responsive dan modern. Dependency seperti **Font Awesome** masih dapat ditambahkan pada sprint berikutnya sesuai kebutuhan fitur.
 
 Dengan penggunaan dependency yang tepat, proses pengembangan sistem dapat menjadi lebih cepat, rapi, aman, dan mudah dikembangkan oleh anggota tim.
