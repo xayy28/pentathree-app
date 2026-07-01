@@ -16,7 +16,7 @@ Dependency digunakan untuk membantu proses pengembangan sistem agar lebih cepat,
 | --: | ------------------------- | -------------------------------------------------------- | -------------------------------------------------------------------------- | ------------------- | -------------------------------------------- |
 |   1 | Laravel Breeze            | Autentikasi login, register, logout, dan dashboard dasar | Mempercepat pembuatan sistem autentikasi untuk admin dan customer          | Digunakan            | Scaffolding tidak dijalankan ulang agar tidak menimpa auth custom |
 |   2 | Spatie Laravel Permission | Mengelola role dan permission user                       | Membedakan akses antara admin dan customer                                 | Digunakan            | Role harus dikonfigurasi dan di-seed dengan benar |
-|   3 | Laravel DomPDF            | Generate PDF dari data Laravel                           | Dibutuhkan untuk invoice, laporan pemesanan, dan laporan penjualan         | Rencana             | Generate PDF bisa berat jika data besar      |
+|   3 | Laravel DomPDF            | Generate PDF dari data Laravel                           | Dibutuhkan untuk mengunduh laporan admin dalam format PDF                  | Digunakan           | Generate PDF bisa berat jika data besar      |
 |   4 | Midtrans Payment Gateway  | Pembayaran digital QRIS dan Virtual Account              | Memudahkan pembayaran online untuk booking homestay dan pembelian souvenir | Rencana             | Membutuhkan API key dan pengujian sandbox    |
 |   5 | Intervention Image        | Resize dan optimasi gambar upload                        | Mengurangi ukuran file foto profil, homestay, souvenir, dan bukti pembayaran | Digunakan            | Perlu menjaga kualitas gambar agar tetap jelas |
 |   6 | Font Awesome              | Library icon untuk tampilan website                      | Mempercantik menu, tombol, dashboard, dan sosial media                     | Rencana             | Jika memakai CDN, butuh koneksi internet     |
@@ -202,24 +202,25 @@ Laravel DomPDF adalah package yang digunakan untuk membuat file PDF dari tampila
 
 #### Alasan Digunakan
 
-Project ini membutuhkan fitur invoice dan laporan. Customer membutuhkan invoice setelah melakukan booking atau pembelian souvenir. Admin juga membutuhkan laporan pemesanan dan penjualan dalam bentuk PDF.
+Project ini membutuhkan fitur unduh laporan admin dalam format PDF. Admin dapat menyimpan laporan pendapatan, penjualan souvenir, status reservasi homestay, dan pembayaran terverifikasi sebagai dokumen cetak.
 
 #### Pengguna
 
 Dependency ini digunakan oleh:
 
-- Customer
 - Admin
 
-#### Rencana Penerapan pada Project
+#### Penerapan pada Project
 
-DomPDF direncanakan untuk fitur:
+DomPDF diterapkan pada fitur:
 
-- Cetak invoice booking homestay
-- Cetak invoice pembelian souvenir
-- Download bukti pembayaran
-- Generate laporan pemesanan
-- Generate laporan penjualan souvenir
+- Unduh laporan admin dalam bentuk PDF
+- Cetak ringkasan pendapatan terverifikasi
+- Cetak laporan penjualan souvenir
+- Cetak laporan status reservasi homestay
+- Cetak riwayat pembayaran terverifikasi terbaru
+
+Pada kode saat ini, DomPDF digunakan melalui controller laporan admin dan template Blade khusus PDF.
 
 #### Cara Install
 
@@ -244,10 +245,9 @@ public function cetakInvoice($id)
 
 #### Dampak pada Project
 
-- Customer dapat mengunduh invoice dalam bentuk PDF.
-- Admin dapat mencetak laporan transaksi.
-- Bukti pemesanan menjadi lebih formal dan mudah disimpan.
-- Fitur laporan menjadi lebih lengkap.
+- Admin dapat mengunduh laporan dalam bentuk PDF.
+- Data laporan lebih mudah dicetak dan disimpan.
+- Fitur laporan menjadi lebih lengkap untuk kebutuhan demo dan dokumentasi.
 
 #### Risiko
 
@@ -666,6 +666,6 @@ Solusi:
 
 Dependency/package Laravel pada project **Sistem Informasi Manajemen Homestay dan Penjualan Souvenir Berbasis Web pada Natasha Homestay & Harau Souvenir** digunakan untuk mendukung kebutuhan fitur utama sistem.
 
-Dependency seperti **Laravel Breeze** digunakan sebagai package autentikasi pendukung, **Spatie Laravel Permission** digunakan untuk mengatur role dan hak akses, **Intervention Image** digunakan untuk optimasi gambar upload, dan **Tailwind CSS** digunakan untuk membangun tampilan frontend yang responsive dan modern. Dependency seperti **Laravel DomPDF**, **Midtrans Payment Gateway**, dan **Font Awesome** masih dapat ditambahkan pada sprint berikutnya sesuai kebutuhan fitur.
+Dependency seperti **Laravel Breeze** digunakan sebagai package autentikasi pendukung, **Spatie Laravel Permission** digunakan untuk mengatur role dan hak akses, **Laravel DomPDF** digunakan untuk mengunduh laporan admin dalam format PDF, **Intervention Image** digunakan untuk optimasi gambar upload, dan **Tailwind CSS** digunakan untuk membangun tampilan frontend yang responsive dan modern. Dependency seperti **Midtrans Payment Gateway** dan **Font Awesome** masih dapat ditambahkan pada sprint berikutnya sesuai kebutuhan fitur.
 
 Dengan penggunaan dependency yang tepat, proses pengembangan sistem dapat menjadi lebih cepat, rapi, aman, dan mudah dikembangkan oleh anggota tim.
