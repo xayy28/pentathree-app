@@ -78,7 +78,7 @@ class HomestayBookingController extends Controller
             return $pemesanan;
         });
 
-        return redirect()->route('user.pesanan.show', $pemesanan->pemesanan_id)
-            ->with('success', 'Booking homestay berhasil dibuat. Silakan lanjutkan pembayaran.');
+        return redirect()->route('user.pembayaran.create', $pemesanan->pemesanan_id)
+            ->with('success', 'Booking homestay berhasil dibuat. Silakan pilih metode pembayaran.');
     }
 }

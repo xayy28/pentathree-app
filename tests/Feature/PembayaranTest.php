@@ -75,7 +75,7 @@ test('user can upload payment proof for own order', function () {
         'bukti_pembayaran' => UploadedFile::fake()->image('bukti.jpg'),
     ]);
 
-    $response->assertRedirect(route('user.pesanan.show', $pemesanan->pemesanan_id));
+    $response->assertRedirect(route('user.pesanan.index'));
     $response->assertSessionHas('success');
 
     $pembayaran = Pembayaran::first();
@@ -98,6 +98,57 @@ test('payment page separates midtrans and manual transfer options', function () 
         ->assertSee('Kirim Bukti Pembayaran')
         ->assertSee('data-payment-panel="manual"', false)
         ->assertSee('hidden', false);
+});
+
+test('payment page locks method after midtrans is selected', function () {
+    $pemesanan = createSouvenirPemesananForPaymentTest($this->user, $this->souvenir);
+
+    Pembayaran::create([
+        'pemesanan_id' => $pemesanan->pemesanan_id,
+        'metode_pembayaran' => 'midtrans',
+        'jumlah_bayar' => $pemesanan->total_harga,
+        'status_pembayaran' => Pembayaran::STATUS_MENUNGGU_PEMBAYARAN,
+        'tanggal_pembayaran' => now(),
+        'midtrans_order_id' => 'MT-'.$pemesanan->kode_pemesanan.'-LOCK',
+        'midtrans_snap_token' => 'snap-token-lock',
+    ]);
+
+    $this->actingAs($this->user)
+        ->get(route('user.pembayaran.create', $pemesanan->pemesanan_id))
+        ->assertStatus(200)
+        ->assertSee('Metode pembayaran sudah dikunci ke Midtrans')
+        ->assertSee('Midtrans Online')
+        ->assertDontSee('Transfer Manual')
+        ->assertDontSee('Kirim Bukti Pembayaran');
+});
+
+test('user cannot replace midtrans payment with manual proof', function () {
+    Storage::fake('public');
+    $pemesanan = createSouvenirPemesananForPaymentTest($this->user, $this->souvenir);
+    $pembayaran = Pembayaran::create([
+        'pemesanan_id' => $pemesanan->pemesanan_id,
+        'metode_pembayaran' => 'midtrans',
+        'jumlah_bayar' => $pemesanan->total_harga,
+        'status_pembayaran' => Pembayaran::STATUS_MENUNGGU_PEMBAYARAN,
+        'tanggal_pembayaran' => now(),
+        'midtrans_order_id' => 'MT-'.$pemesanan->kode_pemesanan.'-LOCK',
+        'midtrans_snap_token' => 'snap-token-lock',
+    ]);
+
+    $this->actingAs($this->user)
+        ->post(route('user.pembayaran.store', $pemesanan->pemesanan_id), [
+            'metode_pembayaran' => 'transfer_bank',
+            'jumlah_bayar' => $pemesanan->total_harga,
+            'bukti_pembayaran' => UploadedFile::fake()->image('bukti.jpg'),
+        ])
+        ->assertRedirect(route('user.pembayaran.create', $pemesanan->pemesanan_id))
+        ->assertSessionHas('error');
+
+    $pembayaran->refresh();
+
+    expect($pembayaran->metode_pembayaran)->toBe('midtrans');
+    expect($pembayaran->bukti_pembayaran)->toBeNull();
+    expect($pembayaran->midtrans_snap_token)->toBe('snap-token-lock');
 });
 
 test('user cannot upload payment for another users order', function () {

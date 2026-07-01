@@ -109,8 +109,8 @@ class KeranjangController extends Controller
         });
 
         return redirect()
-            ->route('user.pesanan.show', $pemesanan->pemesanan_id)
-            ->with('success', 'Pemesanan berhasil dibuat. Silakan lanjutkan pembayaran.');
+            ->route('user.pembayaran.create', $pemesanan->pemesanan_id)
+            ->with('success', 'Pemesanan berhasil dibuat. Silakan pilih metode pembayaran.');
     }
 
     /**

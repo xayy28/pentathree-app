@@ -22,7 +22,7 @@ class PembayaranController extends Controller
             ->firstOrFail();
 
         if (! $this->canOpenPaymentPage($pemesanan)) {
-            return redirect()->route('user.pesanan.show', $pemesanan->pemesanan_id)
+            return redirect()->route('user.pesanan.index')
                 ->with('error', 'Pembayaran untuk pesanan ini sudah dikirim atau sudah diverifikasi.');
         }
 
@@ -40,8 +40,13 @@ class PembayaranController extends Controller
             ->firstOrFail();
 
         if (! $this->canOpenPaymentPage($pemesanan)) {
-            return redirect()->route('user.pesanan.show', $pemesanan->pemesanan_id)
+            return redirect()->route('user.pesanan.index')
                 ->with('error', 'Pembayaran untuk pesanan ini sudah dikirim atau sudah diverifikasi.');
+        }
+
+        if ($pemesanan->pembayaran?->metode_pembayaran === 'midtrans') {
+            return redirect()->route('user.pembayaran.create', $pemesanan->pemesanan_id)
+                ->with('error', 'Metode pembayaran sudah dikunci ke Midtrans untuk pesanan ini.');
         }
 
         $validated = $request->validate([
@@ -93,7 +98,7 @@ class PembayaranController extends Controller
             'status_pemesanan' => Pemesanan::STATUS_MENUNGGU_VERIFIKASI,
         ]);
 
-        return redirect()->route('user.pesanan.show', $pemesanan->pemesanan_id)
+        return redirect()->route('user.pesanan.index')
             ->with('success', 'Bukti pembayaran berhasil dikirim dan menunggu verifikasi admin.');
     }
 

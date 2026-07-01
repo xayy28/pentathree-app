@@ -106,6 +106,41 @@ test('midtrans token requires sandbox keys', function () {
     expect(Pembayaran::count())->toBe(0);
 });
 
+test('midtrans token accepts sandbox dashboard keys without sb prefix', function () {
+    config([
+        'midtrans.server_key' => 'Mid-server-dashboard-test',
+        'midtrans.client_key' => 'Mid-client-dashboard-test',
+        'midtrans.is_production' => false,
+    ]);
+    $pemesanan = createSouvenirPemesananForMidtransTest($this->user, $this->souvenir);
+    $midtransService = Mockery::mock(MidtransPaymentService::class);
+    $midtransService->shouldReceive('createSnapToken')
+        ->once()
+        ->andReturn('snap-token-test');
+    $this->app->instance(MidtransPaymentService::class, $midtransService);
+
+    $this->actingAs($this->user)
+        ->postJson(route('user.pembayaran.midtrans.token', $pemesanan->pemesanan_id))
+        ->assertOk()
+        ->assertJsonPath('snap_token', 'snap-token-test');
+
+    expect(Pembayaran::count())->toBe(1);
+});
+
+test('midtrans token returns readable message when gateway rejects the key', function () {
+    $pemesanan = createSouvenirPemesananForMidtransTest($this->user, $this->souvenir);
+    $midtransService = Mockery::mock(MidtransPaymentService::class);
+    $midtransService->shouldReceive('createSnapToken')
+        ->once()
+        ->andThrow(new RuntimeException('Gagal membuat transaksi Midtrans: HTTP status code: 401'));
+    $this->app->instance(MidtransPaymentService::class, $midtransService);
+
+    $this->actingAs($this->user)
+        ->postJson(route('user.pembayaran.midtrans.token', $pemesanan->pemesanan_id))
+        ->assertStatus(503)
+        ->assertJsonPath('message', 'Gagal membuat transaksi Midtrans: HTTP status code: 401');
+});
+
 test('midtrans settlement verifies payment and updates stock once', function () {
     $pemesanan = createSouvenirPemesananForMidtransTest($this->user, $this->souvenir, 2);
     $pembayaran = createMidtransPaymentForTest($pemesanan);

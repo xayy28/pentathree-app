@@ -40,7 +40,7 @@ test('user can checkout cart into pemesanan and detail pemesanan', function () {
 
     $pemesanan = Pemesanan::with('detailPemesanans')->first();
 
-    $response->assertRedirect(route('user.pesanan.show', $pemesanan->pemesanan_id));
+    $response->assertRedirect(route('user.pembayaran.create', $pemesanan->pemesanan_id));
     $response->assertSessionHas('success');
 
     expect($pemesanan->user_id)->toBe($this->user->user_id);

@@ -35,9 +35,9 @@ class MidtransPaymentController extends Controller
             ], 422);
         }
 
-        if (blank(config('midtrans.server_key')) || blank(config('midtrans.client_key'))) {
+        if ($configurationError = $this->midtransConfigurationError()) {
             return response()->json([
-                'message' => 'Konfigurasi Midtrans Sandbox belum lengkap. Isi MIDTRANS_SERVER_KEY dan MIDTRANS_CLIENT_KEY di .env.',
+                'message' => $configurationError,
             ], 503);
         }
 
@@ -137,5 +137,32 @@ class MidtransPaymentController extends Controller
     private function midtransOrderId(Pemesanan $pemesanan): string
     {
         return 'MT-'.$pemesanan->kode_pemesanan.'-'.now()->format('His').'-'.random_int(100, 999);
+    }
+
+    private function midtransConfigurationError(): ?string
+    {
+        $serverKey = (string) config('midtrans.server_key');
+        $clientKey = (string) config('midtrans.client_key');
+        $isProduction = (bool) config('midtrans.is_production');
+
+        if (blank($serverKey) || blank($clientKey)) {
+            return 'Konfigurasi Midtrans Sandbox belum lengkap. Isi MIDTRANS_SERVER_KEY dan MIDTRANS_CLIENT_KEY di .env.';
+        }
+
+        if (! $this->hasValidMidtransKeyFormat($serverKey, 'server') || ! $this->hasValidMidtransKeyFormat($clientKey, 'client')) {
+            return 'Format MIDTRANS_SERVER_KEY atau MIDTRANS_CLIENT_KEY tidak valid. Copy key persis dari menu Access Keys Midtrans.';
+        }
+
+        if ($isProduction && (str_starts_with($serverKey, 'SB-Mid-server-') || str_starts_with($clientKey, 'SB-Mid-client-'))) {
+            return 'Mode Midtrans Production tidak boleh memakai key Sandbox.';
+        }
+
+        return null;
+    }
+
+    private function hasValidMidtransKeyFormat(string $key, string $type): bool
+    {
+        return str_starts_with($key, "Mid-{$type}-")
+            || str_starts_with($key, "SB-Mid-{$type}-");
     }
 }

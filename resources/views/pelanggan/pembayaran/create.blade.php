@@ -5,13 +5,14 @@
 @section('content')
     @php
         $manualMethods = ['transfer_bank', 'qris_manual', 'tunai'];
-        $selectedPaymentPanel = $errors->any() || in_array(old('metode_pembayaran'), $manualMethods, true) ? 'manual' : 'midtrans';
+        $isMidtransLocked = $pemesanan->pembayaran?->metode_pembayaran === 'midtrans';
+        $selectedPaymentPanel = ! $isMidtransLocked && ($errors->any() || in_array(old('metode_pembayaran'), $manualMethods, true)) ? 'manual' : 'midtrans';
     @endphp
 
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 bg-[#F8F7F4]">
         <div class="bg-white rounded-2xl border border-[#E6E4DD] p-6 sm:p-8 shadow-sm">
-            <a href="{{ route('user.pesanan.show', $pemesanan->pemesanan_id) }}" class="text-xs font-semibold text-[#5C6E65] hover:text-[#2B4C3F]">
-                &larr; Kembali ke Detail Pesanan
+            <a href="{{ route('user.pesanan.index') }}" class="text-xs font-semibold text-[#5C6E65] hover:text-[#2B4C3F]">
+                &larr; Kembali ke Riwayat Pesanan
             </a>
             <h2 class="font-serif text-3xl text-[#2B4C3F] font-semibold tracking-widest uppercase mt-4">
                 Pembayaran
@@ -25,18 +26,25 @@
                 <span class="font-bold text-[#E65F5F]">Rp {{ number_format($pemesanan->total_harga, 0, ',', '.') }}</span>
             </div>
 
-            <div class="mt-6">
-                <div class="grid grid-cols-2 gap-2 rounded-xl border border-[#E6E4DD] bg-[#FAF9F6] p-1">
-                    <button type="button" data-payment-tab="midtrans"
-                        class="payment-tab h-12 rounded-lg px-3 text-sm font-semibold transition-all {{ $selectedPaymentPanel === 'midtrans' ? 'bg-[#2B4C3F] text-white shadow-sm' : 'text-[#5C6E65] hover:bg-white' }}">
-                        Midtrans Online
-                    </button>
-                    <button type="button" data-payment-tab="manual"
-                        class="payment-tab h-12 rounded-lg px-3 text-sm font-semibold transition-all {{ $selectedPaymentPanel === 'manual' ? 'bg-[#2B4C3F] text-white shadow-sm' : 'text-[#5C6E65] hover:bg-white' }}">
-                        Transfer Manual
-                    </button>
-                </div>
+            <div id="payment-method-lock-notice"
+                class="mt-6 rounded-xl border border-[#F2D8A8] bg-[#FFF8E8] p-4 text-sm text-[#8A5A10] {{ $isMidtransLocked ? '' : 'hidden' }}">
+                Metode pembayaran sudah dikunci ke Midtrans untuk pesanan ini.
             </div>
+
+            @if (! $isMidtransLocked)
+                <div id="payment-method-switcher" class="mt-6">
+                    <div class="grid grid-cols-2 gap-2 rounded-xl border border-[#E6E4DD] bg-[#FAF9F6] p-1">
+                        <button type="button" data-payment-tab="midtrans"
+                            class="payment-tab h-12 rounded-lg px-3 text-sm font-semibold transition-all {{ $selectedPaymentPanel === 'midtrans' ? 'bg-[#2B4C3F] text-white shadow-sm' : 'text-[#5C6E65] hover:bg-white' }}">
+                            Midtrans Online
+                        </button>
+                        <button type="button" data-payment-tab="manual"
+                            class="payment-tab h-12 rounded-lg px-3 text-sm font-semibold transition-all {{ $selectedPaymentPanel === 'manual' ? 'bg-[#2B4C3F] text-white shadow-sm' : 'text-[#5C6E65] hover:bg-white' }}">
+                            Transfer Manual
+                        </button>
+                    </div>
+                </div>
+            @endif
 
             <div data-payment-panel="midtrans" class="{{ $selectedPaymentPanel === 'midtrans' ? '' : 'hidden' }}">
                 <div class="mt-6 rounded-2xl border border-[#C9D8D0] bg-[#F3F7F5] p-5">
@@ -56,6 +64,7 @@
                 </div>
             </div>
 
+            @if (! $isMidtransLocked)
             <div data-payment-panel="manual" class="{{ $selectedPaymentPanel === 'manual' ? '' : 'hidden' }}">
                 <form action="{{ route('user.pembayaran.store', $pemesanan->pemesanan_id) }}" method="POST" enctype="multipart/form-data" class="mt-6 space-y-5 rounded-2xl border border-[#E6E4DD] bg-[#FAF9F6] p-5">
                     @csrf
@@ -123,6 +132,7 @@
                     </button>
                 </form>
             </div>
+            @endif
         </div>
     </div>
 
@@ -133,11 +143,13 @@
         document.addEventListener('DOMContentLoaded', function () {
             const input = document.getElementById('bukti_pembayaran');
             const label = document.getElementById('bukti-file-label');
+            const paymentMethodLockNotice = document.getElementById('payment-method-lock-notice');
+            const paymentMethodSwitcher = document.getElementById('payment-method-switcher');
             const tabs = document.querySelectorAll('[data-payment-tab]');
             const panels = document.querySelectorAll('[data-payment-panel]');
             const midtransButton = document.getElementById('midtrans-pay-button');
             const midtransMessage = document.getElementById('midtrans-payment-message');
-            const detailUrl = @json(route('user.pesanan.show', $pemesanan->pemesanan_id));
+            const historyUrl = @json(route('user.pesanan.index'));
             const statusUrl = @json(route('user.pembayaran.midtrans.status', $pemesanan->pemesanan_id));
 
             const setPaymentPanel = function (target) {
@@ -151,6 +163,12 @@
                 panels.forEach(function (panel) {
                     panel.classList.toggle('hidden', panel.dataset.paymentPanel !== target);
                 });
+            };
+
+            const lockPaymentToMidtrans = function () {
+                setPaymentPanel('midtrans');
+                paymentMethodLockNotice?.classList.remove('hidden');
+                paymentMethodSwitcher?.classList.add('hidden');
             };
 
             tabs.forEach(function (tab) {
@@ -180,7 +198,7 @@
                             },
                         });
                     } finally {
-                        window.location.href = detailUrl;
+                        window.location.href = historyUrl;
                     }
                 };
 
@@ -208,6 +226,8 @@
                             throw new Error(data.message || 'Gagal membuat token pembayaran Midtrans.');
                         }
 
+                        lockPaymentToMidtrans();
+
                         window.snap.pay(data.snap_token, {
                             onSuccess: function () {
                                 syncStatusThenRedirect('Pembayaran berhasil. Menyinkronkan status Midtrans...');
@@ -216,7 +236,7 @@
                                 syncStatusThenRedirect('Pembayaran dibuat. Menyinkronkan status Midtrans...');
                             },
                             onError: function () {
-                                showMidtransMessage('Pembayaran Midtrans gagal. Coba ulangi atau gunakan pembayaran manual.', true);
+                                showMidtransMessage('Pembayaran Midtrans gagal. Coba ulangi pembayaran Midtrans.', true);
                                 midtransButton.disabled = false;
                             },
                             onClose: function () {

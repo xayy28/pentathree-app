@@ -17,7 +17,11 @@ class MidtransPaymentService
     {
         $this->configure();
 
-        return Snap::getSnapToken($this->snapPayload($pemesanan, $pembayaran));
+        try {
+            return Snap::getSnapToken($this->snapPayload($pemesanan, $pembayaran));
+        } catch (Throwable $exception) {
+            throw new RuntimeException('Gagal membuat transaksi Midtrans: '.$exception->getMessage(), 0, $exception);
+        }
     }
 
     public function checkTransactionStatus(Pembayaran $pembayaran): array
@@ -61,14 +65,32 @@ class MidtransPaymentService
 
     private function configure(): void
     {
-        if (blank(config('midtrans.server_key')) || blank(config('midtrans.client_key'))) {
+        $serverKey = (string) config('midtrans.server_key');
+        $clientKey = (string) config('midtrans.client_key');
+        $isProduction = (bool) config('midtrans.is_production');
+
+        if (blank($serverKey) || blank($clientKey)) {
             throw new RuntimeException('Konfigurasi Midtrans Sandbox belum lengkap.');
         }
 
-        Config::$serverKey = (string) config('midtrans.server_key');
-        Config::$isProduction = (bool) config('midtrans.is_production');
+        if (! $this->hasValidKeyFormat($serverKey, 'server') || ! $this->hasValidKeyFormat($clientKey, 'client')) {
+            throw new RuntimeException('Format Server Key atau Client Key Midtrans tidak valid. Copy key persis dari menu Access Keys Midtrans.');
+        }
+
+        if ($isProduction && (str_starts_with($serverKey, 'SB-Mid-server-') || str_starts_with($clientKey, 'SB-Mid-client-'))) {
+            throw new RuntimeException('Mode Midtrans Production tidak boleh memakai key Sandbox.');
+        }
+
+        Config::$serverKey = $serverKey;
+        Config::$isProduction = $isProduction;
         Config::$isSanitized = (bool) config('midtrans.is_sanitized');
         Config::$is3ds = (bool) config('midtrans.is_3ds');
+    }
+
+    private function hasValidKeyFormat(string $key, string $type): bool
+    {
+        return str_starts_with($key, "Mid-{$type}-")
+            || str_starts_with($key, "SB-Mid-{$type}-");
     }
 
     private function snapPayload(Pemesanan $pemesanan, Pembayaran $pembayaran): array
