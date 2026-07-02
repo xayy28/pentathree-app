@@ -1,403 +1,125 @@
-# Installation Documentation
+# Panduan Instalasi Project PentaThree SIMHOSUV
 
-Dokumen ini menjelaskan langkah-langkah instalasi project **pentathree-app** berbasis Laravel.
+Terakhir diperbarui: 2026-07-02
 
-Project ini merupakan sistem informasi manajemen homestay dan penjualan souvenir berbasis web pada **Natasha Homestay & Harau Souvenir**.
+Dokumen ini menjelaskan cara menjalankan project Laravel PentaThree SIMHOSUV berdasarkan kondisi kode terbaru setelah Sprint 8.
 
----
+## 1. Kebutuhan Sistem
 
-## Daftar Isi
+Minimal:
 
-- [1. Persyaratan Sistem](#1-persyaratan-sistem)
-- [2. Clone Repository](#2-clone-repository)
-- [3. Install Dependency](#3-install-dependency)
-- [4. Konfigurasi Environment](#4-konfigurasi-environment)
-- [5. Konfigurasi Database](#5-konfigurasi-database)
-- [6. Migrasi dan Seeder Database](#6-migrasi-dan-seeder-database)
-- [7. Konfigurasi Storage](#7-konfigurasi-storage)
-- [8. Menjalankan Project](#8-menjalankan-project)
-- [9. Git Workflow](#9-git-workflow)
-- [10. Troubleshooting](#10-troubleshooting)
+- PHP 8.3 atau lebih baru.
+- Composer.
+- Node.js 20 atau lebih baru.
+- NPM.
+- MySQL/MariaDB.
+- Git.
 
----
+Ekstensi PHP yang disarankan:
 
-## 1. Persyaratan Sistem
-
-Sebelum menjalankan project, pastikan perangkat sudah memiliki kebutuhan berikut:
-
-| Kebutuhan          | Versi Minimum | Keterangan                                      |
-| ------------------ | ------------: | ----------------------------------------------- |
-| PHP                |          8.2+ | Disarankan mengikuti versi pada `composer.json` |
-| Composer           |           2.x | Dependency manager PHP                          |
-| Node.js            |   18.x / 20.x | Untuk menjalankan Vite dan asset frontend       |
-| NPM                |          9.x+ | Biasanya sudah terinstall bersama Node.js       |
-| MySQL              |           8.0 | Database utama project                          |
-| Git                |           2.x | Untuk clone, pull, commit, dan push repository  |
-| XAMPP / Laragon    |       Terbaru | Untuk menjalankan Apache/MySQL lokal            |
-| Visual Studio Code |       Terbaru | Code editor                                     |
-| Browser            |       Terbaru | Chrome, Edge, Firefox, dan sejenisnya           |
-
----
+- `pdo_mysql`
+- `pdo_sqlite`
+- `mbstring`
+- `fileinfo`
+- `openssl`
+- `curl`
+- `gd`
+- `xml`
+- `ctype`
+- `json`
 
 ## 2. Clone Repository
 
-Clone repository dari GitHub ke perangkat lokal:
-
 ```bash
-git clone https://github.com/xayy28/pentathree-app.git
-```
-
-Masuk ke folder project:
-
-```bash
+git clone <url-repository>
 cd pentathree-app
 ```
 
----
+Jika project sudah ada di lokal:
 
-## 3. Install Dependency
+```bash
+cd "D:\Project Base Learning\pentathree-app"
+```
 
-Project Laravel membutuhkan dependency dari **Composer** dan **NPM**.
-
-### 3.1 Install Dependency PHP
-
-Jalankan perintah berikut:
+## 3. Install Dependency Backend
 
 ```bash
 composer install
 ```
 
-Jika terjadi error karena perbedaan versi PHP, gunakan:
+Dependency penting yang akan terinstall:
 
-```bash
-composer install --ignore-platform-reqs
-```
+- Laravel Framework.
+- Spatie Laravel Permission.
+- Midtrans PHP SDK.
+- Laravel DomPDF.
+- Intervention Image Laravel.
+- Pest.
+- Laravel Pint.
 
-> Gunakan `--ignore-platform-reqs` hanya jika benar-benar diperlukan.
-
----
-
-### 3.2 Install Dependency Frontend
-
-Jalankan perintah berikut:
+## 4. Install Dependency Frontend
 
 ```bash
 npm install
 ```
 
-Dependency frontend digunakan untuk menjalankan asset seperti Tailwind CSS, Vite, JavaScript, dan CSS project.
+Dependency frontend:
 
----
+- Tailwind CSS.
+- Vite.
+- Laravel Vite Plugin.
 
-## 4. Konfigurasi Environment
+## 5. Setup File Environment
 
-### 4.1 Salin File `.env`
-
-Salin file `.env.example` menjadi `.env`.
-
-Untuk Windows PowerShell:
-
-```powershell
-Copy-Item .env.example .env
-```
-
-Untuk Linux / macOS / Git Bash:
+Copy file environment:
 
 ```bash
-cp .env.example .env
+copy .env.example .env
 ```
 
----
-
-### 4.2 Generate Application Key
-
-Generate application key Laravel:
+Generate app key:
 
 ```bash
 php artisan key:generate
 ```
 
-Application key digunakan Laravel untuk kebutuhan enkripsi aplikasi.
-
----
-
-### 4.3 Konfigurasi File `.env`
-
-Buka file `.env`, lalu sesuaikan bagian berikut:
+Set database lokal:
 
 ```env
-APP_NAME="PentaThree App"
-APP_ENV=local
-APP_KEY=
-APP_DEBUG=true
-APP_URL=http://127.0.0.1:8000
-
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_DATABASE=pentathree_app
 DB_USERNAME=root
 DB_PASSWORD=
-
-FILESYSTEM_DISK=public
 ```
 
-Pastikan `APP_KEY` sudah terisi setelah menjalankan:
-
-```bash
-php artisan key:generate
-```
-
----
-
-## 5. Konfigurasi Database
-
-### 5.1 Buat Database MySQL
-
-Buka phpMyAdmin melalui browser:
-
-```text
-http://localhost/phpmyadmin
-```
-
-Buat database baru dengan nama:
-
-```text
-pentathree_app
-```
-
-Atau gunakan query SQL berikut:
+Buat database MySQL:
 
 ```sql
 CREATE DATABASE pentathree_app;
 ```
 
-Pastikan nama database sama dengan konfigurasi pada file `.env`:
+## 6. Setup Midtrans Sandbox
+
+Isi key Midtrans di `.env` memakai key Sandbox dari dashboard Midtrans.
+
+Contoh format, jangan pakai key asli di dokumentasi atau git:
 
 ```env
-DB_DATABASE=pentathree_app
+MIDTRANS_SERVER_KEY=Mid-server-xxxxx
+MIDTRANS_CLIENT_KEY=Mid-client-xxxxx
+MIDTRANS_IS_PRODUCTION=false
+MIDTRANS_IS_SANITIZED=true
+MIDTRANS_IS_3DS=true
 ```
 
----
-
-### 5.2 Pastikan MySQL Berjalan
-
-Jika menggunakan XAMPP, pastikan service berikut sudah aktif:
-
-- Apache
-- MySQL
-
-Jika menggunakan Laragon, pastikan server sudah dijalankan.
-
----
-
-## 6. Migrasi dan Seeder Database
-
-### 6.1 Jalankan Migrasi
-
-Untuk membuat tabel database berdasarkan file migration Laravel, jalankan:
-
-```bash
-php artisan migrate
-```
-
----
-
-### 6.2 Jalankan Seeder
-
-Jika project menyediakan seeder, jalankan:
-
-```bash
-php artisan db:seed
-```
-
-Atau jalankan migration dan seeder sekaligus:
-
-```bash
-php artisan migrate --seed
-```
-
-Jika ingin mengulang database dari awal:
-
-```bash
-php artisan migrate:fresh --seed
-```
-
-> Perintah `migrate:fresh --seed` akan menghapus seluruh tabel dan data lama, lalu membuat ulang database dari awal. Gunakan hanya untuk development lokal.
-
----
-
-## 7. Konfigurasi Storage
-
-Agar file upload dapat diakses melalui folder `public`, jalankan:
-
-```bash
-php artisan storage:link
-```
-
-Perintah ini akan membuat symbolic link dari:
-
-```text
-storage/app/public
-```
-
-ke:
-
-```text
-public/storage
-```
-
-Storage digunakan untuk menyimpan file upload seperti gambar homestay, gambar kamar, gambar souvenir, bukti pembayaran, dan file pendukung lainnya.
-
----
-
-## 8. Menjalankan Project
-
-Untuk menjalankan project, gunakan dua terminal terpisah.
-
-### Terminal 1 — Jalankan Server Laravel
-
-```bash
-php artisan serve
-```
-
-Server Laravel akan berjalan pada alamat:
-
-```text
-http://127.0.0.1:8000
-```
-
----
-
-### Terminal 2 — Jalankan Vite
-
-```bash
-npm run dev
-```
-
-Vite digunakan untuk menjalankan asset frontend seperti CSS dan JavaScript.
-
----
-
-### Akses Project
-
-Buka browser, lalu akses:
-
-```text
-http://127.0.0.1:8000
-```
-
----
-
-## 9. Git Workflow
-
-Project ini menggunakan GitHub sebagai version control.
-
-### 9.1 Struktur Branch
-
-| Branch                | Fungsi                                   |
-| --------------------- | ---------------------------------------- |
-| `main`                | Branch utama / production                |
-| `testing`             | Branch integrasi sebelum masuk ke `main` |
-| `zackri_kurnia_amri`  | Branch pribadi Zackri Kurnia Amri        |
-| `m_aufi_syahyudi`     | Branch pribadi Muhammad Aufi Syahyudi    |
-| `yelsa_pagansa_putri` | Branch pribadi Yelsa Pagansa Putri       |
-| `zikri_ilham_pratama` | Branch pribadi Zikri Ilham Pratama       |
-| `taufiqurrahman`      | Branch pribadi Taufiqurrahman            |
-
----
-
-### 9.2 Alur Kerja Harian
-
-Sebelum mulai coding, pastikan berada di branch pribadi:
-
-```bash
-git checkout nama_branch_kamu
-```
-
-Contoh:
-
-```bash
-git checkout zackri_kurnia_amri
-```
-
-Ambil update terbaru dari branch utama integrasi:
-
-```bash
-git pull origin testing
-```
-
-Setelah selesai mengerjakan fitur:
-
-```bash
-git add .
-git commit -m "feat: menambahkan fitur nama-fitur"
-git push origin nama_branch_kamu
-```
-
-Setelah itu, buat Pull Request dari branch pribadi ke branch `testing`.
-
----
-
-### 9.3 Konvensi Commit Message
-
-| Prefix      | Fungsi                                              |
-| ----------- | --------------------------------------------------- |
-| `feat:`     | Menambahkan fitur baru                              |
-| `fix:`      | Memperbaiki bug                                     |
-| `docs:`     | Mengubah dokumentasi                                |
-| `style:`    | Mengubah tampilan tanpa mengubah logic              |
-| `refactor:` | Merapikan kode tanpa mengubah fitur                 |
-| `test:`     | Menambah atau memperbaiki pengujian                 |
-| `chore:`    | Perubahan konfigurasi, dependency, atau maintenance |
-
-Contoh commit:
-
-```bash
-git commit -m "feat: menambahkan halaman login"
-git commit -m "fix: memperbaiki validasi form register"
-git commit -m "docs: memperbarui installation documentation"
-```
-
----
-
-## 10. Troubleshooting
-
-### 10.1 Error `APP_KEY` Belum Ada
-
-Jika muncul error seperti:
-
-```text
-No application encryption key has been specified.
-```
-
-Jalankan:
-
-```bash
-php artisan key:generate
-```
-
----
-
-### 10.2 Error Koneksi Database
-
-Jika terjadi error koneksi database, cek beberapa hal berikut:
-
-- MySQL sudah berjalan.
-- Database `pentathree_app` sudah dibuat.
-- Konfigurasi `.env` sudah benar.
-- Username dan password database sesuai.
-
-Contoh konfigurasi database:
-
-```env
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=pentathree_app
-DB_USERNAME=root
-DB_PASSWORD=
-```
+Catatan:
+
+- Sandbox dipakai untuk demo dan testing.
+- Production belum dipakai.
+- Production membutuhkan aktivasi merchant dan dokumen owner/bisnis.
+- Jangan commit key asli ke repository.
 
 Setelah mengubah `.env`, jalankan:
 
@@ -405,185 +127,305 @@ Setelah mengubah `.env`, jalankan:
 php artisan config:clear
 ```
 
----
+## 7. Migrasi dan Seeder
 
-### 10.3 Error `Class not found`
-
-Jika muncul error `Class not found`, jalankan:
-
-```bash
-composer dump-autoload
-```
-
-Jika masih error, coba jalankan ulang:
-
-```bash
-composer install
-```
-
----
-
-### 10.4 Error CSS atau JavaScript Tidak Tampil
-
-Jika tampilan website berantakan atau CSS tidak muncul, jalankan:
-
-```bash
-npm install
-npm run dev
-```
-
-Jika untuk production:
-
-```bash
-npm run build
-```
-
-Lalu refresh browser menggunakan:
-
-```text
-Ctrl + Shift + R
-```
-
----
-
-### 10.5 Error `Vite manifest not found`
-
-Jika muncul error:
-
-```text
-Vite manifest not found
-```
-
-Jalankan:
-
-```bash
-npm run dev
-```
-
-Atau untuk build production:
-
-```bash
-npm run build
-```
-
----
-
-### 10.6 Error Storage / Gambar Tidak Tampil
-
-Jika gambar upload tidak tampil, jalankan:
-
-```bash
-php artisan storage:link
-```
-
-Jika symbolic link sudah ada tetapi masih bermasalah, hapus link lama lalu buat ulang.
-
-Untuk Windows PowerShell:
-
-```powershell
-Remove-Item public/storage
-php artisan storage:link
-```
-
-Untuk Linux / macOS / Git Bash:
-
-```bash
-rm public/storage
-php artisan storage:link
-```
-
----
-
-### 10.7 Error Saat `composer install`
-
-Jika Composer gagal install dependency karena versi PHP tidak sesuai:
-
-```bash
-composer install --ignore-platform-reqs
-```
-
-Jika muncul error SSL Composer, coba:
-
-```bash
-composer clear-cache
-composer install
-```
-
----
-
-### 10.8 Perubahan Setelah Pull Tidak Muncul
-
-Jika setelah `git pull` perubahan belum muncul, jalankan:
-
-```bash
-php artisan config:clear
-php artisan cache:clear
-php artisan view:clear
-php artisan route:clear
-```
-
-Jika ada perubahan dependency setelah pull, jalankan:
-
-```bash
-composer install
-npm install
-```
-
-Jika ada perubahan database, jalankan:
+Jalankan migration:
 
 ```bash
 php artisan migrate
 ```
 
----
-
-## 11. Perintah Singkat Instalasi
-
-Berikut versi singkat untuk menjalankan project dari awal:
-
-```bash
-git clone https://github.com/xayy28/pentathree-app.git
-cd pentathree-app
-composer install
-npm install
-cp .env.example .env
-php artisan key:generate
-php artisan migrate
-php artisan storage:link
-php artisan serve
-```
-
-Lalu buka terminal kedua:
-
-```bash
-npm run dev
-```
-
-Akses project melalui browser:
-
-```text
-http://127.0.0.1:8000
-```
-
----
-
-## 12. Catatan
-
-Jika project menggunakan fitur tambahan seperti role permission, invoice PDF, payment gateway, dan upload gambar, pastikan semua dependency sudah terinstall melalui:
-
-```bash
-composer install
-npm install
-```
-
-Jika database membutuhkan data awal seperti role admin dan customer, pastikan seeder sudah dijalankan:
+Jika ingin data demo:
 
 ```bash
 php artisan db:seed
 ```
 
-Atau:
+Atau langsung:
 
 ```bash
-php artisan migrate:fresh --seed
+php artisan migrate --seed
 ```
+
+Tabel utama yang dibuat:
+
+- `users`
+- `roles`, `permissions`, dan tabel pivot Spatie.
+- `kategori_homestays`
+- `homestays`
+- `souvenirs`
+- `keranjangs`
+- `keranjang_items`
+- `pemesanans`
+- `detail_pemesanans`
+- `pembayarans`
+- `cache`
+- `jobs`
+
+## 8. Setup Storage
+
+Jalankan:
+
+```bash
+php artisan storage:link
+```
+
+Storage dipakai untuk:
+
+- Foto profil.
+- Foto homestay.
+- Foto souvenir.
+- Bukti pembayaran.
+
+Upload gambar diproses oleh `ImageUploadService` dan dioptimasi memakai Intervention Image.
+
+## 9. Menjalankan Project
+
+Jalankan Laravel:
+
+```bash
+php artisan serve
+```
+
+Jalankan Vite:
+
+```bash
+npm run dev
+```
+
+Atau pakai script gabungan:
+
+```bash
+composer run dev
+```
+
+URL lokal default:
+
+```text
+http://127.0.0.1:8000
+```
+
+## 10. Build Production Asset
+
+```bash
+npm run build
+```
+
+Build ini wajib sukses sebelum demo atau deploy.
+
+## 11. Menjalankan Test
+
+Jalankan semua test:
+
+```bash
+php artisan test
+```
+
+Status terakhir:
+
+```text
+86 passed
+```
+
+Jalankan test payment saja:
+
+```bash
+php artisan test tests\Feature\PembayaranTest.php tests\Feature\MidtransPaymentTest.php
+```
+
+Jalankan format kode:
+
+```bash
+vendor\bin\pint --dirty
+```
+
+Cek whitespace:
+
+```bash
+git diff --check
+```
+
+## 12. Alur Demo User
+
+### 12.1 Pembelian Souvenir
+
+1. Login sebagai user.
+2. Buka katalog souvenir.
+3. Tambah souvenir ke keranjang.
+4. Checkout keranjang.
+5. Sistem membuat pemesanan dan langsung membuka halaman pembayaran.
+6. Pilih Midtrans atau transfer manual.
+7. Jika memilih Midtrans, metode pembayaran dikunci ke Midtrans.
+8. Setelah pembayaran sukses/pending, user diarahkan ke riwayat pesanan.
+
+### 12.2 Reservasi Homestay
+
+1. Login sebagai user.
+2. Buka katalog homestay.
+3. Pilih homestay dan isi tanggal booking.
+4. Sistem membuat pemesanan homestay dan langsung membuka halaman pembayaran.
+5. Pilih Midtrans atau transfer manual.
+6. Jika memilih Midtrans, metode pembayaran dikunci ke Midtrans.
+7. Setelah pembayaran selesai, user diarahkan ke riwayat pesanan.
+
+### 12.3 Admin
+
+1. Login sebagai admin.
+2. Kelola kategori homestay.
+3. Kelola homestay.
+4. Kelola souvenir.
+5. Cek pembayaran souvenir.
+6. Cek reservasi homestay.
+7. Cek laporan.
+8. Unduh laporan PDF.
+
+## 13. Testing Midtrans Sandbox
+
+Flow test:
+
+1. Buat pesanan souvenir atau booking homestay.
+2. Masuk halaman pembayaran.
+3. Klik Midtrans Online.
+4. Snap popup muncul.
+5. Pilih metode pembayaran Sandbox.
+6. Selesaikan pembayaran.
+7. Sistem sinkron status.
+8. User diarahkan ke riwayat pesanan.
+
+Kartu Sandbox umum:
+
+```text
+Card Number: 4811 1111 1111 1114
+CVV: 123
+Expiry: bulan/tahun masa depan
+OTP/3DS: 112233
+```
+
+Untuk Virtual Account, gunakan simulator Midtrans Sandbox:
+
+```text
+https://simulator.sandbox.midtrans.com/
+```
+
+## 14. Error Umum
+
+### 14.1 Table Tidak Ada
+
+Contoh:
+
+```text
+Base table or view not found
+```
+
+Solusi:
+
+```bash
+php artisan migrate
+```
+
+Jika migration sudah pernah gagal, cek status:
+
+```bash
+php artisan migrate:status
+```
+
+### 14.2 Storage Gambar Tidak Tampil
+
+Solusi:
+
+```bash
+php artisan storage:link
+php artisan view:clear
+```
+
+### 14.3 Midtrans 401 Unauthorized
+
+Penyebab paling mungkin:
+
+- Server key salah.
+- Client key salah.
+- Tertukar antara server key dan client key.
+- Mode production/sandbox tidak sesuai.
+
+Solusi:
+
+```bash
+php artisan config:clear
+```
+
+Lalu cek `.env`:
+
+```env
+MIDTRANS_IS_PRODUCTION=false
+```
+
+### 14.4 Curl SSL Certificate Error
+
+Contoh error:
+
+```text
+CURL Error: SSL certificate OpenSSL verify result: unable to get local issuer certificate
+```
+
+Solusi aman untuk Windows/XAMPP:
+
+1. Download `cacert.pem` dari sumber resmi curl.
+2. Simpan misalnya di `C:\xampp\php\extras\ssl\cacert.pem`.
+3. Edit `php.ini`.
+4. Isi:
+
+```ini
+curl.cainfo="C:\xampp\php\extras\ssl\cacert.pem"
+openssl.cafile="C:\xampp\php\extras\ssl\cacert.pem"
+```
+
+5. Restart terminal/server.
+6. Jalankan:
+
+```bash
+php artisan config:clear
+```
+
+### 14.5 Halaman Lama Masih Muncul
+
+Solusi:
+
+```bash
+php artisan view:clear
+php artisan cache:clear
+php artisan config:clear
+```
+
+## 15. Progress Sprint Saat Ini
+
+Sudah selesai:
+
+- Sprint 0: Stabilization.
+- Sprint 1: Pemesanan Core.
+- Sprint 2: Souvenir Checkout.
+- Sprint 3: Payment Core.
+- Sprint 5: Homestay Booking.
+- Sprint 6: Admin Reservation Management.
+- Sprint 6.5: Stabilization and Demo Readiness.
+- Sprint 7: Reports.
+- Sprint 8: Midtrans Sandbox Integration.
+
+Di-skip sementara:
+
+- Sprint 4: Invoice.
+
+Berikutnya:
+
+- Sprint 9: Polish and Optional Scope.
+
+## 16. Kesimpulan
+
+Project sudah bisa dijalankan untuk demo MVP:
+
+- Admin CRUD homestay/souvenir.
+- Customer checkout souvenir.
+- Customer booking homestay.
+- Payment manual dan Midtrans Sandbox.
+- Admin reservasi.
+- Admin laporan PDF.
+- Test dan build sudah berjalan.
