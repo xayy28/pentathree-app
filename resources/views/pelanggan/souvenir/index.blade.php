@@ -158,7 +158,7 @@
                                                 class="w-full h-full flex items-center justify-center text-6xl bg-[#FAF9F6]">
                                                 🏺</div>
                                         @endif
-                                        @if ($souvenir->status === 'Tersedia')
+                                        @if ($souvenir->status === 'Tersedia' && $souvenir->stok > 0)
                                             <span
                                                 class="absolute top-4 left-4 bg-white/90 backdrop-blur-sm border border-[#A7C5B5]/20 text-[9px] font-bold uppercase tracking-wider text-[#2B4C3F] px-2.5 py-1 rounded-full shadow-sm">
                                                 Tersedia
@@ -166,7 +166,7 @@
                                         @else
                                             <span
                                                 class="absolute top-4 left-4 bg-[#E65F5F]/95 backdrop-blur-sm text-[10px] font-bold uppercase tracking-wider text-white px-3 py-1.5 rounded-full shadow-sm">
-                                                {{ $souvenir->status }}
+                                                Habis
                                             </span>
                                         @endif
                                     </div>
@@ -199,9 +199,7 @@
                                             <span class="text-[10px] text-[#8A9C91] block">Stok: {{ $souvenir->stok }}
                                                 pcs</span>
                                             <span class="text-[10px] text-[#5C6E65] font-medium block">
-                                                <span
-                                                    class="inline-block w-1.5 h-1.5 rounded-full bg-[#E9C46A] mr-1"></span>{{ $souvenir->jumlah_terjual }}
-                                                terjual
+                                                {{ $souvenir->status === 'Tersedia' && $souvenir->stok > 0 ? 'Tersedia' : 'Habis' }}
                                             </span>
                                         </div>
                                     </div>

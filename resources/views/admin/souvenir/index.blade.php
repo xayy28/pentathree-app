@@ -122,7 +122,7 @@
 
                                 {{-- Status --}}
                                 <td style="padding: 16px;">
-                                    @if($souvenir->status === 'Tersedia')
+                                    @if($souvenir->status === 'Tersedia' && $souvenir->stok > 0)
                                         <span style="display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; border-radius: 999px; background: #EAF2EE; color: #2B4C3F; border: 1px solid #B8DEC8;">
                                             <span style="width: 6px; height: 6px; border-radius: 50%; background: #2B4C3F; display: inline-block;"></span>
                                             Tersedia
@@ -130,7 +130,7 @@
                                     @else
                                         <span style="display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; border-radius: 999px; background: #FDF2F2; color: #9B1C1C; border: 1px solid #F5C2C2;">
                                             <span style="width: 6px; height: 6px; border-radius: 50%; background: #E65F5F; display: inline-block;"></span>
-                                            {{ $souvenir->status }}
+                                            Habis
                                         </span>
                                     @endif
                                 </td>
@@ -189,10 +189,10 @@
                                 <span class="text-sm font-semibold text-[#2B4C3F]">Rp {{ number_format($souvenir->harga, 0, ',', '.') }}</span>
                             </div>
                             <div>
-                                @if($souvenir->status === 'Tersedia')
+                                @if($souvenir->status === 'Tersedia' && $souvenir->stok > 0)
                                     <span class="px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider rounded-full bg-[#EAF2EE] text-[#2B4C3F]">Tersedia</span>
                                 @else
-                                    <span class="px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider rounded-full bg-[#FDF2F2] border border-[#F5C2C2] text-[#9B1C1C]">{{ $souvenir->status }}</span>
+                                    <span class="px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider rounded-full bg-[#FDF2F2] border border-[#F5C2C2] text-[#9B1C1C]">Habis</span>
                                 @endif
                             </div>
                         </div>
