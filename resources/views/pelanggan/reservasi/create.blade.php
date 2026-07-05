@@ -17,13 +17,12 @@
             </div>
         </div>
 
-        <!-- Homestay Info -->
         <div class="flex gap-4 p-4 bg-[#EAF2EE] rounded-2xl mb-6">
             @if($homestay->foto)
                 <img src="{{ asset($homestay->foto) }}" alt="{{ $homestay->nama_homestay }}" class="w-24 h-20 object-cover rounded-xl flex-shrink-0">
             @else
-                <div class="w-24 h-20 bg-[#B8DEC8] rounded-xl flex-shrink-0 flex items-center justify-center">
-                    <span class="text-2xl">🏠</span>
+                <div class="w-24 h-20 bg-[#B8DEC8] rounded-xl flex-shrink-0 flex items-center justify-center text-[#1E362C] font-semibold">
+                    Home
                 </div>
             @endif
             <div class="space-y-1">
@@ -34,11 +33,14 @@
         </div>
 
         <div class="p-8 bg-[#F3F4F6] border border-dashed border-gray-300 rounded-2xl flex flex-col items-center justify-center text-center">
-            <span class="text-5xl mb-4">📅</span>
-            <h3 class="text-lg font-semibold text-[#1E362C] mb-1">Form Reservasi Belum Tersedia</h3>
-            <p class="text-xs text-[#8A9C91] max-w-sm">
-                Segera hadir form untuk mengisi tanggal check-in, check-out, dan melengkapi detail reservasi Anda.
+            <h3 class="text-lg font-semibold text-[#1E362C] mb-1">Gunakan Form Booking Homestay</h3>
+            <p class="text-xs text-[#8A9C91] max-w-sm mb-6">
+                Isi tanggal check-in, check-out, dan jumlah tamu melalui flow booking aktif.
             </p>
+            <a href="{{ route('user.homestay.booking.create', $homestay->homestay_id) }}"
+                class="inline-flex items-center justify-center bg-[#1E362C] hover:bg-[#152720] text-white text-xs font-semibold py-3 px-6 rounded-xl shadow-sm transition-all">
+                Lanjut Booking
+            </a>
         </div>
     </div>
 </div>

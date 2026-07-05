@@ -30,4 +30,12 @@ class Homestay extends Model
     {
         return $this->belongsTo(KategoriHomestay::class, 'kategori_id', 'kategori_id');
     }
+
+    /**
+     * Detail pemesanan yang berisi homestay ini.
+     */
+    public function detailPemesanans()
+    {
+        return $this->hasMany(DetailPemesanan::class, 'homestay_id', 'homestay_id');
+    }
 }

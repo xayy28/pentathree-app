@@ -74,6 +74,10 @@
                         class="text-xs md:text-[13px] lg:text-sm font-semibold tracking-[0.15em] uppercase pb-2 transition-all {{ request()->routeIs('user.souvenir') ? 'border-b-2 border-[#1E362C] text-[#1E362C]' : 'text-[#8A9C91] hover:text-[#1E362C]' }}">
                         Souvenir
                     </a>
+                    <a href="{{ route('user.pesanan.index') }}"
+                        class="text-xs md:text-[13px] lg:text-sm font-semibold tracking-[0.15em] uppercase pb-2 transition-all {{ request()->routeIs('user.pesanan.*') ? 'border-b-2 border-[#1E362C] text-[#1E362C]' : 'text-[#8A9C91] hover:text-[#1E362C]' }}">
+                        Pesanan
+                    </a>
                 </nav>
 
                 <!-- Right: Search Bar & Profile Avatar (Desktop) -->
@@ -145,6 +149,8 @@
                                 class="block px-4 py-2 text-sm text-[#2C3E35] hover:bg-[#FAF9F6]">Profil</a>
                             <a href="{{ route('profile.edit') }}"
                                 class="block px-4 py-2 text-sm text-[#2C3E35] hover:bg-[#FAF9F6]">Edit Profil</a>
+                            <a href="{{ route('user.pesanan.index') }}"
+                                class="block px-4 py-2 text-sm text-[#2C3E35] hover:bg-[#FAF9F6]">Riwayat Pesanan</a>
                             <button onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
                                 class="w-full text-left block px-4 py-2 text-sm text-[#E65F5F] hover:bg-[#FDF2F2]">
                                 Logout
@@ -197,6 +203,10 @@
                 <a href="{{ route('user.souvenir') }}"
                     class="px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('user.souvenir') ? 'bg-[#EAF2EE] text-[#2B4C3F]' : 'text-[#5C6E65] hover:bg-[#FAF9F6]' }}">
                     Souvenir
+                </a>
+                <a href="{{ route('user.pesanan.index') }}"
+                    class="px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('user.pesanan.*') ? 'bg-[#EAF2EE] text-[#2B4C3F]' : 'text-[#5C6E65] hover:bg-[#FAF9F6]' }}">
+                    Pesanan
                 </a>
                 <a href="{{ route('profile.show') }}"
                     class="px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('profile.*') ? 'bg-[#EAF2EE] text-[#2B4C3F]' : 'text-[#5C6E65] hover:bg-[#FAF9F6]' }}">

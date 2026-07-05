@@ -1,8 +1,8 @@
 <?php
 
-use App\Models\User;
-use App\Models\KategoriHomestay;
 use App\Models\Homestay;
+use App\Models\KategoriHomestay;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -55,7 +55,7 @@ test('admin can create a category', function () {
 
     $response = $this->actingAs($this->admin)->post(route('admin.kategori-homestay.store'), $data);
     $response->assertRedirect(route('admin.kategori-homestay'));
-    
+
     $this->assertDatabaseHas('kategori_homestays', [
         'nama_kategori' => 'Exclusive Cabins',
     ]);
@@ -91,7 +91,7 @@ test('admin can delete a category without associated homestays', function () {
 
 test('admin cannot delete a category with associated homestays', function () {
     $category = KategoriHomestay::create(['nama_kategori' => 'Suites']);
-    
+
     Homestay::create([
         'kategori_id' => $category->kategori_id,
         'nama_homestay' => 'Cendana Suite',
@@ -102,10 +102,10 @@ test('admin cannot delete a category with associated homestays', function () {
 
     $response = $this->actingAs($this->admin)->delete(route('admin.kategori-homestay.destroy', $category->kategori_id));
     $response->assertRedirect(route('admin.kategori-homestay'));
-    
+
     // Check that it fails with error session message
     $response->assertSessionHas('error');
-    
+
     $this->assertDatabaseHas('kategori_homestays', [
         'kategori_id' => $category->kategori_id,
     ]);

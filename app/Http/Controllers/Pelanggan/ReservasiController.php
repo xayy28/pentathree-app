@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Pelanggan;
 
 use App\Http\Controllers\Controller;
 use App\Models\Homestay;
-use Illuminate\Http\Request;
 
 class ReservasiController extends Controller
 {
@@ -13,7 +12,7 @@ class ReservasiController extends Controller
      */
     public function index()
     {
-        return view('pelanggan.reservasi.index');
+        return redirect()->route('user.pesanan.index');
     }
 
     /**
@@ -21,7 +20,8 @@ class ReservasiController extends Controller
      */
     public function create($homestay_id)
     {
-        $homestay = Homestay::with('kategori')->findOrFail($homestay_id);
-        return view('pelanggan.reservasi.create', compact('homestay'));
+        Homestay::findOrFail($homestay_id);
+
+        return redirect()->route('user.homestay.booking.create', $homestay_id);
     }
 }

@@ -31,4 +31,12 @@ class Souvenir extends Model
     {
         return $this->belongsTo(User::class, 'updated_by', 'user_id');
     }
+
+    /**
+     * Detail pemesanan yang berisi souvenir ini.
+     */
+    public function detailPemesanans()
+    {
+        return $this->hasMany(DetailPemesanan::class, 'souvenir_id', 'souvenir_id');
+    }
 }

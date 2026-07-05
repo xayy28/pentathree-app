@@ -1,278 +1,218 @@
-# GitHub Actions Documentation
+# Dokumentasi GitHub Actions
 
-Dokumen ini menjelaskan konfigurasi Continuous Integration (CI) menggunakan GitHub Actions pada project **pentathree-app**.
+Terakhir diperbarui: 2026-07-02
 
-Project ini merupakan sistem informasi manajemen homestay dan penjualan souvenir berbasis web pada **Natasha Homestay & Harau Souvenir**.
+Dokumen ini menjelaskan workflow CI/CD yang dipakai pada project PentaThree SIMHOSUV berdasarkan kondisi repository terbaru.
 
----
+## 1. Tujuan
 
-## Daftar Isi
+GitHub Actions dipakai untuk memastikan kode aman sebelum masuk ke branch `testing`.
 
-- [1. Apa itu GitHub Actions?](#1-apa-itu-github-actions)
-- [2. Tujuan CI pada Project Ini](#2-tujuan-ci-pada-project-ini)
-- [3. Konfigurasi Workflow](#3-konfigurasi-workflow)
-- [4. Cara Kerja Workflow](#4-cara-kerja-workflow)
-- [5. Konfigurasi Environment Testing](#5-konfigurasi-environment-testing)
-- [6. Menjalankan Test Secara Lokal](#6-menjalankan-test-secara-lokal)
-- [7. Contoh Test yang Digunakan](#7-contoh-test-yang-digunakan)
-- [8. Status Badge](#8-status-badge)
-- [9. Riwayat CI Run](#9-riwayat-ci-run)
+Workflow yang aktif:
 
----
+- `.github/workflows/test-before-merge.yml`
+- `.github/workflows/code-linting.yml`
 
-## 1. Apa itu GitHub Actions?
-
-GitHub Actions adalah fitur otomatisasi dari GitHub yang digunakan untuk menjalankan proses tertentu secara otomatis ketika terjadi perubahan pada repository.
-
-Dalam project ini, GitHub Actions digunakan untuk menjalankan proses **Continuous Integration (CI)**, yaitu proses pengecekan otomatis untuk memastikan project Laravel masih dapat diinstall, dibuild, dan ditest setelah ada perubahan kode.
-
----
-
-## 2. Tujuan CI pada Project Ini
-
-Tujuan penggunaan GitHub Actions pada project **pentathree-app** adalah:
-
-1. Memastikan kode yang di-push tidak menyebabkan error pada project.
-2. Memastikan dependency PHP dapat diinstall menggunakan Composer.
-3. Memastikan dependency frontend dapat diinstall menggunakan NPM.
-4. Memastikan asset frontend dapat dibuild menggunakan Vite.
-5. Menjalankan automated test Laravel.
-6. Membantu tim mendeteksi error sebelum perubahan kode digabungkan ke branch utama.
-7. Menjaga kualitas kode pada branch `main` dan `testing`.
-
----
-
-## 3. Konfigurasi Workflow
-
-Workflow GitHub Actions disimpan pada folder:
-
-```text
-.github/workflows/
-```
-
-File workflow yang digunakan:
-
-```text
-test.yml
-```
-
-Workflow ini memiliki nama:
+Trigger utama:
 
 ```yaml
-name: Simple CI
-```
-
-Workflow akan berjalan otomatis ketika terjadi:
-
-- `push` ke branch `main`
-- `push` ke branch `testing`
-- `pull_request` ke branch `main`
-- `pull_request` ke branch `testing`
-
----
-
-## 3.1 Isi Workflow
-
-Berikut konfigurasi workflow yang digunakan pada project:
-
-```yaml
-name: Simple CI
-
 on:
-    push:
-        branches: [main, testing]
-    pull_request:
-        branches: [main, testing]
-
-jobs:
-    build-and-test:
-        runs-on: ubuntu-latest
-
-        steps:
-            - name: 📥 Checkout code
-              uses: actions/checkout@v4
-
-            - name: 🐘 Setup PHP
-              uses: shivammathur/setup-php@v2
-              with:
-                  php-version: "8.4"
-
-            - name: 📦 Install PHP Dependencies
-              run: composer install --ignore-platform-reqs --no-interaction --prefer-dist --no-progress
-
-            - name: 📦 Install Node Dependencies & Build
-              run: |
-                  npm install
-                  npm run build
-
-            - name: 🔧 Setup Environment
-              run: |
-                  cp .env.example .env
-                  php artisan key:generate
-
-            - name: ✅ Run Tests
-              env:
-                  APP_ENV: testing
-                  DB_CONNECTION: sqlite
-                  DB_DATABASE: ":memory:"
-                  SESSION_DRIVER: array
-                  CACHE_STORE: array
-                  QUEUE_CONNECTION: sync
-                  MAIL_MAILER: log
-              run: php artisan test
+  pull_request:
+    branches:
+      - testing
 ```
 
----
+Artinya workflow berjalan saat ada pull request ke branch `testing`.
 
-## 3.2 Catatan Konfigurasi
+## 2. Workflow Testing Sebelum Merge
 
-Pada workflow ini, project menggunakan:
+File:
 
-| Bagian           | Konfigurasi          |
-| ---------------- | -------------------- |
-| Operating System | `ubuntu-latest`      |
-| PHP Version      | `8.4`                |
-| Node Dependency  | `npm install`        |
-| Frontend Build   | `npm run build`      |
-| Testing Command  | `php artisan test`   |
-| Database Testing | SQLite `:memory:`    |
-| Branch Trigger   | `main` dan `testing` |
-
----
-
-## 4. Cara Kerja Workflow
-
-Workflow berjalan dengan tahapan berikut:
-
-|  No | Step                              | Penjelasan                                                         |
-| --: | --------------------------------- | ------------------------------------------------------------------ |
-|   1 | Checkout code                     | Mengambil kode terbaru dari repository                             |
-|   2 | Setup PHP                         | Menyiapkan PHP versi 8.4 untuk menjalankan Laravel                 |
-|   3 | Install PHP Dependencies          | Menginstall dependency Laravel menggunakan Composer                |
-|   4 | Install Node Dependencies & Build | Menginstall dependency frontend dan menjalankan build Vite         |
-|   5 | Setup Environment                 | Menyalin `.env.example` menjadi `.env` dan membuat application key |
-|   6 | Run Tests                         | Menjalankan seluruh test Laravel menggunakan `php artisan test`    |
-
-Jika semua step berhasil, workflow akan berstatus **pass**.
-
-Jika salah satu step gagal, workflow akan berstatus **failed** dan detail error dapat dilihat pada tab **Actions** di GitHub.
-
----
-
-## 5. Konfigurasi Environment Testing
-
-Pada project lokal, konfigurasi database menggunakan MySQL:
-
-```env
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=pentathree_app
-DB_USERNAME=root
-DB_PASSWORD=
+```text
+.github/workflows/test-before-merge.yml
 ```
 
-Namun pada GitHub Actions, database testing menggunakan SQLite memory:
+Nama workflow:
+
+```text
+Automasi Testing Sebelum Merge
+```
+
+Step utama:
+
+1. Checkout repository.
+2. Setup PHP 8.4.
+3. Install dependency Composer.
+4. Copy `.env.example` ke `.env`.
+5. Generate `APP_KEY`.
+6. Setup Node.js 20.
+7. Install dependency NPM dengan `npm ci`.
+8. Build asset Vite dengan `npm run build`.
+9. Clear cache Laravel.
+10. Jalankan test dengan `php artisan test`.
+
+Environment test:
 
 ```yaml
 DB_CONNECTION: sqlite
 DB_DATABASE: ":memory:"
-```
-
-SQLite digunakan agar proses testing lebih ringan dan tidak perlu menjalankan service MySQL tambahan pada server GitHub Actions.
-
-Selain itu, beberapa konfigurasi testing dibuat lebih sederhana:
-
-```yaml
-SESSION_DRIVER: array
 CACHE_STORE: array
+SESSION_DRIVER: array
 QUEUE_CONNECTION: sync
-MAIL_MAILER: log
 ```
 
-Tujuannya agar test tidak bergantung pada database session, queue database, cache database, atau mail server.
+Alasan memakai SQLite memory:
 
----
+- Test lebih cepat.
+- Tidak perlu database MySQL di GitHub Actions.
+- Database dibuat ulang setiap run test.
 
-## 6. Menjalankan Test Secara Lokal
+## 3. Workflow Code Linting
 
-Sebelum melakukan push atau membuat pull request, test dapat dijalankan secara lokal menggunakan perintah:
+File:
+
+```text
+.github/workflows/code-linting.yml
+```
+
+Nama workflow:
+
+```text
+Code Linting
+```
+
+Step utama:
+
+1. Checkout repository.
+2. Setup PHP 8.4.
+3. Cek syntax PHP pada folder `app`, `routes`, `database`, dan `tests`.
+4. Setup Node.js 20.
+5. Install Stylelint.
+6. Buat konfigurasi Stylelint sementara.
+7. Cek file CSS di `resources/**/*.css`.
+
+Command penting:
 
 ```bash
-php artisan test
+find app routes database tests -name "*.php" -print0 | xargs -0 -n1 php -l
+stylelint "resources/**/*.css" --allow-empty-input
 ```
 
-Jika ingin memastikan dependency sudah lengkap, jalankan:
+## 4. Quality Gate Lokal
+
+Sebelum push atau membuat pull request, jalankan command ini di lokal:
 
 ```bash
 composer install
 npm install
-npm run build
 php artisan test
+vendor\bin\pint --dirty
+npm run build
+git diff --check
 ```
 
-Jika terjadi error karena cache Laravel, jalankan:
+Status terakhir setelah Sprint 8:
 
-```bash
-php artisan optimize:clear
+```text
+php artisan test        = 86 passed
+vendor\bin\pint --dirty = passed
+npm run build           = passed
+git diff --check        = clean
 ```
 
----
+## 5. Catatan Dependency CI
 
-## 7. Contoh Test yang Digunakan
+Dependency backend:
 
-Project saat ini memiliki test dasar menggunakan Pest.
+- PHP 8.3 minimal sesuai `composer.json`.
+- Workflow saat ini memakai PHP 8.4 dan masih kompatibel.
+- Composer install wajib sukses.
 
-### 7.1 Unit Test
+Dependency frontend:
 
-Contoh test sederhana:
+- Node.js 20.
+- `npm ci` untuk install sesuai `package-lock.json`.
+- `npm run build` untuk memastikan asset Vite bisa dibuild.
 
-```php
-<?php
+Dependency test:
 
-test('that true is true', function () {
-    expect(true)->toBeTrue();
-});
+- Pest.
+- PHPUnit bawaan dependency Pest.
+- SQLite in-memory.
+
+## 6. Catatan Midtrans di CI
+
+Test Midtrans di repository memakai mock untuk Snap token dan payload signed untuk webhook. CI tidak perlu memanggil API Midtrans asli.
+
+Yang perlu dijaga:
+
+- Jangan commit server key Production.
+- `.env.example` sebaiknya memakai placeholder, bukan key asli.
+- Jika test membutuhkan config Midtrans, gunakan value palsu seperti `Mid-server-test` dan `Mid-client-test`.
+
+## 7. Catatan DomPDF di CI
+
+DomPDF dipakai untuk test laporan PDF.
+
+Test yang relevan:
+
+```text
+tests/Feature/LaporanTest.php
 ```
 
-Test ini memastikan bahwa konfigurasi Pest/Laravel testing dapat berjalan dengan benar.
+Hal yang dicek:
 
----
+- Route laporan hanya bisa diakses admin.
+- Filter laporan benar.
+- Response download PDF benar-benar diawali `%PDF`.
 
-### 7.2 Feature Test
+## 8. Kapan Workflow Gagal
 
-Karena halaman utama `/` akan mengarahkan user yang belum login ke halaman login, maka test yang sesuai adalah:
+Workflow bisa gagal karena:
 
-```php
-<?php
+- Dependency Composer gagal install.
+- Dependency NPM tidak sinkron dengan `package-lock.json`.
+- Test gagal.
+- Build Vite gagal.
+- Syntax PHP error.
+- File CSS melanggar rule Stylelint.
+- `.env.example` tidak kompatibel dengan environment CI.
 
-test('guest is redirected to login from homepage', function () {
-    $response = $this->get('/');
+Langkah perbaikan:
 
-    $response->assertRedirect(route('login'));
-});
+1. Jalankan `php artisan test` di lokal.
+2. Jalankan `npm run build`.
+3. Jalankan `vendor\bin\pint --dirty`.
+4. Cek error detail di tab Actions.
+5. Perbaiki test atau konfigurasi yang gagal.
+
+## 9. Rekomendasi Perbaikan Workflow
+
+Rekomendasi sebelum project final:
+
+- Tambahkan step Pint ke workflow linting:
+
+```yaml
+- name: Run Laravel Pint
+  run: vendor/bin/pint --test
 ```
 
-Test ini memastikan bahwa user yang belum login tidak langsung masuk ke dashboard, tetapi diarahkan ke halaman login.
+- Tambahkan `git diff --check` untuk mencegah trailing whitespace:
 
----
-
-## 8. Status Badge
-
-Badge workflow dapat ditambahkan ke file `README.md` agar status CI terlihat langsung pada halaman repository.
-
-```markdown
-![Simple CI](https://github.com/xayy28/pentathree-app/actions/workflows/test.yml/badge.svg)
+```yaml
+- name: Check whitespace
+  run: git diff --check
 ```
 
-Badge tersebut akan menunjukkan status workflow terakhir, apakah berhasil atau gagal.
+- Pastikan `.env.example` tidak berisi key asli Midtrans.
 
----
+## 10. Kesimpulan
 
-## 9. Riwayat CI Run
+CI project saat ini sudah cukup untuk menjaga kualitas Sprint 8:
 
-| Tanggal | Branch | Workflow | Status | Keterangan             |
-| ------- | ------ | -------- | ------ | ---------------------- |
-| —       | —      | —        | —      | Belum ada run tercatat |
+- Test Laravel jalan otomatis.
+- Build Vite jalan otomatis.
+- Syntax PHP dicek.
+- CSS dicek.
 
-> Riwayat CI dapat diisi setelah workflow pertama kali dijalankan pada repository GitHub.
+Untuk final PBL, workflow ini sudah layak dipakai sebagai bukti bahwa project punya proses testing sebelum merge.

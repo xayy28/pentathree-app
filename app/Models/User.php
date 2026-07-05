@@ -9,16 +9,19 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 
 #[Fillable(['user_id', 'nama', 'email', 'password', 'no_hp', 'alamat', 'role', 'foto_profil'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, HasRoles, Notifiable;
 
     protected $primaryKey = 'user_id';
+
     public $incrementing = false;
+
     protected $keyType = 'string';
 
     /**
@@ -42,12 +45,12 @@ class User extends Authenticatable
         static::creating(function ($user) {
             if (empty($user->user_id)) {
                 $latestUser = static::orderBy('user_id', 'desc')->first();
-                if (!$latestUser) {
+                if (! $latestUser) {
                     $user->user_id = 'USR001';
                 } else {
                     $lastNumber = (int) substr($latestUser->user_id, 3);
                     $newNumber = $lastNumber + 1;
-                    $user->user_id = 'USR' . str_pad($newNumber, 3, '0', STR_PAD_LEFT);
+                    $user->user_id = 'USR'.str_pad($newNumber, 3, '0', STR_PAD_LEFT);
                 }
             }
         });
@@ -59,5 +62,21 @@ class User extends Authenticatable
     public function keranjang()
     {
         return $this->hasOne(Keranjang::class, 'user_id', 'user_id');
+    }
+
+    /**
+     * Hubungan ke model Pemesanan (User hasMany Orders).
+     */
+    public function pemesanans()
+    {
+        return $this->hasMany(Pemesanan::class, 'user_id', 'user_id');
+    }
+
+    /**
+     * Pembayaran yang diverifikasi admin ini.
+     */
+    public function verifiedPembayarans()
+    {
+        return $this->hasMany(Pembayaran::class, 'verified_by', 'user_id');
     }
 }

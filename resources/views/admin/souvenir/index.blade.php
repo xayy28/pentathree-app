@@ -23,6 +23,28 @@
             </a>
         </div>
 
+        <form action="{{ route('admin.souvenir') }}" method="GET" class="mb-6 p-4 bg-[#FAF9F6] border border-[#E6E4DD] rounded-2xl">
+            <div class="grid grid-cols-1 md:grid-cols-[1fr_auto_auto] gap-3">
+                <select name="status"
+                    class="w-full bg-white text-[#2C3E35] border border-[#E6E4DD] rounded-xl px-4 py-2.5 text-sm focus:border-[#2B4C3F] focus:outline-none">
+                    <option value="">Semua status</option>
+                    @foreach ($statuses as $statusOption)
+                        <option value="{{ $statusOption }}" @selected($status === $statusOption)>{{ $statusOption }}</option>
+                    @endforeach
+                </select>
+
+                <button type="submit"
+                    class="bg-[#2B4C3F] hover:bg-[#1E362C] text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-all">
+                    Filter
+                </button>
+
+                <a href="{{ route('admin.souvenir') }}"
+                    class="bg-white hover:bg-[#F2F0EA] text-[#5C6E65] border border-[#E6E4DD] text-sm font-semibold px-5 py-2.5 rounded-xl transition-all text-center">
+                    Reset
+                </a>
+            </div>
+        </form>
+
         @if(session('success'))
             <div style="margin-bottom: 20px; padding: 12px 16px; background: #EAF2EE; border: 1px solid #B8DEC8; border-radius: 12px; display: flex; align-items: center; gap: 10px;">
                 <svg width="16" height="16" fill="none" stroke="#2B4C3F" viewBox="0 0 24 24">
@@ -37,7 +59,7 @@
                 <span class="text-5xl mb-4">🏺</span>
                 <h3 class="text-lg font-semibold text-[#2C3E35] mb-1">Belum Ada Souvenir</h3>
                 <p class="text-xs text-[#8A9C91] max-w-sm mb-6">
-                    Belum ada data souvenir yang terdaftar di database. Silakan klik tombol di bawah untuk menambahkan.
+                    Belum ada data souvenir yang sesuai dengan filter saat ini.
                 </p>
                 <a href="{{ route('admin.souvenir.create') }}" class="px-4 py-2 bg-[#2B4C3F] hover:bg-[#1E362C] text-white text-xs font-semibold rounded-lg transition-colors">
                     Tambah Souvenir Pertama
@@ -100,7 +122,7 @@
 
                                 {{-- Status --}}
                                 <td style="padding: 16px;">
-                                    @if($souvenir->status === 'Tersedia')
+                                    @if($souvenir->status === 'Tersedia' && $souvenir->stok > 0)
                                         <span style="display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; border-radius: 999px; background: #EAF2EE; color: #2B4C3F; border: 1px solid #B8DEC8;">
                                             <span style="width: 6px; height: 6px; border-radius: 50%; background: #2B4C3F; display: inline-block;"></span>
                                             Tersedia
@@ -108,7 +130,7 @@
                                     @else
                                         <span style="display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; border-radius: 999px; background: #FDF2F2; color: #9B1C1C; border: 1px solid #F5C2C2;">
                                             <span style="width: 6px; height: 6px; border-radius: 50%; background: #E65F5F; display: inline-block;"></span>
-                                            {{ $souvenir->status }}
+                                            Habis
                                         </span>
                                     @endif
                                 </td>
@@ -167,10 +189,10 @@
                                 <span class="text-sm font-semibold text-[#2B4C3F]">Rp {{ number_format($souvenir->harga, 0, ',', '.') }}</span>
                             </div>
                             <div>
-                                @if($souvenir->status === 'Tersedia')
+                                @if($souvenir->status === 'Tersedia' && $souvenir->stok > 0)
                                     <span class="px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider rounded-full bg-[#EAF2EE] text-[#2B4C3F]">Tersedia</span>
                                 @else
-                                    <span class="px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider rounded-full bg-[#FDF2F2] border border-[#F5C2C2] text-[#9B1C1C]">{{ $souvenir->status }}</span>
+                                    <span class="px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider rounded-full bg-[#FDF2F2] border border-[#F5C2C2] text-[#9B1C1C]">Habis</span>
                                 @endif
                             </div>
                         </div>
