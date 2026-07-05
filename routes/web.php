@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\LaporanController as AdminLaporanController;
 use App\Http\Controllers\Pelanggan\HomestayController as PelangganHomestayController;
 use App\Http\Controllers\Pelanggan\SouvenirController as PelangganSouvenirController;
 use App\Http\Controllers\Pelanggan\ReservasiController as PelangganReservasiController;
+use App\Http\Controllers\Pelanggan\KeranjangController as PelangganKeranjangController;
 use Illuminate\Support\Facades\Route;
 
 // Redirect Halaman Utama berdasarkan status login
@@ -86,5 +87,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/souvenir/{souvenir_id}', [PelangganSouvenirController::class, 'show'])->name('user.souvenir.show');
         Route::get('/reservasi', [PelangganReservasiController::class, 'index'])->name('user.reservasi');
         Route::get('/reservasi/{homestay_id}', [PelangganReservasiController::class, 'create'])->name('user.reservasi.create');
+
+        // Rute Keranjang Belanja User
+        Route::get('/cart', [PelangganKeranjangController::class, 'index'])->name('cart.index');
+        Route::get('/cart/checkout', [PelangganKeranjangController::class, 'checkout'])->name('checkout.index');
+        Route::post('/cart/add', [PelangganKeranjangController::class, 'addToCart'])->name('cart.add');
+        Route::put('/cart/update', [PelangganKeranjangController::class, 'updateQuantity'])->name('cart.update');
+        Route::delete('/cart/{id}', [PelangganKeranjangController::class, 'destroy'])->name('cart.destroy');
     });
 });

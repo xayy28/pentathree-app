@@ -52,4 +52,12 @@ class User extends Authenticatable
             }
         });
     }
+
+    /**
+     * Hubungan ke model Keranjang (User hasOne Cart).
+     */
+    public function keranjang()
+    {
+        return $this->hasOne(Keranjang::class, 'user_id', 'user_id');
+    }
 }

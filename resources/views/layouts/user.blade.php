@@ -52,9 +52,9 @@
                 <div class="flex-shrink-0">
                     <a href="/" class="flex items-center gap-3 hover:opacity-90 transition-opacity">
                         <img src="{{ asset('images/Logo-Natasha.jpg') }}" alt="Natasha Homestay Logo"
-                            class="h-9 w-9 rounded-full object-cover border border-[#E6E4DD]/60">
+                            class="h-10 w-10 md:h-11 md:w-11 rounded-full object-cover border border-gray-200">
                         <span
-                            class="text-xs sm:text-sm font-serif font-semibold tracking-[0.15em] text-[#2B4C3F] uppercase">
+                            class="text-xs sm:text-sm md:text-base lg:text-lg font-serif font-semibold tracking-[0.12em] md:tracking-[0.15em] text-[#1E362C] uppercase whitespace-nowrap">
                             Natasha Homestay
                         </span>
                     </a>
@@ -92,6 +92,31 @@
                             class="bg-[#F3F4F6] text-[#1E362C] placeholder-[#8A9C91]/70 text-sm rounded-full pl-10 pr-4 py-2 w-48 focus:w-60 border border-transparent hover:border-gray-200 focus:border-[#1E362C] focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#EAF2EE]/50 transition-all duration-300">
                     </div>
 
+                    <!-- Cart Icon Link -->
+                    <a href="{{ route('cart.index') }}"
+                        class="relative p-2 text-[#8A9C91] hover:text-[#1E362C] transition-colors rounded-full hover:bg-gray-100 flex items-center justify-center">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
+                            </path>
+                        </svg>
+                        @auth
+                            @php
+                                $cartCount = \App\Models\Keranjang::where('user_id', auth()->user()->user_id)
+                                    ->withCount('keranjangItems')
+                                    ->first();
+                                $count = $cartCount ? $cartCount->keranjang_items_count : 0;
+                            @endphp
+                            @if ($count > 0)
+                                <span
+                                    class="absolute -top-0.5 -right-0.5 bg-[#E65F5F] text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm">
+                                    {{ $count }}
+                                </span>
+                            @endif
+                        @endauth
+                    </a>
+
                     <!-- Profile Avatar Dropdown (Initials in Green Circle) -->
                     <div class="relative" id="profile-dropdown-container">
                         <button id="profile-dropdown-btn"
@@ -110,9 +135,11 @@
                             <div class="px-4 py-2.5 border-b border-[#F2F0EA]">
                                 <p class="text-xs text-[#8A9C91] mb-0.5">Logged in as</p>
                                 <p class="text-sm font-semibold text-[#2C3E35] truncate leading-tight">
-                                    {{ auth()->user()->nama }}</p>
+                                    {{ auth()->user()->nama }}
+                                </p>
                                 <p class="text-[9px] font-bold uppercase tracking-wider text-[#8A9C91] mt-0.5">
-                                    {{ auth()->user()->user_id }}</p>
+                                    {{ auth()->user()->user_id }}
+                                </p>
                             </div>
                             <a href="{{ route('profile.show') }}"
                                 class="block px-4 py-2 text-sm text-[#2C3E35] hover:bg-[#FAF9F6]">Profil</a>
@@ -174,6 +201,31 @@
                 <a href="{{ route('profile.show') }}"
                     class="px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('profile.*') ? 'bg-[#EAF2EE] text-[#2B4C3F]' : 'text-[#5C6E65] hover:bg-[#FAF9F6]' }}">
                     Profil
+                </a>
+                <a href="{{ route('cart.index') }}"
+                    class="px-3 py-2 rounded-lg text-sm font-medium flex items-center justify-between {{ request()->routeIs('cart.index') ? 'bg-[#EAF2EE] text-[#2B4C3F]' : 'text-[#5C6E65] hover:bg-[#FAF9F6]' }}">
+                    <div class="flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
+                            </path>
+                        </svg>
+                        <span>Keranjang</span>
+                    </div>
+                    @auth
+                        @php
+                            $cartCount = \App\Models\Keranjang::where('user_id', auth()->user()->user_id)
+                                ->withCount('keranjangItems')
+                                ->first();
+                            $count = $cartCount ? $cartCount->keranjang_items_count : 0;
+                        @endphp
+                        @if ($count > 0)
+                            <span class="bg-[#E65F5F] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                                {{ $count }}
+                            </span>
+                        @endif
+                    @endauth
                 </a>
             </nav>
 
