@@ -167,3 +167,14 @@ test('admin can delete homestay after reservation is finished', function () {
         'homestay_id' => $this->homestay->homestay_id,
     ]);
 });
+test('admin can view homestay availability calendar', function () {
+    createHomestayReservationForAdminTest($this->user, $this->homestay, Pemesanan::STATUS_DIKONFIRMASI);
+
+    $this->actingAs($this->admin)
+        ->get(route('admin.homestay', ['availability_month' => now()->format('Y-m')]))
+        ->assertStatus(200)
+        ->assertSee('Kalender Ketersediaan Homestay')
+        ->assertSee('Kosong')
+        ->assertSee('Berisi')
+        ->assertSee('Natasha Garden House');
+});

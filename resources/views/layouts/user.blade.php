@@ -297,6 +297,8 @@
         @csrf
     </form>
 
+    @stack('scripts')
+
     <!-- Navigation & Dropdown Scripts -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {

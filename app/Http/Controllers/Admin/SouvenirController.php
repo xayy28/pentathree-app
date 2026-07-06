@@ -22,7 +22,16 @@ class SouvenirController extends Controller
             ->latest()
             ->get();
 
-        return view('admin.souvenir.index', compact('souvenirs', 'status', 'statuses'));
+        $allSouvenirs = Souvenir::all(['harga', 'stok', 'status', 'jumlah_terjual']);
+        $inventorySummary = [
+            'total_produk' => $allSouvenirs->count(),
+            'total_stok' => $allSouvenirs->sum('stok'),
+            'stok_habis' => $allSouvenirs->filter(fn (Souvenir $souvenir) => $souvenir->stok <= 0 || $souvenir->status === 'Habis')->count(),
+            'total_terjual' => $allSouvenirs->sum('jumlah_terjual'),
+            'nilai_stok' => $allSouvenirs->sum(fn (Souvenir $souvenir) => (float) $souvenir->harga * (int) $souvenir->stok),
+        ];
+
+        return view('admin.souvenir.index', compact('souvenirs', 'status', 'statuses', 'inventorySummary'));
     }
 
     /**

@@ -25,6 +25,41 @@ test('admin can access admin souvenir index', function () {
     $response->assertStatus(200);
     $response->assertSee('Kelola Souvenir');
 });
+test('admin can view souvenir inventory summary', function () {
+    $admin = User::where('role', 'admin')->first();
+
+    Souvenir::query()->delete();
+
+    Souvenir::create([
+        'nama_souvenir' => 'Gantungan Tersedia',
+        'harga' => 15000,
+        'stok' => 25,
+        'status' => 'Tersedia',
+        'jumlah_terjual' => 10,
+        'updated_by' => $admin->user_id,
+    ]);
+
+    Souvenir::create([
+        'nama_souvenir' => 'Tas Habis',
+        'harga' => 45000,
+        'stok' => 0,
+        'status' => 'Habis',
+        'jumlah_terjual' => 4,
+        'updated_by' => $admin->user_id,
+    ]);
+
+    $this->actingAs($admin)
+        ->get(route('admin.souvenir'))
+        ->assertStatus(200)
+        ->assertSee('Total Produk')
+        ->assertSee('Total Stok')
+        ->assertSee('Stok Habis')
+        ->assertSee('Total Terjual')
+        ->assertSee('Nilai Stok')
+        ->assertSee('25')
+        ->assertSee('14')
+        ->assertSee('375.000');
+});
 
 test('admin can filter souvenir listing by status', function () {
     $admin = User::where('role', 'admin')->first();

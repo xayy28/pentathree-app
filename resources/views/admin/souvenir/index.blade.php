@@ -11,7 +11,7 @@
                     Kelola Souvenir
                 </h1>
                 <p class="text-xs sm:text-sm text-[#5C6E65] leading-relaxed">
-                    Halaman pengelolaan produk souvenir untuk panel administrasi Natasha Homestay.
+                    Pantau produk souvenir, stok barang, nilai inventory, dan data penjualan.
                 </p>
             </div>
 
@@ -23,27 +23,28 @@
             </a>
         </div>
 
-        <form action="{{ route('admin.souvenir') }}" method="GET" class="mb-6 p-4 bg-[#FAF9F6] border border-[#E6E4DD] rounded-2xl">
-            <div class="grid grid-cols-1 md:grid-cols-[1fr_auto_auto] gap-3">
-                <select name="status"
-                    class="w-full bg-white text-[#2C3E35] border border-[#E6E4DD] rounded-xl px-4 py-2.5 text-sm focus:border-[#2B4C3F] focus:outline-none">
-                    <option value="">Semua status</option>
-                    @foreach ($statuses as $statusOption)
-                        <option value="{{ $statusOption }}" @selected($status === $statusOption)>{{ $statusOption }}</option>
-                    @endforeach
-                </select>
-
-                <button type="submit"
-                    class="bg-[#2B4C3F] hover:bg-[#1E362C] text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-all">
-                    Filter
-                </button>
-
-                <a href="{{ route('admin.souvenir') }}"
-                    class="bg-white hover:bg-[#F2F0EA] text-[#5C6E65] border border-[#E6E4DD] text-sm font-semibold px-5 py-2.5 rounded-xl transition-all text-center">
-                    Reset
-                </a>
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-3 mb-6">
+            <div class="rounded-xl border border-[#E6E4DD] bg-[#FAF9F6] px-4 py-4">
+                <p class="text-xs font-bold uppercase tracking-wider text-[#8A9C91]">Total Produk</p>
+                <p class="text-2xl font-bold text-[#2C3E35] mt-1">{{ number_format($inventorySummary['total_produk'], 0, ',', '.') }}</p>
             </div>
-        </form>
+            <div class="rounded-xl border border-[#A7C5B5] bg-[#EAF2EE] px-4 py-4">
+                <p class="text-xs font-bold uppercase tracking-wider text-[#5C6E65]">Total Stok</p>
+                <p class="text-2xl font-bold text-[#2B4C3F] mt-1">{{ number_format($inventorySummary['total_stok'], 0, ',', '.') }}</p>
+            </div>
+            <div class="rounded-xl border border-[#F5C2C2] bg-[#FDF2F2] px-4 py-4">
+                <p class="text-xs font-bold uppercase tracking-wider text-[#9B1C1C]">Stok Habis</p>
+                <p class="text-2xl font-bold text-[#9B1C1C] mt-1">{{ number_format($inventorySummary['stok_habis'], 0, ',', '.') }}</p>
+            </div>
+            <div class="rounded-xl border border-[#E6E4DD] bg-white px-4 py-4">
+                <p class="text-xs font-bold uppercase tracking-wider text-[#8A9C91]">Total Terjual</p>
+                <p class="text-2xl font-bold text-[#2C3E35] mt-1">{{ number_format($inventorySummary['total_terjual'], 0, ',', '.') }}</p>
+            </div>
+            <div class="rounded-xl border border-[#D8CBAA] bg-[#FFFCF2] px-4 py-4">
+                <p class="text-xs font-bold uppercase tracking-wider text-[#7A6236]">Nilai Stok</p>
+                <p class="text-xl font-bold text-[#5C4721] mt-1">Rp {{ number_format($inventorySummary['nilai_stok'], 0, ',', '.') }}</p>
+            </div>
+        </div>
 
         @if(session('success'))
             <div style="margin-bottom: 20px; padding: 12px 16px; background: #EAF2EE; border: 1px solid #B8DEC8; border-radius: 12px; display: flex; align-items: center; gap: 10px;">
@@ -56,10 +57,10 @@
 
         @if($souvenirs->isEmpty())
             <div class="p-8 sm:p-12 bg-[#FAF9F6] border border-dashed border-[#D5D3C7] rounded-2xl flex flex-col items-center justify-center text-center">
-                <span class="text-5xl mb-4">🏺</span>
+                <span class="text-5xl mb-4">Produk</span>
                 <h3 class="text-lg font-semibold text-[#2C3E35] mb-1">Belum Ada Souvenir</h3>
                 <p class="text-xs text-[#8A9C91] max-w-sm mb-6">
-                    Belum ada data souvenir yang sesuai dengan filter saat ini.
+                    Belum ada data souvenir yang tersedia saat ini.
                 </p>
                 <a href="{{ route('admin.souvenir.create') }}" class="px-4 py-2 bg-[#2B4C3F] hover:bg-[#1E362C] text-white text-xs font-semibold rounded-lg transition-colors">
                     Tambah Souvenir Pertama
@@ -75,7 +76,8 @@
                             <th style="padding: 14px 16px; text-align: left; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #8A9C91;">Nama Souvenir</th>
                             <th style="padding: 14px 16px; text-align: left; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #8A9C91;">Harga</th>
                             <th style="padding: 14px 16px; text-align: left; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #8A9C91;">Stok</th>
-                            <th style="padding: 14px 16px; text-align: left; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #8A9C91;">Status</th>
+                            <th style="padding: 14px 16px; text-align: left; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #8A9C91;">Terjual</th>
+                            <th style="padding: 14px 16px; text-align: left; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #8A9C91;">Nilai Stok</th>
                             <th style="padding: 14px 16px; text-align: left; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #8A9C91;">Aksi</th>
                         </tr>
                     </thead>
@@ -90,7 +92,7 @@
                                         <img src="{{ asset($souvenir->foto) }}" alt="{{ $souvenir->nama_souvenir }}"
                                              style="width: 64px; height: 50px; object-fit: cover; border-radius: 10px; border: 1.5px solid #E6E4DD; box-shadow: 0 2px 8px rgba(0,0,0,0.07);">
                                     @else
-                                        <div style="width: 64px; height: 50px; background: #FAF9F6; border: 1.5px solid #E6E4DD; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">🏺</div>
+                                        <div style="width: 64px; height: 50px; background: #FAF9F6; border: 1.5px solid #E6E4DD; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 700; color: #8A9C91;">Item</div>
                                     @endif
                                 </td>
 
@@ -116,23 +118,22 @@
                                 {{-- Stok --}}
                                 <td style="padding: 16px;">
                                     <span style="display: inline-flex; align-items: center; gap: 5px; color: #5C6E65; font-size: 0.82rem; font-weight: 600;">
-                                        {{ $souvenir->stok }} pcs
+                                        {{ number_format($souvenir->stok, 0, ',', '.') }} pcs
                                     </span>
                                 </td>
 
-                                {{-- Status --}}
+                                {{-- Terjual --}}
                                 <td style="padding: 16px;">
-                                    @if($souvenir->status === 'Tersedia' && $souvenir->stok > 0)
-                                        <span style="display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; border-radius: 999px; background: #EAF2EE; color: #2B4C3F; border: 1px solid #B8DEC8;">
-                                            <span style="width: 6px; height: 6px; border-radius: 50%; background: #2B4C3F; display: inline-block;"></span>
-                                            Tersedia
-                                        </span>
-                                    @else
-                                        <span style="display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; border-radius: 999px; background: #FDF2F2; color: #9B1C1C; border: 1px solid #F5C2C2;">
-                                            <span style="width: 6px; height: 6px; border-radius: 50%; background: #E65F5F; display: inline-block;"></span>
-                                            Habis
-                                        </span>
-                                    @endif
+                                    <span style="display: inline-flex; align-items: center; gap: 5px; color: #5C6E65; font-size: 0.82rem; font-weight: 600;">
+                                        {{ number_format($souvenir->jumlah_terjual, 0, ',', '.') }} pcs
+                                    </span>
+                                </td>
+
+                                {{-- Nilai Stok --}}
+                                <td style="padding: 16px;">
+                                    <span style="display: inline-flex; align-items: center; gap: 4px; background: #FFFCF2; border: 1px solid #D8CBAA; border-radius: 8px; padding: 5px 10px; font-size: 0.8rem; font-weight: 700; color: #5C4721;">
+                                        Rp {{ number_format($souvenir->harga * $souvenir->stok, 0, ',', '.') }}
+                                    </span>
                                 </td>
 
                                 {{-- Aksi --}}
@@ -176,24 +177,21 @@
                             @if($souvenir->foto)
                                 <img src="{{ asset($souvenir->foto) }}" alt="{{ $souvenir->nama_souvenir }}" class="w-20 h-16 object-cover rounded-lg border border-[#E6E4DD] flex-shrink-0">
                             @else
-                                <div class="w-20 h-16 bg-white border border-[#E6E4DD] rounded-lg flex items-center justify-center text-2xl flex-shrink-0">🏺</div>
+                                <div class="w-20 h-16 bg-white border border-[#E6E4DD] rounded-lg flex items-center justify-center text-xs font-bold text-[#8A9C91] flex-shrink-0">Item</div>
                             @endif
                             <div class="min-w-0">
                                 <h4 class="font-serif font-semibold text-base text-[#2C3E35] truncate">{{ $souvenir->nama_souvenir }}</h4>
-                                <p class="text-xs text-[#8A9C91]">{{ $souvenir->stok }} pcs tersedia</p>
+                                <p class="text-xs text-[#8A9C91]">Stok {{ number_format($souvenir->stok, 0, ',', '.') }} pcs &bull; Terjual {{ number_format($souvenir->jumlah_terjual, 0, ',', '.') }} pcs</p>
                             </div>
                         </div>
-                        <div class="pt-3 border-t border-[#E6E4DD] flex items-center justify-between">
+                        <div class="pt-3 border-t border-[#E6E4DD] grid grid-cols-2 gap-3">
                             <div>
                                 <span class="text-[10px] text-[#8A9C91] block">Harga</span>
                                 <span class="text-sm font-semibold text-[#2B4C3F]">Rp {{ number_format($souvenir->harga, 0, ',', '.') }}</span>
                             </div>
                             <div>
-                                @if($souvenir->status === 'Tersedia' && $souvenir->stok > 0)
-                                    <span class="px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider rounded-full bg-[#EAF2EE] text-[#2B4C3F]">Tersedia</span>
-                                @else
-                                    <span class="px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider rounded-full bg-[#FDF2F2] border border-[#F5C2C2] text-[#9B1C1C]">Habis</span>
-                                @endif
+                                <span class="text-[10px] text-[#8A9C91] block">Nilai Stok</span>
+                                <span class="text-sm font-semibold text-[#5C4721]">Rp {{ number_format($souvenir->harga * $souvenir->stok, 0, ',', '.') }}</span>
                             </div>
                         </div>
                         <div class="flex justify-end gap-2 pt-2 border-t border-[#E6E4DD]/50">

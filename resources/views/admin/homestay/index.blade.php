@@ -24,7 +24,8 @@
         </div>
 
         <form action="{{ route('admin.homestay') }}" method="GET" class="mb-6 p-4 bg-[#FAF9F6] border border-[#E6E4DD] rounded-2xl">
-            <div class="grid grid-cols-1 md:grid-cols-[1fr_1fr_auto_auto] gap-3">
+            <input type="hidden" name="availability_month" value="{{ $availabilityMonth }}">
+            <div class="grid grid-cols-1 md:grid-cols-[1fr_auto_auto] gap-3">
                 <select name="kategori"
                     class="w-full bg-white text-[#2C3E35] border border-[#E6E4DD] rounded-xl px-4 py-2.5 text-sm focus:border-[#2B4C3F] focus:outline-none">
                     <option value="">Semua kategori</option>
@@ -34,15 +35,6 @@
                         </option>
                     @endforeach
                 </select>
-
-                <select name="status"
-                    class="w-full bg-white text-[#2C3E35] border border-[#E6E4DD] rounded-xl px-4 py-2.5 text-sm focus:border-[#2B4C3F] focus:outline-none">
-                    <option value="">Semua status</option>
-                    @foreach ($statuses as $statusOption)
-                        <option value="{{ $statusOption }}" @selected($status === $statusOption)>{{ $statusOption }}</option>
-                    @endforeach
-                </select>
-
                 <button type="submit"
                     class="bg-[#2B4C3F] hover:bg-[#1E362C] text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-all">
                     Filter
@@ -54,7 +46,120 @@
                 </a>
             </div>
         </form>
+        @php
+            $calendarQuery = fn (string $month) => array_filter([
+                'kategori' => $kategori,
+                'status' => $status,
+                'availability_month' => $month,
+            ], fn ($value) => filled($value));
 
+            $summaryCards = [
+                ['label' => 'Kosong', 'value' => $availabilitySummary['available'], 'class' => 'bg-[#EAF2EE] border-[#B8DEC8] text-[#2B4C3F]'],
+                ['label' => 'Berisi', 'value' => $availabilitySummary['booked'], 'class' => 'bg-[#F9D6D5] border-[#F0A09B] text-[#8A2E2E]'],
+                ['label' => 'Tidak tersedia', 'value' => $availabilitySummary['unavailable'], 'class' => 'bg-[#F2F0EA] border-[#D5D3C7] text-[#5C6E65]'],
+                ['label' => 'Total slot', 'value' => $availabilitySummary['total'], 'class' => 'bg-white border-[#E6E4DD] text-[#2C3E35]'],
+            ];
+
+            $stateClasses = [
+                'available' => 'bg-[#EAF2EE] border-[#B8DEC8] text-[#2B4C3F]',
+                'booked' => 'bg-[#F9D6D5] border-[#E65F5F] text-[#8A2E2E] hover:bg-[#F4C4C1]',
+                'unavailable' => 'bg-[#F2F0EA] border-[#D5D3C7] text-[#8A9C91]',
+            ];
+        @endphp
+
+        <div id="kalender-ketersediaan" class="mb-6 rounded-2xl border border-[#E6E4DD] bg-[#FAF9F6] p-5 sm:p-6">
+            <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-6">
+                <div>
+                    <h2 class="text-2xl font-serif font-semibold text-[#2C3E35] mb-2">
+                        Kalender Ketersediaan Homestay
+                    </h2>
+                    <p class="text-sm text-[#5C6E65] leading-relaxed">
+                        Pantau status kamar per tanggal dari halaman Kelola Homestay.
+                    </p>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <a href="{{ route('admin.homestay', $calendarQuery($previousMonth)) }}"
+                        class="h-10 w-10 inline-flex items-center justify-center rounded-xl border border-[#E6E4DD] bg-[#FAF9F6] text-[#2C3E35] text-sm font-semibold hover:bg-[#F2F0EA] transition-colors"
+                        aria-label="Bulan sebelumnya">
+                        &lt;
+                    </a>
+                    <div class="min-w-40 px-4 py-2 rounded-xl border border-[#E6E4DD] bg-white text-center">
+                        <span class="text-sm font-bold text-[#2C3E35]">{{ $monthStart->format('F Y') }}</span>
+                    </div>
+                    <a href="{{ route('admin.homestay', $calendarQuery($nextMonth)) }}"
+                        class="h-10 w-10 inline-flex items-center justify-center rounded-xl border border-[#E6E4DD] bg-[#FAF9F6] text-[#2C3E35] text-sm font-semibold hover:bg-[#F2F0EA] transition-colors"
+                        aria-label="Bulan berikutnya">
+                        &gt;
+                    </a>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+                @foreach($summaryCards as $card)
+                    <div class="rounded-xl border px-4 py-3 {{ $card['class'] }}">
+                        <p class="text-[10px] font-bold uppercase tracking-wider opacity-80">{{ $card['label'] }}</p>
+                        <p class="text-2xl font-bold mt-1">{{ $card['value'] }}</p>
+                    </div>
+                @endforeach
+            </div>
+
+            <div class="flex flex-wrap gap-3 text-xs text-[#5C6E65] mb-4">
+                <span class="inline-flex items-center gap-2"><span class="h-3 w-3 rounded-sm bg-[#EAF2EE] border border-[#B8DEC8]"></span>Kosong</span>
+                <span class="inline-flex items-center gap-2"><span class="h-3 w-3 rounded-sm bg-[#F9D6D5] border border-[#E65F5F]"></span>Berisi</span>
+                <span class="inline-flex items-center gap-2"><span class="h-3 w-3 rounded-sm bg-[#F2F0EA] border border-[#D5D3C7]"></span>Tidak tersedia</span>
+            </div>
+
+            <div class="overflow-x-auto rounded-2xl border border-[#E6E4DD]">
+                <div class="grid min-w-max text-xs"
+                    style="grid-template-columns: 220px repeat({{ $calendarDays->count() }}, minmax(2.5rem, 2.5rem));">
+                    <div class="sticky left-0 z-[2] bg-[#F7F6F2] border-r border-b border-[#E6E4DD] px-4 py-3 font-bold uppercase tracking-wider text-[#8A9C91]">
+                        Homestay
+                    </div>
+                    @foreach($calendarDays as $day)
+                        <div class="border-b border-[#E6E4DD] px-2 py-2 text-center {{ $day->isWeekend() ? 'bg-[#FBF7EE]' : 'bg-[#F7F6F2]' }}">
+                            <div class="font-bold text-[#2C3E35]">{{ $day->format('d') }}</div>
+                            <div class="text-[9px] uppercase text-[#8A9C91]">{{ $day->format('D') }}</div>
+                        </div>
+                    @endforeach
+
+                    @foreach($availabilityRows as $row)
+                        <div class="sticky left-0 z-[1] bg-white border-r border-b border-[#F2F0EA] px-4 py-3">
+                            <div class="font-semibold text-[#2C3E35] truncate" title="{{ $row['homestay']->nama_homestay }}">
+                                {{ $row['homestay']->nama_homestay }}
+                            </div>
+                            <div class="mt-1 text-[10px] text-[#8A9C91]">
+                                {{ $row['available_count'] }} kosong | {{ $row['booked_count'] }} berisi
+                            </div>
+                        </div>
+
+                        @foreach($row['days'] as $day)
+                            @php
+                                $detail = $day['detail'];
+                                $title = $day['label'];
+
+                                if ($detail) {
+                                    $title = $detail['pelanggan'].' | '.$detail['check_in'].' - '.$detail['check_out'].' | '.$detail['status'];
+                                }
+                            @endphp
+
+                            @if($day['state'] === 'booked' && $detail)
+                                <a href="{{ route('admin.reservasi.show', $detail['pemesanan_id']) }}"
+                                    class="h-10 border-b border-r border-[#F2F0EA] flex items-center justify-center font-semibold transition-colors {{ $stateClasses[$day['state']] }}"
+                                    title="{{ $title }}">
+                                    {{ $day['day']->format('d') }}
+                                </a>
+                            @else
+                                <div class="h-10 border-b border-r border-[#F2F0EA] flex items-center justify-center font-semibold {{ $stateClasses[$day['state']] }}"
+                                    title="{{ $title }}">
+                                    {{ $day['day']->format('d') }}
+                                </div>
+                            @endif
+                        @endforeach
+                    @endforeach
+                </div>
+            </div>
+        </div>
         @if($homestays->isEmpty())
             <div class="p-8 sm:p-12 bg-[#FAF9F6] border border-dashed border-[#D5D3C7] rounded-2xl flex flex-col items-center justify-center text-center">
                 <span class="text-5xl mb-4">🏠</span>
@@ -77,7 +182,6 @@
                             <th style="padding: 14px 16px; text-align: left; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #8A9C91;">Kategori</th>
                             <th style="padding: 14px 16px; text-align: left; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #8A9C91;">Harga / Malam</th>
                             <th style="padding: 14px 16px; text-align: left; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #8A9C91;">Kapasitas</th>
-                            <th style="padding: 14px 16px; text-align: left; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #8A9C91;">Status</th>
                             <th style="padding: 14px 16px; text-align: left; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #8A9C91;">Aksi</th>
                         </tr>
                     </thead>
@@ -129,22 +233,6 @@
                                         {{ $homestay->kapasitas }} Orang
                                     </span>
                                 </td>
-
-                                <!-- Status -->
-                                <td style="padding: 16px;">
-                                    @if($homestay->status === 'Tersedia')
-                                        <span style="display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; border-radius: 999px; background: #EAF2EE; color: #2B4C3F; border: 1px solid #B8DEC8;">
-                                            <span style="width: 6px; height: 6px; border-radius: 50%; background: #2B4C3F; display: inline-block;"></span>
-                                            Tersedia
-                                        </span>
-                                    @else
-                                        <span style="display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; border-radius: 999px; background: #FDF2F2; color: #9B1C1C; border: 1px solid #F5C2C2;">
-                                            <span style="width: 6px; height: 6px; border-radius: 50%; background: #E65F5F; display: inline-block;"></span>
-                                            {{ $homestay->status }}
-                                        </span>
-                                    @endif
-                                </td>
-
                                 <!-- Aksi -->
                                 <td style="padding: 12px 16px; text-align: left;">
                                     <div style="display: inline-flex; align-items: center; gap: 4px; background: #F7F6F2; border: 1px solid #E6E4DD; border-radius: 10px; padding: 4px;">
@@ -193,17 +281,10 @@
                                 <p class="text-xs text-[#8A9C91]">{{ $homestay->kapasitas }} Orang &bull; {{ $homestay->kategori->nama_kategori ?? '-' }}</p>
                             </div>
                         </div>
-                        <div class="pt-3 border-t border-[#E6E4DD] flex items-center justify-between">
+                        <div class="pt-3 border-t border-[#E6E4DD] flex items-center">
                             <div>
                                 <span class="text-[10px] text-[#8A9C91] block">Mulai dari</span>
                                 <span class="text-sm font-semibold text-[#2B4C3F]">Rp {{ number_format($homestay->harga_permalam, 0, ',', '.') }}</span>
-                            </div>
-                            <div>
-                                @if($homestay->status === 'Tersedia')
-                                    <span class="px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider rounded-full bg-[#EAF2EE] text-[#2B4C3F]">Tersedia</span>
-                                @else
-                                    <span class="px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider rounded-full bg-[#FDF2F2] border border-[#F5C2C2] text-[#9B1C1C]">{{ $homestay->status }}</span>
-                                @endif
                             </div>
                         </div>
                         <div class="flex justify-end gap-2 pt-2 border-t border-[#E6E4DD]/50">
@@ -223,5 +304,6 @@
             </div>
         @endif
     </div>
+
 </div>
 @endsection
