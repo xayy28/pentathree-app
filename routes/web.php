@@ -142,7 +142,42 @@ Route::middleware('auth')->group(function () {
     // Halaman khusus User
     Route::middleware('role:user')->group(function () {
         Route::get('/dashboard', function () {
-            return view('pelanggan.dashboard');
+            $homestays = \App\Models\Homestay::with('kategori')
+                ->where('status', 'Tersedia')
+                ->latest()
+                ->limit(4)
+                ->get();
+
+            $souvenirs = \App\Models\Souvenir::where('status', 'Tersedia')
+                ->where('stok', '>', 0)
+                ->orderByDesc('jumlah_terjual')
+                ->limit(4)
+                ->get();
+
+            $totalHomestay = \App\Models\Homestay::where('status', 'Tersedia')->count();
+            $totalSouvenir = \App\Models\Souvenir::where('status', 'Tersedia')->count();
+
+            $pesananAktif = \App\Models\Pemesanan::where('user_id', auth()->user()->user_id)
+                ->whereNotIn('status_pemesanan', [
+                    \App\Models\Pemesanan::STATUS_SELESAI,
+                    \App\Models\Pemesanan::STATUS_DIBATALKAN,
+                ])
+                ->count();
+
+            $pesananTerakhir = \App\Models\Pemesanan::where('user_id', auth()->user()->user_id)
+                ->with('detailPemesanans')
+                ->latest()
+                ->limit(3)
+                ->get();
+
+            return view('pelanggan.dashboard', compact(
+                'homestays',
+                'souvenirs',
+                'totalHomestay',
+                'totalSouvenir',
+                'pesananAktif',
+                'pesananTerakhir',
+            ));
         })->name('dashboard');
 
         Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
