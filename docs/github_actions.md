@@ -114,7 +114,7 @@ git diff --check
 Status terakhir setelah Sprint 8:
 
 ```text
-php artisan test        = 86 passed
+php artisan test        = 95 passed
 vendor\bin\pint --dirty = passed
 npm run build           = passed
 git diff --check        = clean

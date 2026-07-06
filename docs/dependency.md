@@ -97,7 +97,7 @@ File terkait:
 Catatan penting:
 
 - DomPDF saat ini dipakai untuk **laporan**, bukan invoice customer.
-- Invoice customer masih status rencana/opsional.
+- Invoice customer sudah tersedia sebagai halaman cetak browser setelah pembayaran valid.
 
 Status: **digunakan**.
 
@@ -220,7 +220,7 @@ Status terakhir:
 
 ```bash
 php artisan test
-# 86 passed
+# 95 passed
 ```
 
 ### 4.2 Laravel Pint
@@ -250,7 +250,7 @@ Status terakhir: **passed**.
 | Dependency/Fitur | Status | Catatan |
 | --- | --- | --- |
 | Font Awesome | Belum terpasang | UI saat ini tidak bergantung ke Font Awesome |
-| Invoice customer | Belum dibuat penuh | Sprint 4 sempat di-skip; DomPDF sekarang hanya untuk laporan |
+| Invoice customer | Sudah dibuat | Menggunakan Blade dan browser print; DomPDF tetap dipakai untuk laporan |
 | Midtrans Production | Belum | Butuh aktivasi merchant dan dokumen owner/bisnis |
 | Email notification | Belum | Opsional untuk sprint polish |
 | Ulasan/rating | Belum | Opsional setelah order/reservasi selesai |

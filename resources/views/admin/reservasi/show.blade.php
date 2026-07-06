@@ -89,6 +89,13 @@
                     Gunakan aksi ini setelah pembayaran dan kondisi reservasi sudah dicek.
                 </p>
 
+                @if ($reservasi->invoice)
+                    <a href="{{ route('admin.invoices.show', $reservasi->invoice->invoice_id) }}"
+                        class="w-full border border-[#C9D8D0] bg-white hover:bg-[#F3F7F5] text-[#2B4C3F] text-sm font-semibold py-3 px-4 rounded-xl transition-all flex items-center justify-center">
+                        Lihat Invoice
+                    </a>
+                @endif
+
                 <div class="space-y-3">
                     <form action="{{ route('admin.reservasi.status', $reservasi->pemesanan_id) }}" method="POST">
                         @csrf

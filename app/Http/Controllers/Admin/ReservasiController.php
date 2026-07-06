@@ -37,7 +37,7 @@ class ReservasiController extends Controller
      */
     public function show($pemesanan_id)
     {
-        $reservasi = Pemesanan::with('user', 'detailPemesanans.homestay', 'pembayaran')
+        $reservasi = Pemesanan::with('user', 'detailPemesanans.homestay', 'pembayaran', 'invoice')
             ->where('jenis_pemesanan', Pemesanan::JENIS_HOMESTAY)
             ->findOrFail($pemesanan_id);
 

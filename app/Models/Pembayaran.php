@@ -70,4 +70,12 @@ class Pembayaran extends Model
     {
         return $this->belongsTo(User::class, 'verified_by', 'user_id');
     }
+
+    /**
+     * Invoice yang diterbitkan dari pembayaran ini.
+     */
+    public function invoice()
+    {
+        return $this->hasOne(Invoice::class, 'pembayaran_id', 'pembayaran_id');
+    }
 }
