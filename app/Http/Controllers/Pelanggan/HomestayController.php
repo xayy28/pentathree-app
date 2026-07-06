@@ -29,4 +29,21 @@ class HomestayController extends Controller
 
         return view('pelanggan.homestay.index', compact('homestays', 'categories', 'kategori', 'status', 'statuses', 'tamu'));
     }
+
+    /**
+     * Tampilkan detail homestay untuk pelanggan.
+     */
+    public function show($homestay_id)
+    {
+        $homestay = Homestay::with('kategori')->findOrFail($homestay_id);
+
+        $rekomendasi = Homestay::with('kategori')
+            ->where('homestay_id', '!=', $homestay->homestay_id)
+            ->where('status', 'Tersedia')
+            ->inRandomOrder()
+            ->limit(3)
+            ->get();
+
+        return view('pelanggan.homestay.show', compact('homestay', 'rekomendasi'));
+    }
 }

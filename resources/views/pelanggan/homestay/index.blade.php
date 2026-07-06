@@ -182,7 +182,9 @@
                                         <div class="p-4 pt-5 pb-3 space-y-3">
                                             <h4
                                                 class="font-serif font-semibold text-xl text-[#1E362C] pb-2 border-b border-gray-100">
-                                                {{ $homestay->nama_homestay }}
+                                                <a href="{{ route('user.homestay.show', $homestay->homestay_id) }}" class="hover:text-[#2B4C3F] transition-colors">
+                                                    {{ $homestay->nama_homestay }}
+                                                </a>
                                             </h4>
                                             <p class="text-xs text-[#8A9C91] leading-relaxed">
                                                 Kapasitas: {{ $homestay->kapasitas }} Orang &bull;
@@ -207,17 +209,23 @@
                                                     {{ number_format($homestay->harga_permalam, 0, ',', '.') }}<span
                                                         class="text-[10px] text-[#8A9C91] font-normal uppercase tracking-normal">/malam</span></span>
                                             </div>
-                                            @if ($homestay->status === 'Tersedia')
-                                                <a href="{{ route('user.homestay.booking.create', $homestay->homestay_id) }}"
-                                                    class="px-6 py-2.5 bg-[#1E362C] hover:bg-[#152720] text-white text-xs font-semibold rounded-xl transition-all shadow-sm cursor-pointer">
-                                                    BOOKING
+                                            <div class="flex items-center gap-2">
+                                                <a href="{{ route('user.homestay.show', $homestay->homestay_id) }}"
+                                                    class="px-4 py-2.5 border border-[#A7C5B5] text-[#2B4C3F] hover:bg-[#EAF2EE] text-xs font-semibold rounded-xl transition-all cursor-pointer">
+                                                    Detail
                                                 </a>
-                                            @else
-                                                <button disabled
-                                                    class="px-6 py-2.5 bg-[#FAF9F6] border border-gray-200 text-[#8A9C91] text-xs font-semibold rounded-xl cursor-not-allowed">
-                                                    Penuh
-                                                </button>
-                                            @endif
+                                                @if ($homestay->status === 'Tersedia')
+                                                    <a href="{{ route('user.homestay.booking.create', $homestay->homestay_id) }}"
+                                                        class="px-4 py-2.5 bg-[#1E362C] hover:bg-[#152720] text-white text-xs font-semibold rounded-xl transition-all shadow-sm cursor-pointer">
+                                                        BOOKING
+                                                    </a>
+                                                @else
+                                                    <button disabled
+                                                        class="px-4 py-2.5 bg-[#FAF9F6] border border-gray-200 text-[#8A9C91] text-xs font-semibold rounded-xl cursor-not-allowed">
+                                                        Penuh
+                                                    </button>
+                                                @endif
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
