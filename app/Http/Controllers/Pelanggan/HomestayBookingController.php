@@ -8,7 +8,9 @@ use App\Models\Homestay;
 use App\Models\Pemesanan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class HomestayBookingController extends Controller
 {
@@ -24,7 +26,9 @@ class HomestayBookingController extends Controller
                 ->with('error', 'Homestay ini sedang tidak tersedia.');
         }
 
-        return view('pelanggan.homestay.booking', compact('homestay'));
+        $bookedDates = $this->bookedDates($homestay->homestay_id);
+
+        return view('pelanggan.homestay.booking', compact('homestay', 'bookedDates'));
     }
 
     /**
@@ -50,12 +54,32 @@ class HomestayBookingController extends Controller
             'jumlah_tamu.max' => 'Jumlah tamu melebihi kapasitas homestay.',
         ]);
 
+        if ($this->hasOverlappingBooking($homestay->homestay_id, $validated['check_in'], $validated['check_out'])) {
+            throw ValidationException::withMessages([
+                'check_in' => 'Tanggal tersebut sudah dibooking untuk homestay ini. Silakan pilih tanggal lain.',
+            ]);
+        }
+
         $checkIn = Carbon::parse($validated['check_in']);
         $checkOut = Carbon::parse($validated['check_out']);
         $jumlahMalam = $checkIn->diffInDays($checkOut);
         $subtotal = $homestay->harga_permalam * $jumlahMalam;
 
         $pemesanan = DB::transaction(function () use ($homestay, $validated, $jumlahMalam, $subtotal) {
+            $lockedHomestay = Homestay::whereKey($homestay->homestay_id)->lockForUpdate()->firstOrFail();
+
+            if ($lockedHomestay->status !== 'Tersedia') {
+                throw ValidationException::withMessages([
+                    'check_in' => 'Homestay ini sedang tidak tersedia.',
+                ]);
+            }
+
+            if ($this->hasOverlappingBooking($lockedHomestay->homestay_id, $validated['check_in'], $validated['check_out'])) {
+                throw ValidationException::withMessages([
+                    'check_in' => 'Tanggal tersebut sudah dibooking untuk homestay ini. Silakan pilih tanggal lain.',
+                ]);
+            }
+
             $pemesanan = Pemesanan::create([
                 'user_id' => auth()->user()->user_id,
                 'jenis_pemesanan' => Pemesanan::JENIS_HOMESTAY,
@@ -65,9 +89,9 @@ class HomestayBookingController extends Controller
 
             DetailPemesanan::create([
                 'pemesanan_id' => $pemesanan->pemesanan_id,
-                'homestay_id' => $homestay->homestay_id,
-                'nama_item' => $homestay->nama_homestay,
-                'harga' => $homestay->harga_permalam,
+                'homestay_id' => $lockedHomestay->homestay_id,
+                'nama_item' => $lockedHomestay->nama_homestay,
+                'harga' => $lockedHomestay->harga_permalam,
                 'jumlah' => 1,
                 'check_in' => $validated['check_in'],
                 'check_out' => $validated['check_out'],
@@ -80,5 +104,42 @@ class HomestayBookingController extends Controller
 
         return redirect()->route('user.pembayaran.create', $pemesanan->pemesanan_id)
             ->with('success', 'Booking homestay berhasil dibuat. Silakan pilih metode pembayaran.');
+    }
+
+    private function hasOverlappingBooking(int $homestayId, string $checkIn, string $checkOut): bool
+    {
+        return DetailPemesanan::where('homestay_id', $homestayId)
+            ->whereDate('check_in', '<', $checkOut)
+            ->whereDate('check_out', '>', $checkIn)
+            ->whereHas('pemesanan', function ($query) {
+                $query->where('status_pemesanan', '!=', Pemesanan::STATUS_DIBATALKAN);
+            })
+            ->exists();
+    }
+
+    private function bookedDates(int $homestayId): array
+    {
+        $today = now()->startOfDay();
+
+        return DetailPemesanan::where('homestay_id', $homestayId)
+            ->whereDate('check_out', '>', $today->toDateString())
+            ->whereHas('pemesanan', function ($query) {
+                $query->where('status_pemesanan', '!=', Pemesanan::STATUS_DIBATALKAN);
+            })
+            ->get(['check_in', 'check_out'])
+            ->flatMap(function (DetailPemesanan $detail) use ($today) {
+                $start = Carbon::parse($detail->check_in)->max($today);
+                $end = Carbon::parse($detail->check_out)->subDay();
+
+                if ($start->greaterThan($end)) {
+                    return [];
+                }
+
+                return collect(CarbonPeriod::create($start, $end))
+                    ->map(fn ($date) => $date->toDateString());
+            })
+            ->unique()
+            ->values()
+            ->all();
     }
 }

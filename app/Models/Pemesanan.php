@@ -92,4 +92,12 @@ class Pemesanan extends Model
     {
         return $this->hasOne(Pembayaran::class, 'pemesanan_id', 'pemesanan_id');
     }
+
+    /**
+     * Invoice yang diterbitkan setelah pembayaran valid.
+     */
+    public function invoice()
+    {
+        return $this->hasOne(Invoice::class, 'pemesanan_id', 'pemesanan_id');
+    }
 }

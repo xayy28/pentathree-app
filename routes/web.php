@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\PembayaranController as AdminPembayaranController
 use App\Http\Controllers\Admin\ReservasiController as AdminReservasiController;
 use App\Http\Controllers\Admin\SouvenirController as AdminSouvenirController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\MidtransWebhookController;
 use App\Http\Controllers\Pelanggan\HomestayBookingController as PelangganHomestayBookingController;
 use App\Http\Controllers\Pelanggan\HomestayController as PelangganHomestayController;
@@ -135,6 +136,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/admin/pembayaran/{pembayaran_id}/reject', [AdminPembayaranController::class, 'reject'])->name('admin.pembayaran.reject');
         Route::get('/admin/laporan', [AdminLaporanController::class, 'index'])->name('admin.laporan');
         Route::get('/admin/laporan/pdf', [AdminLaporanController::class, 'downloadPdf'])->name('admin.laporan.pdf');
+        Route::get('/admin/invoices/{invoice_id}', [InvoiceController::class, 'showForAdmin'])->name('admin.invoices.show');
     });
 
     // Halaman khusus User
@@ -158,6 +160,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/reservasi', [PelangganReservasiController::class, 'index'])->name('user.reservasi');
         Route::get('/pesanan', [PelangganPemesananController::class, 'index'])->name('user.pesanan.index');
         Route::get('/pesanan/{pemesanan_id}', [PelangganPemesananController::class, 'show'])->name('user.pesanan.show');
+        Route::get('/pesanan/{pemesanan_id}/invoice', [InvoiceController::class, 'showForUser'])->name('user.invoices.show');
         Route::get('/pesanan/{pemesanan_id}/pembayaran', [PelangganPembayaranController::class, 'create'])->name('user.pembayaran.create');
         Route::post('/pesanan/{pemesanan_id}/pembayaran', [PelangganPembayaranController::class, 'store'])->name('user.pembayaran.store');
         Route::post('/pesanan/{pemesanan_id}/midtrans-token', [PelangganMidtransPaymentController::class, 'token'])->name('user.pembayaran.midtrans.token');

@@ -380,7 +380,7 @@ Fitur pembayaran digunakan agar customer dapat membayar pemesanan souvenir atau 
 
 ### Alur Fitur
 
-Setelah checkout souvenir atau booking homestay berhasil, customer langsung diarahkan ke halaman pembayaran. Customer dapat memilih Midtrans Online atau Transfer Manual. Jika memilih transfer manual, customer mengisi metode manual, jumlah bayar, dan mengupload bukti pembayaran. Jika memilih Midtrans, sistem membuat Snap token dan menampilkan popup pembayaran Midtrans Sandbox. Setelah Midtrans dipilih sekali, metode pembayaran dikunci ke Midtrans sehingga customer tidak dapat mengganti ke transfer manual. Setelah pembayaran sukses atau pending, customer diarahkan ke riwayat pesanan.
+Setelah checkout souvenir atau booking homestay berhasil, customer langsung diarahkan ke halaman pembayaran. Customer dapat memilih Midtrans Online atau Transfer Manual. Jika memilih transfer manual, customer mengisi metode manual, jumlah bayar, dan mengupload bukti pembayaran. Jika memilih Midtrans, sistem membuat Snap token dan menampilkan popup pembayaran Midtrans Sandbox. Setelah Midtrans dipilih sekali, metode pembayaran dikunci ke Midtrans sehingga customer tidak dapat mengganti ke transfer manual. Setelah pembayaran terverifikasi, sistem menerbitkan invoice otomatis yang dapat dilihat customer dan admin. Setelah pembayaran sukses atau pending, customer diarahkan ke riwayat pesanan.
 
 ### Route / Controller Terkait
 
@@ -399,7 +399,33 @@ Setelah checkout souvenir atau booking homestay berhasil, customer langsung diar
 
 ---
 
-## 15. Webhook Midtrans
+## 15. Invoice Customer dan Admin
+
+### Tujuan Fitur
+
+Fitur invoice digunakan sebagai bukti transaksi setelah pembayaran dinyatakan valid.
+
+### Aktor
+
+- Customer
+- Admin
+- Sistem
+
+### Alur Fitur
+
+Saat pembayaran manual diverifikasi admin atau pembayaran Midtrans sukses, sistem membuat invoice otomatis untuk pemesanan terkait. Nomor invoice dibuat dengan format `INV-YYYYMMDD-0001`. Customer dapat membuka invoice dari detail pesanan, sedangkan admin dapat membuka invoice dari detail pembayaran souvenir atau detail reservasi homestay. Invoice dapat dicetak melalui fitur print browser.
+
+### Route / Controller Terkait
+
+- Route: `GET /pesanan/{pemesanan_id}/invoice`
+- Route: `GET /admin/invoices/{invoice_id}`
+- Controller: `InvoiceController`
+- Model: `Invoice`
+- Service: `PaymentSettlementService`
+
+---
+
+## 16. Webhook Midtrans
 
 ### Tujuan Fitur
 
@@ -651,7 +677,7 @@ Developer menjalankan test menggunakan Pest melalui command `php artisan test`. 
 | Admin pembayaran | Selesai |
 | Admin reservasi | Selesai |
 | Laporan dan PDF | Selesai |
-| Invoice customer | Belum, Sprint 4 di-skip sementara |
+| Invoice customer | Selesai |
 | Public homepage | Belum, opsional Sprint 9 |
 | Ulasan/rating | Belum, opsional Sprint 9 |
 | Fasilitas homestay | Belum, opsional Sprint 9 |

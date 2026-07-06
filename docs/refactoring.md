@@ -16,7 +16,7 @@ Sprint selesai:
 | Sprint 1 | Pemesanan Core | Done |
 | Sprint 2 | Souvenir Checkout | Done |
 | Sprint 3 | Payment Core | Done |
-| Sprint 4 | Invoice | Skipped sementara |
+| Sprint 4 | Invoice | Done |
 | Sprint 5 | Homestay Booking | Done |
 | Sprint 6 | Admin Reservation Management | Done |
 | Sprint 6.5 | Stabilization and Demo Readiness | Done |
@@ -174,7 +174,25 @@ Sesudah:
 
 Status: **selesai**.
 
-### 3.7 Midtrans Sandbox
+### 3.7 Invoice
+
+Sebelum:
+
+- Invoice Sprint 4 sempat di-skip agar flow reservasi dan pembayaran selesai lebih dulu.
+
+Sesudah:
+
+- Ada tabel `invoices` dan model `Invoice`.
+- Invoice dibuat otomatis setelah pembayaran valid melalui `PaymentSettlementService`.
+- Nomor invoice memakai format `INV-YYYYMMDD-0001`.
+- Customer dapat membuka invoice dari detail pesanan.
+- Admin dapat membuka invoice dari detail pembayaran souvenir dan detail reservasi homestay.
+- Invoice dapat dicetak melalui browser print.
+- Test invoice mencakup akses customer/admin, proteksi akses, homestay, dan anti-duplikasi.
+
+Status: **selesai**.
+
+### 3.8 Midtrans Sandbox
 
 Sebelum:
 
@@ -195,7 +213,7 @@ Sesudah:
 
 Status: **selesai secara kode, perlu UAT browser untuk dua flow: souvenir dan homestay**.
 
-### 3.8 Image Upload
+### 3.9 Image Upload
 
 Sebelum:
 
@@ -210,7 +228,7 @@ Sesudah:
 
 Status: **selesai**.
 
-### 3.9 Role Access
+### 3.10 Role Access
 
 Sebelum:
 
@@ -244,7 +262,7 @@ Status terakhir:
 
 ```bash
 php artisan test
-# 86 passed
+# 95 passed
 ```
 
 Quality gate:
@@ -292,18 +310,15 @@ Status: **belum final**.
 
 ### Prioritas 3 - Invoice Customer
 
-Sprint 4 invoice sebelumnya di-skip.
+Invoice customer/admin sudah diselesaikan.
 
-Jika dosen meminta invoice:
+- Tabel `invoices` tersedia.
+- Invoice digenerate setelah pembayaran valid.
+- Customer dan admin dapat melihat invoice.
+- Browser print tersedia.
+- Test invoice sudah ditambahkan.
 
-- Buat tabel `invoices`.
-- Generate invoice setelah pembayaran valid.
-- Buat halaman invoice customer.
-- Buat tampilan invoice admin.
-- Tambahkan export/print PDF jika dibutuhkan.
-- Tambahkan test invoice.
-
-Status: **belum**.
+Status: **selesai**.
 
 ### Prioritas 4 - Optional Scope
 

@@ -39,6 +39,7 @@ class PembayaranController extends Controller
     {
         $pembayaran = $this->findSouvenirPaymentOrFail($pembayaran_id, [
             'pemesanan.user',
+            'pemesanan.invoice',
             'pemesanan.detailPemesanans.souvenir',
             'verifier',
         ]);

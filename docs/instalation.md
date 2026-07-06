@@ -224,7 +224,7 @@ php artisan test
 Status terakhir:
 
 ```text
-86 passed
+95 passed
 ```
 
 Jalankan test payment saja:

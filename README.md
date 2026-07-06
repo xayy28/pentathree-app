@@ -5,11 +5,11 @@
 ![Blade](https://img.shields.io/badge/Blade-Laravel%20Blade-FF2D20)
 ![Tailwind](https://img.shields.io/badge/TailwindCSS-4.2+-38BDF8?logo=tailwindcss&logoColor=white)
 ![Midtrans](https://img.shields.io/badge/Midtrans-Sandbox-00AEEF)
-![Tests](https://img.shields.io/badge/Tests-86%20Passed-2EA44F)
+![Tests](https://img.shields.io/badge/Tests-95%20Passed-2EA44F)
 
 Sistem Informasi Manajemen Homestay dan Penjualan Souvenir Berbasis Web pada Natasha Homestay & Harau Souvenir adalah aplikasi Laravel untuk membantu pengelolaan homestay, penjualan souvenir, pemesanan, pembayaran, reservasi, dan laporan usaha secara terintegrasi.
 
-Status implementasi saat ini: **Sprint 8 selesai secara kode**. Project sudah memiliki auth, role admin/customer, CRUD homestay dan souvenir, katalog customer, keranjang, checkout, pemesanan, pembayaran manual, Midtrans Sandbox, admin reservasi, laporan PDF, dan test feature untuk modul utama.
+Status implementasi saat ini: **Sprint 9 polish aktif**. Project sudah memiliki auth, role admin/customer, CRUD homestay dan souvenir, katalog customer, keranjang, checkout, pemesanan, pembayaran manual, invoice, Midtrans Sandbox, admin reservasi, laporan PDF, kalender ketersediaan homestay, dan test feature untuk modul utama.
 
 ---
 
@@ -52,6 +52,7 @@ SIMHOSUV dibuat untuk membantu proses tersebut agar lebih terstruktur. Customer 
 | Pembayaran manual | Selesai |
 | Pembayaran Midtrans Sandbox | Selesai secara kode |
 | Riwayat dan detail pesanan | Selesai |
+| Invoice customer | Selesai |
 
 ### Fitur Admin
 
@@ -64,6 +65,7 @@ SIMHOSUV dibuat untuk membantu proses tersebut agar lebih terstruktur. Customer 
 | Manajemen pembayaran souvenir | Selesai |
 | Manajemen reservasi homestay | Selesai |
 | Laporan dan unduh PDF | Selesai |
+| Akses invoice admin | Selesai |
 
 ### Fitur Teknis
 
@@ -72,6 +74,7 @@ SIMHOSUV dibuat untuk membantu proses tersebut agar lebih terstruktur. Customer 
 | Role admin/customer dengan Spatie Permission dan fallback `users.role` | Selesai |
 | Optimasi upload gambar dengan Intervention Image | Selesai |
 | Payment settlement agar stok tidak berkurang ganda | Selesai |
+| Invoice otomatis setelah pembayaran valid | Selesai |
 | Webhook Midtrans dan fallback cek status | Selesai |
 | Test feature Laravel/Pest | Selesai |
 | GitHub Actions testing dan linting | Tersedia |
@@ -80,7 +83,6 @@ SIMHOSUV dibuat untuk membantu proses tersebut agar lebih terstruktur. Customer 
 
 | Fitur | Status |
 | --- | --- |
-| Invoice customer | Sprint 4 di-skip sementara |
 | Public homepage | Opsional Sprint 9 |
 | Ulasan/rating | Opsional Sprint 9 |
 | Fasilitas homestay | Opsional Sprint 9 |
@@ -271,7 +273,7 @@ git diff --check
 Status terakhir:
 
 ```text
-php artisan test        = 86 passed
+php artisan test        = 95 passed
 vendor\bin\pint --dirty = passed
 npm run build           = passed
 git diff --check        = clean
@@ -369,7 +371,7 @@ Screenshot berikut diambil dari hasil project lokal pada `http://127.0.0.1:8000`
 | Sprint 1 | Pemesanan Core | Done |
 | Sprint 2 | Souvenir Checkout | Done |
 | Sprint 3 | Payment Core | Done |
-| Sprint 4 | Invoice | Skipped sementara |
+| Sprint 4 | Invoice | Done |
 | Sprint 5 | Homestay Booking | Done |
 | Sprint 6 | Admin Reservation Management | Done |
 | Sprint 6.5 | Stabilization and Demo Readiness | Done |

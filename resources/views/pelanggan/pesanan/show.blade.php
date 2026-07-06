@@ -107,9 +107,17 @@
                         Bukti pembayaran sudah dikirim dan sedang menunggu verifikasi admin.
                     </p>
                 @elseif ($pemesanan->pembayaran->status_pembayaran === \App\Models\Pembayaran::STATUS_TERVERIFIKASI)
-                    <p class="text-[11px] leading-relaxed text-[#2B4C3F] bg-[#EAF2EE] border border-[#A7C5B5] rounded-xl p-4">
-                        Pembayaran sudah terverifikasi. Pesanan sedang diproses.
-                    </p>
+                    <div class="space-y-3">
+                        <p class="text-[11px] leading-relaxed text-[#2B4C3F] bg-[#EAF2EE] border border-[#A7C5B5] rounded-xl p-4">
+                            Pembayaran sudah terverifikasi. Pesanan sedang diproses.
+                        </p>
+                        @if ($pemesanan->invoice)
+                            <a href="{{ route('user.invoices.show', $pemesanan->pemesanan_id) }}"
+                                class="w-full border border-[#C9D8D0] bg-white hover:bg-[#F3F7F5] text-[#2B4C3F] text-sm font-semibold py-3 px-4 rounded-xl transition-all flex items-center justify-center">
+                                Lihat Invoice
+                            </a>
+                        @endif
+                    </div>
                 @endif
 
                 @if ($pemesanan->pembayaran?->catatan_admin)

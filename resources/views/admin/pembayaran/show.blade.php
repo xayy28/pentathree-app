@@ -97,6 +97,13 @@
                     </div>
                 @endif
 
+                @if ($pembayaran->pemesanan->invoice)
+                    <a href="{{ route('admin.invoices.show', $pembayaran->pemesanan->invoice->invoice_id) }}"
+                        class="w-full border border-[#C9D8D0] bg-white hover:bg-[#F3F7F5] text-[#2B4C3F] text-sm font-semibold py-3 px-4 rounded-xl transition-all flex items-center justify-center">
+                        Lihat Invoice
+                    </a>
+                @endif
+
                 @if ($pembayaran->status_pembayaran === \App\Models\Pembayaran::STATUS_MENUNGGU_VERIFIKASI)
                     <form action="{{ route('admin.pembayaran.verify', $pembayaran->pembayaran_id) }}" method="POST">
                         @csrf
