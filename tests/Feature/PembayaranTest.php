@@ -318,6 +318,93 @@ test('admin can verify payment and update stock once', function () {
     expect($this->souvenir->fresh()->jumlah_terjual)->toBe($initialSold + 2);
 });
 
+test('admin can advance verified souvenir order status in sequence', function () {
+    $pemesanan = createSouvenirPemesananForPaymentTest($this->user, $this->souvenir, 2);
+    $pemesanan->update([
+        'status_pemesanan' => Pemesanan::STATUS_TERVERIFIKASI,
+    ]);
+
+    $pembayaran = Pembayaran::create([
+        'pemesanan_id' => $pemesanan->pemesanan_id,
+        'metode_pembayaran' => 'transfer_bank',
+        'jumlah_bayar' => $pemesanan->total_harga,
+        'status_pembayaran' => Pembayaran::STATUS_TERVERIFIKASI,
+        'tanggal_pembayaran' => now(),
+        'verified_at' => now(),
+        'verified_by' => $this->admin->user_id,
+    ]);
+
+    $this->actingAs($this->admin)
+        ->post(route('admin.pembayaran.status', $pembayaran->pembayaran_id), [
+            'status_pemesanan' => Pemesanan::STATUS_DIPROSES,
+        ])
+        ->assertRedirect(route('admin.pembayaran.show', $pembayaran->pembayaran_id))
+        ->assertSessionHas('success');
+
+    expect($pemesanan->fresh()->status_pemesanan)->toBe(Pemesanan::STATUS_DIPROSES);
+
+    $this->actingAs($this->admin)
+        ->post(route('admin.pembayaran.status', $pembayaran->pembayaran_id), [
+            'status_pemesanan' => Pemesanan::STATUS_SIAP_DIAMBIL_DIKIRIM,
+        ])
+        ->assertSessionHas('success');
+
+    expect($pemesanan->fresh()->status_pemesanan)->toBe(Pemesanan::STATUS_SIAP_DIAMBIL_DIKIRIM);
+
+    $this->actingAs($this->admin)
+        ->post(route('admin.pembayaran.status', $pembayaran->pembayaran_id), [
+            'status_pemesanan' => Pemesanan::STATUS_SELESAI,
+        ])
+        ->assertSessionHas('success');
+
+    expect($pemesanan->fresh()->status_pemesanan)->toBe(Pemesanan::STATUS_SELESAI);
+});
+
+test('admin cannot skip souvenir order status sequence', function () {
+    $pemesanan = createSouvenirPemesananForPaymentTest($this->user, $this->souvenir, 2);
+    $pemesanan->update([
+        'status_pemesanan' => Pemesanan::STATUS_TERVERIFIKASI,
+    ]);
+
+    $pembayaran = Pembayaran::create([
+        'pemesanan_id' => $pemesanan->pemesanan_id,
+        'metode_pembayaran' => 'transfer_bank',
+        'jumlah_bayar' => $pemesanan->total_harga,
+        'status_pembayaran' => Pembayaran::STATUS_TERVERIFIKASI,
+        'tanggal_pembayaran' => now(),
+        'verified_at' => now(),
+        'verified_by' => $this->admin->user_id,
+    ]);
+
+    $this->actingAs($this->admin)
+        ->post(route('admin.pembayaran.status', $pembayaran->pembayaran_id), [
+            'status_pemesanan' => Pemesanan::STATUS_SELESAI,
+        ])
+        ->assertRedirect(route('admin.pembayaran.show', $pembayaran->pembayaran_id))
+        ->assertSessionHas('error');
+
+    expect($pemesanan->fresh()->status_pemesanan)->toBe(Pemesanan::STATUS_TERVERIFIKASI);
+});
+
+test('admin cannot update souvenir order status before payment is verified', function () {
+    $pemesanan = createSouvenirPemesananForPaymentTest($this->user, $this->souvenir, 2);
+    $pembayaran = Pembayaran::create([
+        'pemesanan_id' => $pemesanan->pemesanan_id,
+        'metode_pembayaran' => 'transfer_bank',
+        'jumlah_bayar' => $pemesanan->total_harga,
+        'status_pembayaran' => Pembayaran::STATUS_MENUNGGU_VERIFIKASI,
+        'tanggal_pembayaran' => now(),
+    ]);
+
+    $this->actingAs($this->admin)
+        ->post(route('admin.pembayaran.status', $pembayaran->pembayaran_id), [
+            'status_pemesanan' => Pemesanan::STATUS_DIPROSES,
+        ])
+        ->assertRedirect(route('admin.pembayaran.show', $pembayaran->pembayaran_id))
+        ->assertSessionHas('error');
+
+    expect($pemesanan->fresh()->status_pemesanan)->toBe(Pemesanan::STATUS_MENUNGGU_PEMBAYARAN);
+});
 test('admin can reject payment without changing stock', function () {
     Storage::fake('public');
     $pemesanan = createSouvenirPemesananForPaymentTest($this->user, $this->souvenir, 2);

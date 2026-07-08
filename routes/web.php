@@ -23,6 +23,7 @@ use App\Models\Homestay;
 use App\Models\Pembayaran;
 use App\Models\Pemesanan;
 use App\Models\Souvenir;
+use App\Models\Ulasan;
 use App\Models\User;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Support\Facades\DB;
@@ -55,8 +56,8 @@ Route::get('/', function () {
 
     $statTotalHomestay = Homestay::where('status', 'Tersedia')->count();
     $statTotalSouvenir = Souvenir::where('status', 'Tersedia')->count();
-    $statTotalUser     = User::where('role', 'user')->count();
-    $statAvgRating     = \App\Models\Ulasan::avg('rating');
+    $statTotalUser = User::where('role', 'user')->count();
+    $statAvgRating = Ulasan::avg('rating');
 
     return view('welcome', compact('homestays', 'souvenirs', 'statTotalHomestay', 'statTotalSouvenir', 'statTotalUser', 'statAvgRating'));
 })->name('home');
@@ -160,6 +161,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin/laporan', [AdminLaporanController::class, 'index'])->name('admin.laporan');
         Route::get('/admin/laporan/pdf', [AdminLaporanController::class, 'downloadPdf'])->name('admin.laporan.pdf');
         Route::get('/admin/invoices/{invoice_id}', [InvoiceController::class, 'showForAdmin'])->name('admin.invoices.show');
+        Route::get('/admin/invoices/{invoice_id}/pdf', [InvoiceController::class, 'downloadPdfForAdmin'])->name('admin.invoices.pdf');
     });
 
     // Halaman khusus User
@@ -222,6 +224,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/pesanan/{pemesanan_id}', [PelangganPemesananController::class, 'show'])->name('user.pesanan.show');
         Route::post('/pesanan/{pemesanan_id}/detail/{detail_pemesanan_id}/ulasan', [PelangganUlasanController::class, 'store'])->name('user.ulasan.store');
         Route::get('/pesanan/{pemesanan_id}/invoice', [InvoiceController::class, 'showForUser'])->name('user.invoices.show');
+        Route::get('/pesanan/{pemesanan_id}/invoice/pdf', [InvoiceController::class, 'downloadPdfForUser'])->name('user.invoices.pdf');
         Route::get('/pesanan/{pemesanan_id}/pembayaran', [PelangganPembayaranController::class, 'create'])->name('user.pembayaran.create');
         Route::post('/pesanan/{pemesanan_id}/pembayaran', [PelangganPembayaranController::class, 'store'])->name('user.pembayaran.store');
         Route::post('/pesanan/{pemesanan_id}/midtrans-token', [PelangganMidtransPaymentController::class, 'token'])->name('user.pembayaran.midtrans.token');

@@ -137,21 +137,48 @@ class PembayaranController extends Controller
                 ->with('error', 'Status pesanan hanya bisa diubah setelah pembayaran terverifikasi.');
         }
 
-        if ($pembayaran->pemesanan->status_pemesanan === $validated['status_pemesanan']) {
+        $currentStatus = $pembayaran->pemesanan->status_pemesanan;
+        $targetStatus = $validated['status_pemesanan'];
+
+        if ($currentStatus === $targetStatus) {
             return redirect()->route('admin.pembayaran.show', $pembayaran->pembayaran_id)
                 ->with('error', 'Pesanan sudah berada pada status tersebut.');
         }
 
+        $nextStatuses = [
+            Pemesanan::STATUS_TERVERIFIKASI => [
+                Pemesanan::STATUS_DIPROSES,
+                Pemesanan::STATUS_DIBATALKAN,
+                Pemesanan::STATUS_KEDALUWARSA,
+            ],
+            Pemesanan::STATUS_DIPROSES => [
+                Pemesanan::STATUS_SIAP_DIAMBIL_DIKIRIM,
+                Pemesanan::STATUS_DIBATALKAN,
+                Pemesanan::STATUS_KEDALUWARSA,
+            ],
+            Pemesanan::STATUS_SIAP_DIAMBIL_DIKIRIM => [
+                Pemesanan::STATUS_SELESAI,
+                Pemesanan::STATUS_DIBATALKAN,
+                Pemesanan::STATUS_KEDALUWARSA,
+            ],
+        ];
+
+        if (! in_array($targetStatus, $nextStatuses[$currentStatus] ?? [], true)) {
+            return redirect()->route('admin.pembayaran.show', $pembayaran->pembayaran_id)
+                ->with('error', 'Status pesanan tidak sesuai urutan alur souvenir.');
+        }
+
         $pembayaran->pemesanan->update([
-            'status_pemesanan' => $validated['status_pemesanan'],
+            'status_pemesanan' => $targetStatus,
         ]);
 
         $statusLabels = Pemesanan::souvenirStatusLabels();
-        $statusLabel = $statusLabels[$validated['status_pemesanan']] ?? str_replace('_', ' ', $validated['status_pemesanan']);
+        $statusLabel = $statusLabels[$targetStatus] ?? str_replace('_', ' ', $targetStatus);
 
         return redirect()->route('admin.pembayaran.show', $pembayaran->pembayaran_id)
             ->with('success', 'Status pesanan souvenir berhasil diubah menjadi '.$statusLabel.'.');
     }
+
     /**
      * Tandai pesanan souvenir selesai untuk status operasional admin.
      */
@@ -169,6 +196,11 @@ class PembayaranController extends Controller
         if ($pembayaran->pemesanan->status_pemesanan === Pemesanan::STATUS_SELESAI) {
             return redirect()->route('admin.pembayaran.show', $pembayaran->pembayaran_id)
                 ->with('error', 'Pesanan sudah selesai.');
+        }
+
+        if ($pembayaran->pemesanan->status_pemesanan !== Pemesanan::STATUS_SIAP_DIAMBIL_DIKIRIM) {
+            return redirect()->route('admin.pembayaran.show', $pembayaran->pembayaran_id)
+                ->with('error', 'Pesanan hanya bisa diselesaikan setelah status siap diambil atau dikirim.');
         }
 
         $pembayaran->pemesanan->update([
