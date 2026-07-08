@@ -54,34 +54,47 @@
                     @endforeach
                 </div>
 
-                @if ($pemesanan->status_pemesanan === \App\Models\Pemesanan::STATUS_SELESAI)
+                @if ($pemesanan->pembayaran?->status_pembayaran === \App\Models\Pembayaran::STATUS_TERVERIFIKASI)
                     <div class="mt-6 border-t border-[#F2F0EA] pt-6 space-y-4">
                         <div>
                             <h3 class="font-serif text-xl font-semibold text-[#2C3E35]">Ulasan Pesanan</h3>
-                            <p class="text-xs text-[#8A9C91] mt-1">Beri rating untuk item yang sudah selesai diproses.</p>
+                            <p class="text-xs text-[#8A9C91] mt-1">Beri rating setelah pembayaran pesanan terverifikasi.</p>
                         </div>
 
                         @foreach ($pemesanan->detailPemesanans as $detail)
                             @php $existingUlasan = $detail->ulasan; @endphp
                             <form action="{{ route('user.ulasan.store', [$pemesanan->pemesanan_id, $detail->detail_pemesanan_id]) }}" method="POST"
-                                class="rounded-xl border border-[#E6E4DD] bg-[#FAF9F6] p-4 space-y-3">
+                                class="rounded-xl border border-[#E6E4DD] bg-[#FAF9F6] p-4 space-y-4">
                                 @csrf
-                                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                                @php $selectedRating = (int) old('rating', $existingUlasan?->rating); @endphp
+                                <div class="flex flex-col gap-3">
                                     <div>
                                         <div class="text-sm font-semibold text-[#2C3E35]">{{ $detail->nama_item }}</div>
                                         @if ($existingUlasan)
                                             <div class="text-xs text-[#8A9C91] mt-1">Ulasan terakhir: {{ $existingUlasan->rating }} dari 5</div>
                                         @endif
                                     </div>
-                                    <select name="rating" required
-                                        class="rounded-lg border-[#E6E4DD] bg-white text-sm font-semibold text-[#2C3E35] focus:border-[#2B4C3F] focus:ring-[#2B4C3F]">
-                                        <option value="">Pilih rating</option>
-                                        @for ($value = 5; $value >= 1; $value--)
-                                            <option value="{{ $value }}" @selected((int) old('rating', $existingUlasan?->rating) === $value)>
-                                                {{ $value }} / 5
-                                            </option>
-                                        @endfor
-                                    </select>
+
+                                    <div class="rating-picker rounded-2xl border border-[#E6E4DD] bg-white px-4 py-3" data-rating-picker>
+                                        <div class="flex items-center justify-between gap-3">
+                                            <div class="flex items-center gap-1" role="radiogroup" aria-label="Rating untuk {{ $detail->nama_item }}">
+                                                @for ($value = 1; $value <= 5; $value++)
+                                                    <input type="radio" id="rating-{{ $detail->detail_pemesanan_id }}-{{ $value }}" name="rating" value="{{ $value }}"
+                                                        class="sr-only rating-input" @checked($selectedRating === $value) required>
+                                                    <label for="rating-{{ $detail->detail_pemesanan_id }}-{{ $value }}"
+                                                        class="rating-star cursor-pointer rounded-xl p-1.5 text-[#D8D5CC] transition-all duration-150 hover:bg-[#FFF8E8] focus-within:ring-2 focus-within:ring-[#F6B21A]"
+                                                        data-rating="{{ $value }}" title="{{ $value }} dari 5">
+                                                        <svg class="h-8 w-8 transition-transform duration-150" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.957a1 1 0 00.95.69h4.161c.969 0 1.371 1.24.588 1.81l-3.367 2.446a1 1 0 00-.364 1.118l1.286 3.957c.3.921-.755 1.688-1.539 1.118l-3.367-2.446a1 1 0 00-1.176 0l-3.367 2.446c-.784.57-1.838-.197-1.539-1.118l1.286-3.957a1 1 0 00-.364-1.118L2.058 9.384c-.783-.57-.38-1.81.588-1.81h4.161a1 1 0 00.95-.69l1.292-3.957z" />
+                                                        </svg>
+                                                    </label>
+                                                @endfor
+                                            </div>
+                                            <span class="rating-label text-xs font-bold text-[#8A9C91] whitespace-nowrap">
+                                                {{ $selectedRating ? $selectedRating . ' dari 5' : 'Pilih rating' }}
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <textarea name="komentar" rows="3" maxlength="1000"
@@ -229,4 +242,63 @@
             });
         </script>
     @endif
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const ratingLabels = {
+                1: 'Sangat buruk',
+                2: 'Kurang puas',
+                3: 'Cukup',
+                4: 'Puas',
+                5: 'Sangat puas',
+            };
+
+            document.querySelectorAll('[data-rating-picker]').forEach(function (picker) {
+                const inputs = Array.from(picker.querySelectorAll('.rating-input'));
+                const stars = Array.from(picker.querySelectorAll('.rating-star'));
+                const label = picker.querySelector('.rating-label');
+
+                const selectedValue = function () {
+                    const selected = inputs.find(function (input) {
+                        return input.checked;
+                    });
+
+                    return selected ? Number(selected.value) : 0;
+                };
+
+                const paint = function (value) {
+                    stars.forEach(function (star) {
+                        const starValue = Number(star.dataset.rating);
+                        const active = starValue <= value;
+
+                        star.classList.toggle('text-[#F6B21A]', active);
+                        star.classList.toggle('text-[#D8D5CC]', !active);
+                        star.classList.toggle('scale-105', active);
+                    });
+
+                    if (label) {
+                        label.textContent = value ? `${value} dari 5 - ${ratingLabels[value]}` : 'Pilih rating';
+                        label.classList.toggle('text-[#B7791F]', value > 0);
+                        label.classList.toggle('text-[#8A9C91]', value === 0);
+                    }
+                };
+
+                stars.forEach(function (star) {
+                    star.addEventListener('mouseenter', function () {
+                        paint(Number(star.dataset.rating));
+                    });
+                    star.addEventListener('mouseleave', function () {
+                        paint(selectedValue());
+                    });
+                });
+
+                inputs.forEach(function (input) {
+                    input.addEventListener('change', function () {
+                        paint(selectedValue());
+                    });
+                });
+
+                paint(selectedValue());
+            });
+        });
+    </script>
 @endsection

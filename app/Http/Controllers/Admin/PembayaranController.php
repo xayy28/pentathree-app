@@ -111,7 +111,7 @@ class PembayaranController extends Controller
     }
 
     /**
-     * Tandai pesanan souvenir selesai agar customer dapat memberi ulasan.
+     * Tandai pesanan souvenir selesai untuk status operasional admin.
      */
     public function complete($pembayaran_id)
     {

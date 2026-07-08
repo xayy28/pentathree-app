@@ -4,14 +4,14 @@ namespace App\Http\Controllers\Pelanggan;
 
 use App\Http\Controllers\Controller;
 use App\Models\DetailPemesanan;
-use App\Models\Pemesanan;
+use App\Models\Pembayaran;
 use App\Models\Ulasan;
 use Illuminate\Http\Request;
 
 class UlasanController extends Controller
 {
     /**
-     * Simpan atau perbarui ulasan customer untuk item pesanan yang sudah selesai.
+     * Simpan atau perbarui ulasan customer untuk item pesanan yang pembayarannya sudah valid.
      */
     public function store(Request $request, $pemesanan_id, $detail_pemesanan_id)
     {
@@ -20,7 +20,7 @@ class UlasanController extends Controller
             'komentar' => 'nullable|string|max:1000',
         ]);
 
-        $detail = DetailPemesanan::with('pemesanan')
+        $detail = DetailPemesanan::with('pemesanan.pembayaran')
             ->where('detail_pemesanan_id', $detail_pemesanan_id)
             ->where('pemesanan_id', $pemesanan_id)
             ->whereHas('pemesanan', function ($query) {
@@ -28,8 +28,8 @@ class UlasanController extends Controller
             })
             ->firstOrFail();
 
-        if ($detail->pemesanan->status_pemesanan !== Pemesanan::STATUS_SELESAI) {
-            return back()->with('error', 'Ulasan hanya bisa diberikan setelah pesanan selesai.');
+        if ($detail->pemesanan->pembayaran?->status_pembayaran !== Pembayaran::STATUS_TERVERIFIKASI) {
+            return back()->with('error', 'Ulasan hanya bisa diberikan setelah pembayaran terverifikasi.');
         }
 
         Ulasan::updateOrCreate(

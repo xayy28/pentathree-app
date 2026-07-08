@@ -20,7 +20,7 @@ beforeEach(function () {
     $this->homestay = Homestay::where('status', 'Tersedia')->first();
 });
 
-function createSouvenirOrderForUlasanTest(User $user, Souvenir $souvenir, string $status = Pemesanan::STATUS_SELESAI): array
+function createSouvenirOrderForUlasanTest(User $user, Souvenir $souvenir, string $status = Pemesanan::STATUS_DIPROSES): array
 {
     $pemesanan = Pemesanan::create([
         'user_id' => $user->user_id,
@@ -41,13 +41,13 @@ function createSouvenirOrderForUlasanTest(User $user, Souvenir $souvenir, string
     return [$pemesanan, $detail];
 }
 
-function createHomestayOrderForUlasanTest(User $user, Homestay $homestay): array
+function createHomestayOrderForUlasanTest(User $user, Homestay $homestay, string $status = Pemesanan::STATUS_DIPROSES): array
 {
     $pemesanan = Pemesanan::create([
         'user_id' => $user->user_id,
         'jenis_pemesanan' => Pemesanan::JENIS_HOMESTAY,
         'total_harga' => $homestay->harga_permalam * 2,
-        'status_pemesanan' => Pemesanan::STATUS_SELESAI,
+        'status_pemesanan' => $status,
     ]);
 
     $detail = DetailPemesanan::create([
@@ -65,8 +65,21 @@ function createHomestayOrderForUlasanTest(User $user, Homestay $homestay): array
     return [$pemesanan, $detail];
 }
 
+function createVerifiedPaymentForUlasanTest(Pemesanan $pemesanan): Pembayaran
+{
+    return Pembayaran::create([
+        'pemesanan_id' => $pemesanan->pemesanan_id,
+        'metode_pembayaran' => 'transfer_bank',
+        'jumlah_bayar' => $pemesanan->total_harga,
+        'status_pembayaran' => Pembayaran::STATUS_TERVERIFIKASI,
+        'tanggal_pembayaran' => now(),
+        'verified_at' => now(),
+    ]);
+}
+
 test('guest cannot submit ulasan', function () {
     [$pemesanan, $detail] = createSouvenirOrderForUlasanTest($this->user, $this->souvenir);
+    createVerifiedPaymentForUlasanTest($pemesanan);
 
     $this->post(route('user.ulasan.store', [$pemesanan->pemesanan_id, $detail->detail_pemesanan_id]), [
         'rating' => 5,
@@ -74,8 +87,11 @@ test('guest cannot submit ulasan', function () {
     ])->assertRedirect(route('login'));
 });
 
-test('user can submit ulasan for completed souvenir order item', function () {
-    [$pemesanan, $detail] = createSouvenirOrderForUlasanTest($this->user, $this->souvenir);
+test('user can submit ulasan after souvenir payment is verified', function () {
+    [$pemesanan, $detail] = createSouvenirOrderForUlasanTest($this->user, $this->souvenir, Pemesanan::STATUS_DIPROSES);
+    createVerifiedPaymentForUlasanTest($pemesanan);
+
+    expect($pemesanan->status_pemesanan)->toBe(Pemesanan::STATUS_DIPROSES);
 
     $this->actingAs($this->user)
         ->post(route('user.ulasan.store', [$pemesanan->pemesanan_id, $detail->detail_pemesanan_id]), [
@@ -101,14 +117,22 @@ test('user can submit ulasan for completed souvenir order item', function () {
         ->assertSee('5 dari 5');
 });
 
-test('user cannot submit ulasan before order is completed', function () {
-    [$pemesanan, $detail] = createSouvenirOrderForUlasanTest($this->user, $this->souvenir, Pemesanan::STATUS_DIPROSES);
+test('user cannot submit ulasan before payment is verified', function () {
+    [$pemesanan, $detail] = createSouvenirOrderForUlasanTest($this->user, $this->souvenir, Pemesanan::STATUS_SELESAI);
+
+    Pembayaran::create([
+        'pemesanan_id' => $pemesanan->pemesanan_id,
+        'metode_pembayaran' => 'transfer_bank',
+        'jumlah_bayar' => $pemesanan->total_harga,
+        'status_pembayaran' => Pembayaran::STATUS_MENUNGGU_VERIFIKASI,
+        'tanggal_pembayaran' => now(),
+    ]);
 
     $this->actingAs($this->user)
         ->from(route('user.pesanan.show', $pemesanan->pemesanan_id))
         ->post(route('user.ulasan.store', [$pemesanan->pemesanan_id, $detail->detail_pemesanan_id]), [
             'rating' => 4,
-            'komentar' => 'Belum selesai.',
+            'komentar' => 'Belum diverifikasi.',
         ])
         ->assertRedirect(route('user.pesanan.show', $pemesanan->pemesanan_id))
         ->assertSessionHas('error');
@@ -116,33 +140,20 @@ test('user cannot submit ulasan before order is completed', function () {
     expect(Ulasan::count())->toBe(0);
 });
 
-test('admin can mark verified souvenir order as completed for review', function () {
+test('verified payment shows review form without completing order status', function () {
     [$pemesanan] = createSouvenirOrderForUlasanTest($this->user, $this->souvenir, Pemesanan::STATUS_DIPROSES);
-
-    $pembayaran = Pembayaran::create([
-        'pemesanan_id' => $pemesanan->pemesanan_id,
-        'metode_pembayaran' => 'transfer_bank',
-        'jumlah_bayar' => $pemesanan->total_harga,
-        'status_pembayaran' => Pembayaran::STATUS_TERVERIFIKASI,
-        'tanggal_pembayaran' => now(),
-        'verified_at' => now(),
-        'verified_by' => $this->admin->user_id,
-    ]);
-
-    $this->actingAs($this->admin)
-        ->post(route('admin.pembayaran.complete', $pembayaran->pembayaran_id))
-        ->assertRedirect(route('admin.pembayaran.show', $pembayaran->pembayaran_id))
-        ->assertSessionHas('success');
-
-    expect($pemesanan->refresh()->status_pemesanan)->toBe(Pemesanan::STATUS_SELESAI);
+    createVerifiedPaymentForUlasanTest($pemesanan);
 
     $this->actingAs($this->user)
         ->get(route('user.pesanan.show', $pemesanan->pemesanan_id))
         ->assertStatus(200)
-        ->assertSee('Ulasan Pesanan');
+        ->assertSee('Ulasan Pesanan')
+        ->assertSee('Beri rating setelah pembayaran pesanan terverifikasi.');
 });
+
 test('user cannot submit ulasan for another customers order', function () {
     [$pemesanan, $detail] = createSouvenirOrderForUlasanTest($this->user, $this->souvenir);
+    createVerifiedPaymentForUlasanTest($pemesanan);
 
     $otherUser = User::create([
         'nama' => 'Customer Review Lain',
@@ -165,6 +176,7 @@ test('user cannot submit ulasan for another customers order', function () {
 
 test('submitting ulasan twice updates existing review', function () {
     [$pemesanan, $detail] = createSouvenirOrderForUlasanTest($this->user, $this->souvenir);
+    createVerifiedPaymentForUlasanTest($pemesanan);
 
     $this->actingAs($this->user)
         ->post(route('user.ulasan.store', [$pemesanan->pemesanan_id, $detail->detail_pemesanan_id]), [
@@ -186,8 +198,9 @@ test('submitting ulasan twice updates existing review', function () {
     ]);
 });
 
-test('homestay ulasan appears on homestay detail page', function () {
-    [$pemesanan, $detail] = createHomestayOrderForUlasanTest($this->user, $this->homestay);
+test('homestay ulasan appears on homestay detail page after payment is verified', function () {
+    [$pemesanan, $detail] = createHomestayOrderForUlasanTest($this->user, $this->homestay, Pemesanan::STATUS_DIPROSES);
+    createVerifiedPaymentForUlasanTest($pemesanan);
 
     $this->actingAs($this->user)
         ->post(route('user.ulasan.store', [$pemesanan->pemesanan_id, $detail->detail_pemesanan_id]), [
