@@ -3,6 +3,7 @@
 use App\Models\DetailPemesanan;
 use App\Models\Homestay;
 use App\Models\KategoriHomestay;
+use App\Models\Pembayaran;
 use App\Models\Pemesanan;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -66,6 +67,16 @@ function createHomestayReservationForAdminTest(User $user, Homestay $homestay, s
     return $pemesanan;
 }
 
+function createPaymentForAdminReservationTest(Pemesanan $reservasi, string $status = Pembayaran::STATUS_TERVERIFIKASI): Pembayaran
+{
+    return Pembayaran::create([
+        'pemesanan_id' => $reservasi->pemesanan_id,
+        'metode_pembayaran' => 'transfer_bank',
+        'jumlah_bayar' => $reservasi->total_harga,
+        'status_pembayaran' => $status,
+        'tanggal_pembayaran' => now(),
+    ]);
+}
 test('guest cannot access admin reservation pages', function () {
     $reservasi = createHomestayReservationForAdminTest($this->user, $this->homestay);
 
@@ -116,30 +127,87 @@ test('admin can filter reservations by status', function () {
 
 test('admin can filter reservations by payment workflow statuses', function () {
     $waitingVerification = createHomestayReservationForAdminTest($this->user, $this->homestay, Pemesanan::STATUS_MENUNGGU_VERIFIKASI);
-    $processedReservation = createHomestayReservationForAdminTest($this->user, $this->homestay, Pemesanan::STATUS_DIPROSES);
+    $stayingReservation = createHomestayReservationForAdminTest($this->user, $this->homestay, Pemesanan::STATUS_SEDANG_MENGINAP);
 
     $this->actingAs($this->admin)
         ->get(route('admin.reservasi', ['status' => Pemesanan::STATUS_MENUNGGU_VERIFIKASI]))
         ->assertStatus(200)
         ->assertSee($waitingVerification->kode_pemesanan)
-        ->assertDontSee($processedReservation->kode_pemesanan);
+        ->assertDontSee($stayingReservation->kode_pemesanan);
 });
 
-test('admin can update reservation status', function () {
+test('admin can update reservation status after payment is verified', function () {
+    $reservasi = createHomestayReservationForAdminTest($this->user, $this->homestay, Pemesanan::STATUS_DIKONFIRMASI);
+    createPaymentForAdminReservationTest($reservasi);
+
+    $this->actingAs($this->admin)
+        ->post(route('admin.reservasi.status', $reservasi->pemesanan_id), [
+            'status_pemesanan' => Pemesanan::STATUS_SEDANG_MENGINAP,
+        ])
+        ->assertRedirect(route('admin.reservasi.show', $reservasi->pemesanan_id));
+
+    expect($reservasi->fresh()->status_pemesanan)->toBe(Pemesanan::STATUS_SEDANG_MENGINAP);
+
+    $this->actingAs($this->admin)
+        ->post(route('admin.reservasi.status', $reservasi->pemesanan_id), [
+            'status_pemesanan' => Pemesanan::STATUS_SELESAI,
+        ])
+        ->assertRedirect(route('admin.reservasi.show', $reservasi->pemesanan_id));
+
+    expect($reservasi->fresh()->status_pemesanan)->toBe(Pemesanan::STATUS_SELESAI);
+
+    $this->actingAs($this->user)
+        ->get(route('user.pesanan.show', $reservasi->pemesanan_id))
+        ->assertStatus(200)
+        ->assertSee('Selesai');
+});
+
+test('admin cannot confirm active reservation statuses before payment is verified', function () {
     $reservasi = createHomestayReservationForAdminTest($this->user, $this->homestay);
 
     $this->actingAs($this->admin)
         ->post(route('admin.reservasi.status', $reservasi->pemesanan_id), [
             'status_pemesanan' => Pemesanan::STATUS_DIKONFIRMASI,
         ])
-        ->assertRedirect(route('admin.reservasi.show', $reservasi->pemesanan_id));
+        ->assertRedirect(route('admin.reservasi.show', $reservasi->pemesanan_id))
+        ->assertSessionHas('error');
 
+    expect($reservasi->fresh()->status_pemesanan)->toBe(Pemesanan::STATUS_MENUNGGU_PEMBAYARAN);
+});
+
+test('admin can verify homestay payment and confirm booking', function () {
+    $reservasi = createHomestayReservationForAdminTest($this->user, $this->homestay, Pemesanan::STATUS_MENUNGGU_VERIFIKASI);
+    $pembayaran = createPaymentForAdminReservationTest($reservasi, Pembayaran::STATUS_MENUNGGU_VERIFIKASI);
+
+    $this->actingAs($this->admin)
+        ->post(route('admin.reservasi.verify-payment', $reservasi->pemesanan_id))
+        ->assertRedirect(route('admin.reservasi.show', $reservasi->pemesanan_id))
+        ->assertSessionHas('success');
+
+    expect($pembayaran->fresh()->status_pembayaran)->toBe(Pembayaran::STATUS_TERVERIFIKASI);
+    expect($pembayaran->fresh()->verified_by)->toBe($this->admin->user_id);
     expect($reservasi->fresh()->status_pemesanan)->toBe(Pemesanan::STATUS_DIKONFIRMASI);
 
-    $this->actingAs($this->user)
-        ->get(route('user.pesanan.show', $reservasi->pemesanan_id))
-        ->assertStatus(200)
-        ->assertSee('dikonfirmasi');
+    $this->assertDatabaseHas('invoices', [
+        'pemesanan_id' => $reservasi->pemesanan_id,
+        'pembayaran_id' => $pembayaran->pembayaran_id,
+    ]);
+});
+
+test('admin can reject homestay payment and return booking to waiting payment', function () {
+    $reservasi = createHomestayReservationForAdminTest($this->user, $this->homestay, Pemesanan::STATUS_MENUNGGU_VERIFIKASI);
+    $pembayaran = createPaymentForAdminReservationTest($reservasi, Pembayaran::STATUS_MENUNGGU_VERIFIKASI);
+
+    $this->actingAs($this->admin)
+        ->post(route('admin.reservasi.reject-payment', $reservasi->pemesanan_id), [
+            'catatan_admin' => 'Bukti pembayaran kurang jelas.',
+        ])
+        ->assertRedirect(route('admin.reservasi.show', $reservasi->pemesanan_id))
+        ->assertSessionHas('success');
+
+    expect($pembayaran->fresh()->status_pembayaran)->toBe(Pembayaran::STATUS_DITOLAK);
+    expect($pembayaran->fresh()->catatan_admin)->toBe('Bukti pembayaran kurang jelas.');
+    expect($reservasi->fresh()->status_pemesanan)->toBe(Pemesanan::STATUS_MENUNGGU_PEMBAYARAN);
 });
 
 test('admin cannot delete homestay with active reservation', function () {
@@ -157,6 +225,18 @@ test('admin cannot delete homestay with active reservation', function () {
 
 test('admin can delete homestay after reservation is finished', function () {
     createHomestayReservationForAdminTest($this->user, $this->homestay, Pemesanan::STATUS_SELESAI);
+
+    $this->actingAs($this->admin)
+        ->delete(route('admin.homestay.destroy', $this->homestay->homestay_id))
+        ->assertRedirect(route('admin.homestay'))
+        ->assertSessionHas('success');
+
+    $this->assertDatabaseMissing('homestays', [
+        'homestay_id' => $this->homestay->homestay_id,
+    ]);
+});
+test('admin can delete homestay after reservation is expired', function () {
+    createHomestayReservationForAdminTest($this->user, $this->homestay, Pemesanan::STATUS_KEDALUWARSA);
 
     $this->actingAs($this->admin)
         ->delete(route('admin.homestay.destroy', $this->homestay->homestay_id))

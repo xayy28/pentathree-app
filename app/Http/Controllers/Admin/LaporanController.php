@@ -96,14 +96,7 @@ class LaporanController extends Controller
             ->limit(5)
             ->get();
 
-        $reservationStatuses = [
-            Pemesanan::STATUS_MENUNGGU_PEMBAYARAN,
-            Pemesanan::STATUS_MENUNGGU_VERIFIKASI,
-            Pemesanan::STATUS_DIPROSES,
-            Pemesanan::STATUS_DIKONFIRMASI,
-            Pemesanan::STATUS_SELESAI,
-            Pemesanan::STATUS_DIBATALKAN,
-        ];
+        $reservationStatuses = Pemesanan::homestayStatuses();
 
         $reservationStatusCounts = collect($reservationStatuses)
             ->mapWithKeys(fn ($status) => [

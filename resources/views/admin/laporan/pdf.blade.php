@@ -125,14 +125,7 @@
 
 <body>
     @php
-        $statusLabels = [
-            \App\Models\Pemesanan::STATUS_MENUNGGU_PEMBAYARAN => 'Menunggu Pembayaran',
-            \App\Models\Pemesanan::STATUS_MENUNGGU_VERIFIKASI => 'Menunggu Verifikasi',
-            \App\Models\Pemesanan::STATUS_DIPROSES => 'Diproses',
-            \App\Models\Pemesanan::STATUS_DIKONFIRMASI => 'Dikonfirmasi',
-            \App\Models\Pemesanan::STATUS_SELESAI => 'Selesai',
-            \App\Models\Pemesanan::STATUS_DIBATALKAN => 'Dibatalkan',
-        ];
+        $statusLabels = \App\Models\Pemesanan::homestayStatusLabels();
 
         $periode = $dateFrom || $dateTo
             ? ($dateFrom?->format('d M Y') ?? 'Awal').' - '.($dateTo?->format('d M Y') ?? 'Sekarang')

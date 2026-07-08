@@ -3,6 +3,11 @@
 @section('title', 'Detail Pesanan')
 
 @section('content')
+    @php
+        $statusLabels = \App\Models\Pemesanan::homestayStatusLabels();
+        $statusLabel = $statusLabels[$pemesanan->status_pemesanan] ?? ucwords(str_replace('_', ' ', $pemesanan->status_pemesanan));
+    @endphp
+
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 bg-[#F8F7F4]">
         <div class="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
@@ -14,7 +19,7 @@
                 </h2>
             </div>
             <span class="px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider bg-[#EAF2EE] text-[#2B4C3F] self-start sm:self-auto">
-                {{ str_replace('_', ' ', $pemesanan->status_pemesanan) }}
+                {{ $statusLabel }}
             </span>
         </div>
 
@@ -172,7 +177,11 @@
                 @elseif ($pemesanan->pembayaran->status_pembayaran === \App\Models\Pembayaran::STATUS_TERVERIFIKASI)
                     <div class="space-y-3">
                         <p class="text-[11px] leading-relaxed text-[#2B4C3F] bg-[#EAF2EE] border border-[#A7C5B5] rounded-xl p-4">
-                            Pembayaran sudah terverifikasi. Pesanan sedang diproses.
+                            @if ($pemesanan->jenis_pemesanan === \App\Models\Pemesanan::JENIS_HOMESTAY)
+                                Pembayaran sudah terverifikasi. Booking sudah dikonfirmasi dan menunggu jadwal check-in.
+                            @else
+                                Pembayaran sudah terverifikasi. Pesanan sedang diproses.
+                            @endif
                         </p>
                         @if ($pemesanan->invoice)
                             <a href="{{ route('user.invoices.show', $pemesanan->pemesanan_id) }}"

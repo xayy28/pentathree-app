@@ -6,9 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\DetailPemesanan;
 use App\Models\Homestay;
 use App\Models\Pemesanan;
+use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Carbon\CarbonPeriod;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -112,7 +112,7 @@ class HomestayBookingController extends Controller
             ->whereDate('check_in', '<', $checkOut)
             ->whereDate('check_out', '>', $checkIn)
             ->whereHas('pemesanan', function ($query) {
-                $query->where('status_pemesanan', '!=', Pemesanan::STATUS_DIBATALKAN);
+                $query->whereNotIn('status_pemesanan', Pemesanan::inactiveHomestayStatuses());
             })
             ->exists();
     }
@@ -124,7 +124,7 @@ class HomestayBookingController extends Controller
         return DetailPemesanan::where('homestay_id', $homestayId)
             ->whereDate('check_out', '>', $today->toDateString())
             ->whereHas('pemesanan', function ($query) {
-                $query->where('status_pemesanan', '!=', Pemesanan::STATUS_DIBATALKAN);
+                $query->whereNotIn('status_pemesanan', Pemesanan::inactiveHomestayStatuses());
             })
             ->get(['check_in', 'check_out'])
             ->flatMap(function (DetailPemesanan $detail) use ($today) {

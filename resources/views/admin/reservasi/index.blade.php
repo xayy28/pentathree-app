@@ -4,14 +4,7 @@
 
 @section('content')
     @php
-        $statusLabels = [
-            \App\Models\Pemesanan::STATUS_MENUNGGU_PEMBAYARAN => 'Menunggu Pembayaran',
-            \App\Models\Pemesanan::STATUS_MENUNGGU_VERIFIKASI => 'Menunggu Verifikasi',
-            \App\Models\Pemesanan::STATUS_DIPROSES => 'Diproses',
-            \App\Models\Pemesanan::STATUS_DIKONFIRMASI => 'Dikonfirmasi',
-            \App\Models\Pemesanan::STATUS_DIBATALKAN => 'Dibatalkan',
-            \App\Models\Pemesanan::STATUS_SELESAI => 'Selesai',
-        ];
+        $statusLabels = \App\Models\Pemesanan::homestayStatusLabels();
     @endphp
 
     <div class="space-y-6">

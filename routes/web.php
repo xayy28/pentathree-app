@@ -74,6 +74,7 @@ Route::middleware('auth')->group(function () {
                     ->whereNotIn('status_pemesanan', [
                         Pemesanan::STATUS_DIBATALKAN,
                         Pemesanan::STATUS_SELESAI,
+                        Pemesanan::STATUS_KEDALUWARSA,
                     ])
                     ->count()
                 : 0;
@@ -131,6 +132,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin/reservasi', [AdminReservasiController::class, 'index'])->name('admin.reservasi');
         Route::get('/admin/reservasi/{pemesanan_id}', [AdminReservasiController::class, 'show'])->name('admin.reservasi.show');
         Route::post('/admin/reservasi/{pemesanan_id}/status', [AdminReservasiController::class, 'updateStatus'])->name('admin.reservasi.status');
+        Route::post('/admin/reservasi/{pemesanan_id}/verify-payment', [AdminReservasiController::class, 'verifyPayment'])->name('admin.reservasi.verify-payment');
+        Route::post('/admin/reservasi/{pemesanan_id}/reject-payment', [AdminReservasiController::class, 'rejectPayment'])->name('admin.reservasi.reject-payment');
         Route::get('/admin/pembayaran', [AdminPembayaranController::class, 'index'])->name('admin.pembayaran');
         Route::get('/admin/pembayaran/{pembayaran_id}', [AdminPembayaranController::class, 'show'])->name('admin.pembayaran.show');
         Route::post('/admin/pembayaran/{pembayaran_id}/verify', [AdminPembayaranController::class, 'verify'])->name('admin.pembayaran.verify');
@@ -163,6 +166,7 @@ Route::middleware('auth')->group(function () {
                 ->whereNotIn('status_pemesanan', [
                     Pemesanan::STATUS_SELESAI,
                     Pemesanan::STATUS_DIBATALKAN,
+                    Pemesanan::STATUS_KEDALUWARSA,
                 ])
                 ->count();
 

@@ -20,9 +20,13 @@ class Pemesanan extends Model
 
     public const STATUS_DIPROSES = 'diproses';
 
+    public const STATUS_KEDALUWARSA = 'kedaluwarsa';
+
     public const STATUS_MENUNGGU_PEMBAYARAN = 'menunggu_pembayaran';
 
     public const STATUS_MENUNGGU_VERIFIKASI = 'menunggu_verifikasi';
+
+    public const STATUS_SEDANG_MENGINAP = 'sedang_menginap';
 
     public const STATUS_SELESAI = 'selesai';
 
@@ -44,6 +48,41 @@ class Pemesanan extends Model
         return [
             'tanggal_pemesanan' => 'datetime',
             'total_harga' => 'decimal:2',
+        ];
+    }
+
+    public static function homestayStatuses(): array
+    {
+        return [
+            self::STATUS_MENUNGGU_PEMBAYARAN,
+            self::STATUS_MENUNGGU_VERIFIKASI,
+            self::STATUS_DIKONFIRMASI,
+            self::STATUS_SEDANG_MENGINAP,
+            self::STATUS_SELESAI,
+            self::STATUS_DIBATALKAN,
+            self::STATUS_KEDALUWARSA,
+        ];
+    }
+
+    public static function homestayStatusLabels(): array
+    {
+        return [
+            self::STATUS_MENUNGGU_PEMBAYARAN => 'Menunggu Pembayaran',
+            self::STATUS_MENUNGGU_VERIFIKASI => 'Menunggu Verifikasi',
+            self::STATUS_DIKONFIRMASI => 'Terverifikasi / Dikonfirmasi',
+            self::STATUS_SEDANG_MENGINAP => 'Check-in / Sedang Menginap',
+            self::STATUS_SELESAI => 'Selesai',
+            self::STATUS_DIBATALKAN => 'Dibatalkan',
+            self::STATUS_KEDALUWARSA => 'Kedaluwarsa',
+            self::STATUS_DIPROSES => 'Diproses',
+        ];
+    }
+
+    public static function inactiveHomestayStatuses(): array
+    {
+        return [
+            self::STATUS_DIBATALKAN,
+            self::STATUS_KEDALUWARSA,
         ];
     }
 

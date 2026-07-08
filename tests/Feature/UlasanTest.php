@@ -41,7 +41,7 @@ function createSouvenirOrderForUlasanTest(User $user, Souvenir $souvenir, string
     return [$pemesanan, $detail];
 }
 
-function createHomestayOrderForUlasanTest(User $user, Homestay $homestay, string $status = Pemesanan::STATUS_DIPROSES): array
+function createHomestayOrderForUlasanTest(User $user, Homestay $homestay, string $status = Pemesanan::STATUS_DIKONFIRMASI): array
 {
     $pemesanan = Pemesanan::create([
         'user_id' => $user->user_id,
@@ -199,7 +199,7 @@ test('submitting ulasan twice updates existing review', function () {
 });
 
 test('homestay ulasan appears on homestay detail page after payment is verified', function () {
-    [$pemesanan, $detail] = createHomestayOrderForUlasanTest($this->user, $this->homestay, Pemesanan::STATUS_DIPROSES);
+    [$pemesanan, $detail] = createHomestayOrderForUlasanTest($this->user, $this->homestay, Pemesanan::STATUS_DIKONFIRMASI);
     createVerifiedPaymentForUlasanTest($pemesanan);
 
     $this->actingAs($this->user)

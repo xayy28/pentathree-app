@@ -44,7 +44,7 @@ class HomestayController extends Controller
             ->whereDate('check_out', '>', $monthStart->toDateString())
             ->whereHas('pemesanan', function ($query) {
                 $query->where('jenis_pemesanan', Pemesanan::JENIS_HOMESTAY)
-                    ->where('status_pemesanan', '!=', Pemesanan::STATUS_DIBATALKAN);
+                    ->whereNotIn('status_pemesanan', Pemesanan::inactiveHomestayStatuses());
             })
             ->get();
 
@@ -219,7 +219,7 @@ class HomestayController extends Controller
             ->contains(fn ($detail) => $detail->pemesanan
                 && $detail->pemesanan->jenis_pemesanan === Pemesanan::JENIS_HOMESTAY
                 && ! in_array($detail->pemesanan->status_pemesanan, [
-                    Pemesanan::STATUS_DIBATALKAN,
+                    ...Pemesanan::inactiveHomestayStatuses(),
                     Pemesanan::STATUS_SELESAI,
                 ], true));
 

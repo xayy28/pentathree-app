@@ -19,6 +19,16 @@ class MidtransPaymentController extends Controller
             ->where('pemesanan_id', $pemesanan_id)
             ->firstOrFail();
 
+        if (in_array($pemesanan->status_pemesanan, [
+            Pemesanan::STATUS_SELESAI,
+            Pemesanan::STATUS_DIBATALKAN,
+            Pemesanan::STATUS_KEDALUWARSA,
+        ], true)) {
+            return response()->json([
+                'message' => 'Pesanan ini sudah tidak dapat dibayar.',
+            ], 422);
+        }
+
         if ($pemesanan->pembayaran?->status_pembayaran === Pembayaran::STATUS_TERVERIFIKASI) {
             return response()->json([
                 'message' => 'Pesanan ini sudah dibayar.',

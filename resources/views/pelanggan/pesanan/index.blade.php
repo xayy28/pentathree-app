@@ -3,6 +3,10 @@
 @section('title', 'Riwayat Pesanan')
 
 @section('content')
+    @php
+        $statusLabels = \App\Models\Pemesanan::homestayStatusLabels();
+    @endphp
+
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 bg-[#F8F7F4]">
         <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
             <div>
@@ -50,7 +54,11 @@
                         </div>
                         <div class="flex items-center justify-between lg:justify-end gap-6">
                             <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#FAF9F6] border border-[#E6E4DD] text-[#5C6E65]">
-                                {{ $pemesanan->pembayaran ? str_replace('_', ' ', $pemesanan->pembayaran->status_pembayaran) : str_replace('_', ' ', $pemesanan->status_pemesanan) }}
+                                @if ($pemesanan->jenis_pemesanan === \App\Models\Pemesanan::JENIS_HOMESTAY)
+                                    {{ $statusLabels[$pemesanan->status_pemesanan] ?? ucwords(str_replace('_', ' ', $pemesanan->status_pemesanan)) }}
+                                @else
+                                    {{ $pemesanan->pembayaran ? str_replace('_', ' ', $pemesanan->pembayaran->status_pembayaran) : str_replace('_', ' ', $pemesanan->status_pemesanan) }}
+                                @endif
                             </span>
                             <span class="text-lg font-bold text-[#2B4C3F]">
                                 Rp {{ number_format($pemesanan->total_harga, 0, ',', '.') }}

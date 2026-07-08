@@ -146,6 +146,42 @@ test('booking rejects overlapping date range for same homestay', function () {
     expect(DetailPemesanan::count())->toBe(1);
 });
 
+test('booking allows overlapping date range when existing booking is expired', function () {
+    $existingCheckIn = now()->addDays(2)->toDateString();
+    $existingCheckOut = now()->addDays(4)->toDateString();
+
+    $existingPemesanan = Pemesanan::create([
+        'user_id' => $this->user->user_id,
+        'jenis_pemesanan' => Pemesanan::JENIS_HOMESTAY,
+        'total_harga' => $this->homestay->harga_permalam * 2,
+        'status_pemesanan' => Pemesanan::STATUS_KEDALUWARSA,
+    ]);
+
+    DetailPemesanan::create([
+        'pemesanan_id' => $existingPemesanan->pemesanan_id,
+        'homestay_id' => $this->homestay->homestay_id,
+        'nama_item' => $this->homestay->nama_homestay,
+        'harga' => $this->homestay->harga_permalam,
+        'jumlah' => 1,
+        'check_in' => $existingCheckIn,
+        'check_out' => $existingCheckOut,
+        'jumlah_malam' => 2,
+        'subtotal' => $this->homestay->harga_permalam * 2,
+    ]);
+
+    $response = $this->actingAs($this->user)
+        ->post(route('user.homestay.booking.store', $this->homestay->homestay_id), [
+            'check_in' => now()->addDays(3)->toDateString(),
+            'check_out' => now()->addDays(5)->toDateString(),
+            'jumlah_tamu' => 1,
+        ]);
+
+    $latestPemesanan = Pemesanan::latest('pemesanan_id')->first();
+
+    $response->assertRedirect(route('user.pembayaran.create', $latestPemesanan->pemesanan_id));
+    expect(Pemesanan::count())->toBe(2);
+    expect(DetailPemesanan::count())->toBe(2);
+});
 test('booking allows adjacent checkout date from existing homestay booking', function () {
     $existingCheckIn = now()->addDays(2)->toDateString();
     $existingCheckOut = now()->addDays(4)->toDateString();

@@ -86,6 +86,18 @@ test('user can upload payment proof for own order', function () {
     Storage::disk('public')->assertExists($pembayaran->bukti_pembayaran);
 });
 
+test('user cannot pay expired homestay booking', function () {
+    $homestay = Homestay::where('status', 'Tersedia')->first();
+    $pemesanan = createHomestayPemesananForPaymentTest($this->user, $homestay);
+    $pemesanan->update([
+        'status_pemesanan' => Pemesanan::STATUS_KEDALUWARSA,
+    ]);
+
+    $this->actingAs($this->user)
+        ->get(route('user.pembayaran.create', $pemesanan->pemesanan_id))
+        ->assertRedirect(route('user.pesanan.index'))
+        ->assertSessionHas('error');
+});
 test('payment page separates midtrans and manual transfer options', function () {
     $pemesanan = createSouvenirPemesananForPaymentTest($this->user, $this->souvenir);
 

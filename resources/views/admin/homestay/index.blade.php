@@ -65,6 +65,7 @@
                 'booked' => 'bg-[#F9D6D5] border-[#E65F5F] text-[#8A2E2E] hover:bg-[#F4C4C1]',
                 'unavailable' => 'bg-[#F2F0EA] border-[#D5D3C7] text-[#8A9C91]',
             ];
+            $statusLabels = \App\Models\Pemesanan::homestayStatusLabels();
         @endphp
 
         <div id="kalender-ketersediaan" class="mb-6 rounded-2xl border border-[#E6E4DD] bg-[#FAF9F6] p-5 sm:p-6">
@@ -139,7 +140,7 @@
                                 $title = $day['label'];
 
                                 if ($detail) {
-                                    $title = $detail['pelanggan'].' | '.$detail['check_in'].' - '.$detail['check_out'].' | '.$detail['status'];
+                                    $title = $detail['pelanggan'].' | '.$detail['check_in'].' - '.$detail['check_out'].' | '.($statusLabels[$detail['status']] ?? str_replace('_', ' ', $detail['status']));
                                 }
                             @endphp
 

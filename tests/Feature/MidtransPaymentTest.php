@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\DetailPemesanan;
+use App\Models\Homestay;
 use App\Models\Pembayaran;
 use App\Models\Pemesanan;
 use App\Models\Souvenir;
@@ -15,6 +16,7 @@ beforeEach(function () {
     $this->seed(DatabaseSeeder::class);
     $this->user = User::where('role', 'user')->first();
     $this->souvenir = Souvenir::where('status', 'Tersedia')->where('stok', '>', 0)->first();
+    $this->homestay = Homestay::where('status', 'Tersedia')->first();
 
     config([
         'midtrans.server_key' => 'SB-Mid-server-test',
@@ -44,6 +46,29 @@ function createSouvenirPemesananForMidtransTest(User $user, Souvenir $souvenir, 
     return $pemesanan;
 }
 
+function createHomestayPemesananForMidtransTest(User $user, Homestay $homestay): Pemesanan
+{
+    $pemesanan = Pemesanan::create([
+        'user_id' => $user->user_id,
+        'jenis_pemesanan' => Pemesanan::JENIS_HOMESTAY,
+        'total_harga' => $homestay->harga_permalam * 2,
+        'status_pemesanan' => Pemesanan::STATUS_MENUNGGU_PEMBAYARAN,
+    ]);
+
+    DetailPemesanan::create([
+        'pemesanan_id' => $pemesanan->pemesanan_id,
+        'homestay_id' => $homestay->homestay_id,
+        'nama_item' => $homestay->nama_homestay,
+        'harga' => $homestay->harga_permalam,
+        'jumlah' => 1,
+        'check_in' => now()->addDay()->toDateString(),
+        'check_out' => now()->addDays(3)->toDateString(),
+        'jumlah_malam' => 2,
+        'subtotal' => $homestay->harga_permalam * 2,
+    ]);
+
+    return $pemesanan;
+}
 function createMidtransPaymentForTest(Pemesanan $pemesanan): Pembayaran
 {
     return Pembayaran::create([
@@ -91,6 +116,19 @@ test('user can create midtrans snap token for own unpaid order', function () {
     expect($pembayaran->midtrans_snap_token)->toBe('snap-token-test');
 });
 
+test('midtrans token rejects expired booking', function () {
+    $pemesanan = createHomestayPemesananForMidtransTest($this->user, $this->homestay);
+    $pemesanan->update([
+        'status_pemesanan' => Pemesanan::STATUS_KEDALUWARSA,
+    ]);
+
+    $this->actingAs($this->user)
+        ->postJson(route('user.pembayaran.midtrans.token', $pemesanan->pemesanan_id))
+        ->assertStatus(422)
+        ->assertJsonPath('message', 'Pesanan ini sudah tidak dapat dibayar.');
+
+    expect(Pembayaran::count())->toBe(0);
+});
 test('midtrans token requires sandbox keys', function () {
     config([
         'midtrans.server_key' => null,
@@ -169,6 +207,24 @@ test('midtrans settlement verifies payment and updates stock once', function () 
     expect($this->souvenir->fresh()->jumlah_terjual)->toBe($initialSold + 2);
 });
 
+test('midtrans settlement confirms homestay reservation', function () {
+    $pemesanan = createHomestayPemesananForMidtransTest($this->user, $this->homestay);
+    $pembayaran = createMidtransPaymentForTest($pemesanan);
+    $payload = signedMidtransPayloadForTest([
+        'order_id' => $pembayaran->midtrans_order_id,
+        'status_code' => '200',
+        'gross_amount' => number_format((float) $pemesanan->total_harga, 2, '.', ''),
+        'transaction_status' => 'settlement',
+        'transaction_id' => 'trx-midtrans-homestay-1',
+        'payment_type' => 'bank_transfer',
+    ]);
+
+    $this->postJson(route('midtrans.notification'), $payload)->assertOk();
+
+    expect($pembayaran->fresh()->status_pembayaran)->toBe(Pembayaran::STATUS_TERVERIFIKASI);
+    expect($pembayaran->fresh()->midtrans_transaction_status)->toBe('settlement');
+    expect($pemesanan->fresh()->status_pemesanan)->toBe(Pemesanan::STATUS_DIKONFIRMASI);
+});
 test('user can refresh midtrans status when webhook is unavailable', function () {
     $pemesanan = createSouvenirPemesananForMidtransTest($this->user, $this->souvenir, 2);
     $pembayaran = createMidtransPaymentForTest($pemesanan);

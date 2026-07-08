@@ -104,6 +104,14 @@ class PembayaranController extends Controller
 
     private function canOpenPaymentPage(Pemesanan $pemesanan): bool
     {
+        if (in_array($pemesanan->status_pemesanan, [
+            Pemesanan::STATUS_SELESAI,
+            Pemesanan::STATUS_DIBATALKAN,
+            Pemesanan::STATUS_KEDALUWARSA,
+        ], true)) {
+            return false;
+        }
+
         if (! $pemesanan->pembayaran || $pemesanan->pembayaran->status_pembayaran === Pembayaran::STATUS_DITOLAK) {
             return true;
         }

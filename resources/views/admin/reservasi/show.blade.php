@@ -4,15 +4,10 @@
 
 @section('content')
     @php
-        $statusLabels = [
-            \App\Models\Pemesanan::STATUS_MENUNGGU_PEMBAYARAN => 'Menunggu Pembayaran',
-            \App\Models\Pemesanan::STATUS_MENUNGGU_VERIFIKASI => 'Menunggu Verifikasi',
-            \App\Models\Pemesanan::STATUS_DIPROSES => 'Diproses',
-            \App\Models\Pemesanan::STATUS_DIKONFIRMASI => 'Dikonfirmasi',
-            \App\Models\Pemesanan::STATUS_DIBATALKAN => 'Dibatalkan',
-            \App\Models\Pemesanan::STATUS_SELESAI => 'Selesai',
-        ];
+        $statusLabels = \App\Models\Pemesanan::homestayStatusLabels();
         $detail = $reservasi->detailPemesanans->first();
+        $paymentWaitingVerification = $reservasi->pembayaran?->status_pembayaran === \App\Models\Pembayaran::STATUS_MENUNGGU_VERIFIKASI;
+        $paymentVerified = $reservasi->pembayaran?->status_pembayaran === \App\Models\Pembayaran::STATUS_TERVERIFIKASI;
     @endphp
 
     <div class="space-y-6">
@@ -86,8 +81,22 @@
             <div class="bg-white rounded-2xl border border-[#E6E4DD] p-6 shadow-sm space-y-5">
                 <h2 class="font-serif text-lg font-semibold text-[#2C3E35]">Ubah Status</h2>
                 <p class="text-xs text-[#8A9C91] leading-relaxed">
-                    Gunakan aksi ini setelah pembayaran dan kondisi reservasi sudah dicek.
+                    Ikuti alur operasional reservasi dari konfirmasi pembayaran sampai tamu check-out.
                 </p>
+
+                @if ($reservasi->pembayaran?->bukti_pembayaran)
+                    <div>
+                        <h3 class="text-sm font-semibold text-[#2C3E35] mb-3">Bukti Pembayaran</h3>
+                        <a href="{{ asset('storage/' . $reservasi->pembayaran->bukti_pembayaran) }}" target="_blank" class="block">
+                            <img src="{{ asset('storage/' . $reservasi->pembayaran->bukti_pembayaran) }}" alt="Bukti Pembayaran"
+                                class="w-full rounded-xl border border-[#E6E4DD] object-cover">
+                        </a>
+                    </div>
+                @elseif ($reservasi->pembayaran?->metode_pembayaran === 'midtrans')
+                    <div class="p-4 bg-[#FAF9F6] border border-[#E6E4DD] rounded-xl text-xs text-[#8A9C91] leading-relaxed">
+                        Pembayaran diproses otomatis melalui Midtrans. Gunakan status gateway sebelum mengubah status reservasi.
+                    </div>
+                @endif
 
                 @if ($reservasi->invoice)
                     <a href="{{ route('admin.invoices.show', $reservasi->invoice->invoice_id) }}"
@@ -97,23 +106,58 @@
                 @endif
 
                 <div class="space-y-3">
-                    <form action="{{ route('admin.reservasi.status', $reservasi->pemesanan_id) }}" method="POST">
-                        @csrf
-                        <input type="hidden" name="status_pemesanan" value="{{ \App\Models\Pemesanan::STATUS_DIKONFIRMASI }}">
-                        <button type="submit"
-                            class="w-full bg-[#2B4C3F] hover:bg-[#1E362C] text-white text-sm font-semibold py-3 px-4 rounded-xl transition-all">
-                            Konfirmasi Reservasi
-                        </button>
-                    </form>
+                    @if ($paymentWaitingVerification)
+                        <form action="{{ route('admin.reservasi.verify-payment', $reservasi->pemesanan_id) }}" method="POST">
+                            @csrf
+                            <button type="submit"
+                                class="w-full bg-[#2B4C3F] hover:bg-[#1E362C] text-white text-sm font-semibold py-3 px-4 rounded-xl transition-all">
+                                Verifikasi Pembayaran & Konfirmasi Booking
+                            </button>
+                        </form>
 
-                    <form action="{{ route('admin.reservasi.status', $reservasi->pemesanan_id) }}" method="POST">
-                        @csrf
-                        <input type="hidden" name="status_pemesanan" value="{{ \App\Models\Pemesanan::STATUS_SELESAI }}">
-                        <button type="submit"
-                            class="w-full bg-[#EAF2EE] hover:bg-[#DDEBE4] text-[#2B4C3F] text-sm font-semibold py-3 px-4 rounded-xl transition-all">
-                            Tandai Selesai
-                        </button>
-                    </form>
+                        <form action="{{ route('admin.reservasi.reject-payment', $reservasi->pemesanan_id) }}" method="POST" class="space-y-3">
+                            @csrf
+                            <textarea name="catatan_admin" rows="3" placeholder="Catatan penolakan..."
+                                class="w-full bg-[#FAF9F6] text-[#2C3E35] border border-[#E6E4DD] rounded-xl px-4 py-3 text-sm focus:bg-white focus:border-[#2B4C3F] focus:outline-none"></textarea>
+                            <button type="submit"
+                                class="w-full bg-[#FDF2F2] hover:bg-[#F8DADA] text-[#B91C1C] text-sm font-semibold py-3 px-4 rounded-xl transition-all">
+                                Tolak Pembayaran
+                            </button>
+                        </form>
+                    @endif
+
+                    @if ($paymentVerified)
+                        <form action="{{ route('admin.reservasi.status', $reservasi->pemesanan_id) }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="status_pemesanan" value="{{ \App\Models\Pemesanan::STATUS_DIKONFIRMASI }}">
+                            <button type="submit"
+                                class="w-full bg-[#2B4C3F] hover:bg-[#1E362C] text-white text-sm font-semibold py-3 px-4 rounded-xl transition-all">
+                                Konfirmasi Booking
+                            </button>
+                        </form>
+
+                        <form action="{{ route('admin.reservasi.status', $reservasi->pemesanan_id) }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="status_pemesanan" value="{{ \App\Models\Pemesanan::STATUS_SEDANG_MENGINAP }}">
+                            <button type="submit"
+                                class="w-full bg-[#EAF2EE] hover:bg-[#DDEBE4] text-[#2B4C3F] text-sm font-semibold py-3 px-4 rounded-xl transition-all">
+                                Check-in / Sedang Menginap
+                            </button>
+                        </form>
+
+                        <form action="{{ route('admin.reservasi.status', $reservasi->pemesanan_id) }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="status_pemesanan" value="{{ \App\Models\Pemesanan::STATUS_SELESAI }}">
+                            <button type="submit"
+                                class="w-full bg-[#F3F7F5] hover:bg-[#EAF2EE] text-[#2B4C3F] text-sm font-semibold py-3 px-4 rounded-xl transition-all">
+                                Tandai Check-out / Selesai
+                            </button>
+                        </form>
+                    @else
+                        <p class="text-[11px] leading-relaxed text-[#8A5A10] bg-[#FFF8E8] border border-[#F2D8A8] rounded-xl p-4">
+                            Konfirmasi, check-in, dan selesai aktif setelah pembayaran terverifikasi.
+                        </p>
+                    @endif
 
                     <form action="{{ route('admin.reservasi.status', $reservasi->pemesanan_id) }}" method="POST"
                         onsubmit="return confirm('Batalkan reservasi ini?')">
@@ -122,6 +166,16 @@
                         <button type="submit"
                             class="w-full bg-[#FDF2F2] hover:bg-[#F8DADA] text-[#B91C1C] text-sm font-semibold py-3 px-4 rounded-xl transition-all">
                             Batalkan Reservasi
+                        </button>
+                    </form>
+
+                    <form action="{{ route('admin.reservasi.status', $reservasi->pemesanan_id) }}" method="POST"
+                        onsubmit="return confirm('Tandai reservasi ini sebagai kedaluwarsa?')">
+                        @csrf
+                        <input type="hidden" name="status_pemesanan" value="{{ \App\Models\Pemesanan::STATUS_KEDALUWARSA }}">
+                        <button type="submit"
+                            class="w-full bg-[#F8F7F4] hover:bg-[#F2F0EA] text-[#5C6E65] text-sm font-semibold py-3 px-4 rounded-xl transition-all">
+                            Tandai Kedaluwarsa
                         </button>
                     </form>
                 </div>

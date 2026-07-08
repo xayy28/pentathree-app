@@ -50,7 +50,9 @@ class PaymentSettlementService
             ], $extraPaymentData));
 
             $pemesanan->update([
-                'status_pemesanan' => Pemesanan::STATUS_DIPROSES,
+                'status_pemesanan' => $pemesanan->jenis_pemesanan === Pemesanan::JENIS_HOMESTAY
+                    ? Pemesanan::STATUS_DIKONFIRMASI
+                    : Pemesanan::STATUS_DIPROSES,
             ]);
 
             $this->issueInvoice($lockedPayment);
