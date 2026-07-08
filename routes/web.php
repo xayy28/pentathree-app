@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\FasilitasController as AdminFasilitasController;
 use App\Http\Controllers\Admin\HomestayController as AdminHomestayController;
 use App\Http\Controllers\Admin\KategoriHomestayController as AdminKategoriHomestayController;
 use App\Http\Controllers\Admin\LaporanController as AdminLaporanController;
@@ -157,6 +158,14 @@ Route::middleware('auth')->group(function () {
         Route::delete('/admin/homestay/{homestay_id}', [AdminHomestayController::class, 'destroy'])->name('admin.homestay.destroy');
 
         // Rute Kategori Homestay
+        // Rute Fasilitas
+        Route::get('/admin/fasilitas', [AdminFasilitasController::class, 'index'])->name('admin.fasilitas');
+        Route::get('/admin/fasilitas/create', [AdminFasilitasController::class, 'create'])->name('admin.fasilitas.create');
+        Route::post('/admin/fasilitas', [AdminFasilitasController::class, 'store'])->name('admin.fasilitas.store');
+        Route::get('/admin/fasilitas/{fasilitas_id}/edit', [AdminFasilitasController::class, 'edit'])->name('admin.fasilitas.edit');
+        Route::put('/admin/fasilitas/{fasilitas_id}', [AdminFasilitasController::class, 'update'])->name('admin.fasilitas.update');
+        Route::delete('/admin/fasilitas/{fasilitas_id}', [AdminFasilitasController::class, 'destroy'])->name('admin.fasilitas.destroy');
+
         Route::get('/admin/kategori-homestay', [AdminKategoriHomestayController::class, 'index'])->name('admin.kategori-homestay');
         Route::get('/admin/kategori-homestay/create', [AdminKategoriHomestayController::class, 'create'])->name('admin.kategori-homestay.create');
         Route::post('/admin/kategori-homestay', [AdminKategoriHomestayController::class, 'store'])->name('admin.kategori-homestay.store');

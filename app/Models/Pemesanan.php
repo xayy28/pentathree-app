@@ -114,6 +114,7 @@ class Pemesanan extends Model
     {
         return array_merge(self::homestayStatusLabels(), self::souvenirStatusLabels());
     }
+
     public static function inactiveHomestayStatuses(): array
     {
         return [

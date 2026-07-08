@@ -1,5 +1,10 @@
 <?php
 
+use App\Models\DetailPemesanan;
+use App\Models\Homestay;
+use App\Models\Pemesanan;
+use App\Models\Ulasan;
+use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -16,7 +21,7 @@ test('homepage renders for guest', function () {
 });
 
 test('logged-in user is redirected to dashboard from homepage', function () {
-    $user = \App\Models\User::where('role', 'user')->first();
+    $user = User::where('role', 'user')->first();
 
     $this->actingAs($user)
         ->get('/')
@@ -24,7 +29,7 @@ test('logged-in user is redirected to dashboard from homepage', function () {
 });
 
 test('admin is redirected to admin dashboard from homepage', function () {
-    $admin = \App\Models\User::where('role', 'admin')->first();
+    $admin = User::where('role', 'admin')->first();
 
     $this->actingAs($admin)
         ->get('/')
@@ -32,19 +37,19 @@ test('admin is redirected to admin dashboard from homepage', function () {
 });
 
 test('user dashboard shows real review rating aggregates', function () {
-    $user = \App\Models\User::where('role', 'user')->first();
-    $homestay = \App\Models\Homestay::where('status', 'Tersedia')->latest()->first();
+    $user = User::where('role', 'user')->first();
+    $homestay = Homestay::where('status', 'Tersedia')->latest()->first();
 
-    $pemesanan = \App\Models\Pemesanan::create([
+    $pemesanan = Pemesanan::create([
         'user_id' => $user->user_id,
-        'jenis_pemesanan' => \App\Models\Pemesanan::JENIS_HOMESTAY,
+        'jenis_pemesanan' => Pemesanan::JENIS_HOMESTAY,
         'tanggal_pemesanan' => now(),
         'total_harga' => 200000,
-        'status_pemesanan' => \App\Models\Pemesanan::STATUS_SELESAI,
+        'status_pemesanan' => Pemesanan::STATUS_SELESAI,
     ]);
 
     foreach ([3, 5] as $rating) {
-        $detail = \App\Models\DetailPemesanan::create([
+        $detail = DetailPemesanan::create([
             'pemesanan_id' => $pemesanan->pemesanan_id,
             'homestay_id' => $homestay->homestay_id,
             'nama_item' => $homestay->nama_homestay,
@@ -56,7 +61,7 @@ test('user dashboard shows real review rating aggregates', function () {
             'subtotal' => 100000,
         ]);
 
-        \App\Models\Ulasan::create([
+        Ulasan::create([
             'user_id' => $user->user_id,
             'pemesanan_id' => $pemesanan->pemesanan_id,
             'detail_pemesanan_id' => $detail->detail_pemesanan_id,

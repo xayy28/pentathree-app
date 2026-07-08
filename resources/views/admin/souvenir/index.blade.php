@@ -72,6 +72,7 @@
                 <table style="width: 100%; border-collapse: collapse; font-size: 0.875rem;">
                     <thead>
                         <tr style="background: linear-gradient(135deg, #F7F6F2 0%, #EEF0EB 100%); border-bottom: 2px solid #E6E4DD;">
+                            <th style="padding: 14px 16px; text-align: left; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #8A9C91; width: 60px;">#</th>
                             <th style="padding: 14px 16px; text-align: left; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #8A9C91; width: 90px;">Foto</th>
                             <th style="padding: 14px 16px; text-align: left; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #8A9C91;">Nama Souvenir</th>
                             <th style="padding: 14px 16px; text-align: left; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #8A9C91;">Harga</th>
@@ -86,6 +87,9 @@
                             <tr style="border-bottom: 1px solid #F2F0EA; transition: background 0.15s ease;"
                                 onmouseover="this.style.background='linear-gradient(90deg, #FAF9F6 0%, #F5F4F0 100%)'"
                                 onmouseout="this.style.background='transparent'">
+                                <td style="padding: 16px; color: #8A9C91; font-weight: 600; text-align: center;">
+                                    {{ $loop->iteration }}
+                                </td>
                                 {{-- Foto --}}
                                 <td style="padding: 16px;">
                                     @if($souvenir->foto)
