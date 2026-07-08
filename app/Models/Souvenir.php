@@ -39,4 +39,12 @@ class Souvenir extends Model
     {
         return $this->hasMany(DetailPemesanan::class, 'souvenir_id', 'souvenir_id');
     }
+
+    /**
+     * Ulasan customer untuk souvenir ini.
+     */
+    public function ulasans()
+    {
+        return $this->hasMany(Ulasan::class, 'souvenir_id', 'souvenir_id');
+    }
 }

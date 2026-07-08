@@ -100,4 +100,12 @@ class Pemesanan extends Model
     {
         return $this->hasOne(Invoice::class, 'pemesanan_id', 'pemesanan_id');
     }
+
+    /**
+     * Ulasan yang dibuat untuk item dalam pemesanan ini.
+     */
+    public function ulasans()
+    {
+        return $this->hasMany(Ulasan::class, 'pemesanan_id', 'pemesanan_id');
+    }
 }

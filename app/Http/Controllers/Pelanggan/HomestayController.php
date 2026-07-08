@@ -20,6 +20,8 @@ class HomestayController extends Controller
         $statuses = ['Tersedia', 'Tidak Tersedia'];
 
         $homestays = Homestay::with('kategori')
+            ->withAvg('ulasans', 'rating')
+            ->withCount('ulasans')
             ->when($kategori, fn ($query) => $query->where('kategori_id', $kategori))
             ->when(in_array($status, $statuses, true), fn ($query) => $query->where('status', $status))
             ->when(is_numeric($tamu) && (int) $tamu > 0, fn ($query) => $query->where('kapasitas', '>=', (int) $tamu))
@@ -35,9 +37,14 @@ class HomestayController extends Controller
      */
     public function show($homestay_id)
     {
-        $homestay = Homestay::with('kategori')->findOrFail($homestay_id);
+        $homestay = Homestay::with('kategori', 'ulasans.user')
+            ->withAvg('ulasans', 'rating')
+            ->withCount('ulasans')
+            ->findOrFail($homestay_id);
 
         $rekomendasi = Homestay::with('kategori')
+            ->withAvg('ulasans', 'rating')
+            ->withCount('ulasans')
             ->where('homestay_id', '!=', $homestay->homestay_id)
             ->where('status', 'Tersedia')
             ->inRandomOrder()

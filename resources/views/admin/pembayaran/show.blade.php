@@ -39,6 +39,10 @@
                         <div class="font-semibold text-[#2C3E35]">{{ str_replace('_', ' ', $pembayaran->metode_pembayaran) }}</div>
                     </div>
                     <div>
+                        <div class="text-[#8A9C91] text-xs mb-1">Status Pesanan</div>
+                        <div class="font-semibold text-[#2C3E35]">{{ str_replace('_', ' ', $pembayaran->pemesanan->status_pemesanan) }}</div>
+                    </div>
+                    <div>
                         <div class="text-[#8A9C91] text-xs mb-1">Verifier</div>
                         <div class="font-semibold text-[#2C3E35]">{{ $pembayaran->verifier?->nama ?? '-' }}</div>
                     </div>
@@ -102,6 +106,20 @@
                         class="w-full border border-[#C9D8D0] bg-white hover:bg-[#F3F7F5] text-[#2B4C3F] text-sm font-semibold py-3 px-4 rounded-xl transition-all flex items-center justify-center">
                         Lihat Invoice
                     </a>
+                @endif
+
+                @if ($pembayaran->status_pembayaran === \App\Models\Pembayaran::STATUS_TERVERIFIKASI && $pembayaran->pemesanan->status_pemesanan !== \App\Models\Pemesanan::STATUS_SELESAI)
+                    <form action="{{ route('admin.pembayaran.complete', $pembayaran->pembayaran_id) }}" method="POST">
+                        @csrf
+                        <button type="submit"
+                            class="w-full bg-[#EAF2EE] hover:bg-[#DDEBE4] text-[#2B4C3F] text-sm font-semibold py-3 px-4 rounded-xl transition-all">
+                            Tandai Pesanan Selesai
+                        </button>
+                    </form>
+                @elseif ($pembayaran->pemesanan->status_pemesanan === \App\Models\Pemesanan::STATUS_SELESAI)
+                    <p class="text-[11px] leading-relaxed text-[#2B4C3F] bg-[#EAF2EE] border border-[#A7C5B5] rounded-xl p-4">
+                        Pesanan sudah selesai. Customer dapat memberi ulasan dari detail pesanan.
+                    </p>
                 @endif
 
                 @if ($pembayaran->status_pembayaran === \App\Models\Pembayaran::STATUS_MENUNGGU_VERIFIKASI)

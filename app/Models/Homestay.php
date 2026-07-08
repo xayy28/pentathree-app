@@ -38,4 +38,12 @@ class Homestay extends Model
     {
         return $this->hasMany(DetailPemesanan::class, 'homestay_id', 'homestay_id');
     }
+
+    /**
+     * Ulasan customer untuk homestay ini.
+     */
+    public function ulasans()
+    {
+        return $this->hasMany(Ulasan::class, 'homestay_id', 'homestay_id');
+    }
 }

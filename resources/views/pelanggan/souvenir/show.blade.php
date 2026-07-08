@@ -61,6 +61,10 @@
                     <h1 class="font-serif text-3xl sm:text-4xl font-semibold text-[#2B4C3F] leading-tight">
                         {{ $souvenir->nama_souvenir }}
                     </h1>
+                    @include('pelanggan.partials.rating-summary', [
+                        'rating' => $souvenir->ulasans_avg_rating,
+                        'count' => $souvenir->ulasans_count,
+                    ])
                 </div>
 
                 <div class="flex items-end gap-3 py-4 border-y border-[#E6E4DD]">
@@ -177,6 +181,37 @@
             </div>
         </div>
 
+        <div class="space-y-5 pt-4 border-t border-[#E6E4DD]">
+            <div>
+                <span class="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8A9C91] block">Rating</span>
+                <h2 class="font-serif text-2xl font-semibold text-[#2B4C3F]">Ulasan Pelanggan</h2>
+            </div>
+
+            @forelse ($souvenir->ulasans->sortByDesc('created_at')->take(6) as $ulasan)
+                <div class="bg-white rounded-2xl border border-[#E6E4DD] p-5 shadow-sm">
+                    <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
+                        <div>
+                            <div class="font-semibold text-[#2C3E35]">{{ $ulasan->user->nama }}</div>
+                            <div class="mt-1 text-xs text-[#B7791F]">
+                                @for ($i = 1; $i <= 5; $i++)
+                                    <span class="{{ $i <= $ulasan->rating ? 'text-[#B7791F]' : 'text-[#D8D5CC]' }}">&#9733;</span>
+                                @endfor
+                                <span class="ml-1 text-[#8A9C91]">{{ $ulasan->rating }} dari 5</span>
+                            </div>
+                        </div>
+                        <div class="text-xs text-[#8A9C91]">{{ $ulasan->created_at->format('d M Y') }}</div>
+                    </div>
+                    @if ($ulasan->komentar)
+                        <p class="mt-3 text-sm leading-relaxed text-[#5C6E65]">{{ $ulasan->komentar }}</p>
+                    @endif
+                </div>
+            @empty
+                <div class="bg-white rounded-2xl border border-[#E6E4DD] p-6 text-sm text-[#8A9C91]">
+                    Belum ada ulasan untuk souvenir ini.
+                </div>
+            @endforelse
+        </div>
+
         @if ($rekomendasi->isNotEmpty())
             <div class="space-y-6 pt-4 border-t border-[#E6E4DD]">
                 <div class="flex items-center justify-between">
@@ -211,6 +246,10 @@
                                     <h4 class="font-serif font-semibold text-[#2B4C3F] text-base mb-1">
                                         {{ $item->nama_souvenir }}
                                     </h4>
+                                    @include('pelanggan.partials.rating-summary', [
+                                        'rating' => $item->ulasans_avg_rating,
+                                        'count' => $item->ulasans_count,
+                                    ])
                                     @if ($item->detail)
                                         <p class="text-xs text-[#8A9C91] line-clamp-2 leading-relaxed">{{ $item->detail }}</p>
                                     @endif

@@ -17,6 +17,7 @@ use App\Http\Controllers\Pelanggan\PembayaranController as PelangganPembayaranCo
 use App\Http\Controllers\Pelanggan\PemesananController as PelangganPemesananController;
 use App\Http\Controllers\Pelanggan\ReservasiController as PelangganReservasiController;
 use App\Http\Controllers\Pelanggan\SouvenirController as PelangganSouvenirController;
+use App\Http\Controllers\Pelanggan\UlasanController as PelangganUlasanController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Homestay;
 use App\Models\Pembayaran;
@@ -134,6 +135,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin/pembayaran/{pembayaran_id}', [AdminPembayaranController::class, 'show'])->name('admin.pembayaran.show');
         Route::post('/admin/pembayaran/{pembayaran_id}/verify', [AdminPembayaranController::class, 'verify'])->name('admin.pembayaran.verify');
         Route::post('/admin/pembayaran/{pembayaran_id}/reject', [AdminPembayaranController::class, 'reject'])->name('admin.pembayaran.reject');
+        Route::post('/admin/pembayaran/{pembayaran_id}/complete', [AdminPembayaranController::class, 'complete'])->name('admin.pembayaran.complete');
         Route::get('/admin/laporan', [AdminLaporanController::class, 'index'])->name('admin.laporan');
         Route::get('/admin/laporan/pdf', [AdminLaporanController::class, 'downloadPdf'])->name('admin.laporan.pdf');
         Route::get('/admin/invoices/{invoice_id}', [InvoiceController::class, 'showForAdmin'])->name('admin.invoices.show');
@@ -142,29 +144,29 @@ Route::middleware('auth')->group(function () {
     // Halaman khusus User
     Route::middleware('role:user')->group(function () {
         Route::get('/dashboard', function () {
-            $homestays = \App\Models\Homestay::with('kategori')
+            $homestays = Homestay::with('kategori')
                 ->where('status', 'Tersedia')
                 ->latest()
                 ->limit(4)
                 ->get();
 
-            $souvenirs = \App\Models\Souvenir::where('status', 'Tersedia')
+            $souvenirs = Souvenir::where('status', 'Tersedia')
                 ->where('stok', '>', 0)
                 ->orderByDesc('jumlah_terjual')
                 ->limit(4)
                 ->get();
 
-            $totalHomestay = \App\Models\Homestay::where('status', 'Tersedia')->count();
-            $totalSouvenir = \App\Models\Souvenir::where('status', 'Tersedia')->count();
+            $totalHomestay = Homestay::where('status', 'Tersedia')->count();
+            $totalSouvenir = Souvenir::where('status', 'Tersedia')->count();
 
-            $pesananAktif = \App\Models\Pemesanan::where('user_id', auth()->user()->user_id)
+            $pesananAktif = Pemesanan::where('user_id', auth()->user()->user_id)
                 ->whereNotIn('status_pemesanan', [
-                    \App\Models\Pemesanan::STATUS_SELESAI,
-                    \App\Models\Pemesanan::STATUS_DIBATALKAN,
+                    Pemesanan::STATUS_SELESAI,
+                    Pemesanan::STATUS_DIBATALKAN,
                 ])
                 ->count();
 
-            $pesananTerakhir = \App\Models\Pemesanan::where('user_id', auth()->user()->user_id)
+            $pesananTerakhir = Pemesanan::where('user_id', auth()->user()->user_id)
                 ->with('detailPemesanans')
                 ->latest()
                 ->limit(3)
@@ -196,6 +198,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/reservasi', [PelangganReservasiController::class, 'index'])->name('user.reservasi');
         Route::get('/pesanan', [PelangganPemesananController::class, 'index'])->name('user.pesanan.index');
         Route::get('/pesanan/{pemesanan_id}', [PelangganPemesananController::class, 'show'])->name('user.pesanan.show');
+        Route::post('/pesanan/{pemesanan_id}/detail/{detail_pemesanan_id}/ulasan', [PelangganUlasanController::class, 'store'])->name('user.ulasan.store');
         Route::get('/pesanan/{pemesanan_id}/invoice', [InvoiceController::class, 'showForUser'])->name('user.invoices.show');
         Route::get('/pesanan/{pemesanan_id}/pembayaran', [PelangganPembayaranController::class, 'create'])->name('user.pembayaran.create');
         Route::post('/pesanan/{pemesanan_id}/pembayaran', [PelangganPembayaranController::class, 'store'])->name('user.pembayaran.store');

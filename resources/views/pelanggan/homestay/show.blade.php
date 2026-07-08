@@ -37,13 +37,13 @@
                         class="absolute top-5 left-5 {{ $homestay->status === 'Tersedia' ? 'bg-white/95 text-[#2B4C3F] border border-[#A7C5B5]/30' : 'bg-[#E65F5F]/90 text-white' }} backdrop-blur-sm text-[9px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full shadow-sm">
                         {{ $homestay->status }}
                     </span>
-
-                    {{-- Rating Badge (dekoratif) --}}
-                    @php $rating = 4.5 + ($homestay->homestay_id % 5) * 0.1; @endphp
-                    <span
-                        class="absolute top-5 right-5 bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-bold text-[#E2A829] shadow-sm flex items-center gap-1">
-                        ★ {{ number_format($rating, 1) }}
-                    </span>
+                    {{-- Rating Badge --}}
+                    <div class="absolute top-5 right-5">
+                        @include('pelanggan.partials.rating-summary', [
+                            'rating' => $homestay->ulasans_avg_rating,
+                            'count' => $homestay->ulasans_count,
+                        ])
+                    </div>
                 </div>
             </div>
 
@@ -58,6 +58,10 @@
                     <h1 class="font-serif text-3xl sm:text-4xl font-semibold text-[#2B4C3F] leading-tight">
                         {{ $homestay->nama_homestay }}
                     </h1>
+                    @include('pelanggan.partials.rating-summary', [
+                        'rating' => $homestay->ulasans_avg_rating,
+                        'count' => $homestay->ulasans_count,
+                    ])
                 </div>
 
                 {{-- Price --}}
@@ -173,6 +177,38 @@
             </div>
         </div>
 
+        {{-- Ulasan Pelanggan --}}
+        <div class="space-y-5 pt-4 border-t border-[#E6E4DD]">
+            <div>
+                <span class="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8A9C91] block">Rating</span>
+                <h2 class="font-serif text-2xl font-semibold text-[#2B4C3F]">Ulasan Pelanggan</h2>
+            </div>
+
+            @forelse ($homestay->ulasans->sortByDesc('created_at')->take(6) as $ulasan)
+                <div class="bg-white rounded-2xl border border-[#E6E4DD] p-5 shadow-sm">
+                    <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
+                        <div>
+                            <div class="font-semibold text-[#2C3E35]">{{ $ulasan->user->nama }}</div>
+                            <div class="mt-1 text-xs text-[#B7791F]">
+                                @for ($i = 1; $i <= 5; $i++)
+                                    <span class="{{ $i <= $ulasan->rating ? 'text-[#B7791F]' : 'text-[#D8D5CC]' }}">&#9733;</span>
+                                @endfor
+                                <span class="ml-1 text-[#8A9C91]">{{ $ulasan->rating }} dari 5</span>
+                            </div>
+                        </div>
+                        <div class="text-xs text-[#8A9C91]">{{ $ulasan->created_at->format('d M Y') }}</div>
+                    </div>
+                    @if ($ulasan->komentar)
+                        <p class="mt-3 text-sm leading-relaxed text-[#5C6E65]">{{ $ulasan->komentar }}</p>
+                    @endif
+                </div>
+            @empty
+                <div class="bg-white rounded-2xl border border-[#E6E4DD] p-6 text-sm text-[#8A9C91]">
+                    Belum ada ulasan untuk homestay ini.
+                </div>
+            @endforelse
+        </div>
+
         {{-- Rekomendasi Homestay Lainnya --}}
         @if ($rekomendasi->isNotEmpty())
             <div class="space-y-6 pt-4 border-t border-[#E6E4DD]">
@@ -191,7 +227,6 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
                     @foreach ($rekomendasi as $item)
-                        @php $itemRating = 4.5 + ($item->homestay_id % 5) * 0.1; @endphp
                         <a href="{{ route('user.homestay.show', $item->homestay_id) }}"
                             class="bg-white rounded-[28px] overflow-hidden border border-[#E6E4DD]/60 shadow-sm hover:shadow-md hover:border-[#A7C5B5]/40 transition-all duration-300 transform hover:-translate-y-0.5 group flex flex-col">
                             <div class="h-44 overflow-hidden relative bg-[#EAF2EE]/30">
@@ -203,9 +238,12 @@
                                         alt="{{ $item->nama_homestay }}"
                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                                 @endif
-                                <span class="absolute top-3 right-3 bg-white/95 backdrop-blur-sm px-2 py-1 rounded-full text-[10px] font-bold text-[#E2A829] shadow-sm">
-                                    ★ {{ number_format($itemRating, 1) }}
-                                </span>
+                                <div class="absolute top-3 right-3">
+                                    @include('pelanggan.partials.rating-summary', [
+                                        'rating' => $item->ulasans_avg_rating,
+                                        'count' => $item->ulasans_count,
+                                    ])
+                                </div>
                             </div>
                             <div class="p-5 flex-grow flex flex-col justify-between">
                                 <div>

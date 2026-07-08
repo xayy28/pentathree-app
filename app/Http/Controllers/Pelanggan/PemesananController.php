@@ -26,7 +26,7 @@ class PemesananController extends Controller
      */
     public function show($pemesanan_id)
     {
-        $pemesanan = Pemesanan::with('detailPemesanans.souvenir', 'detailPemesanans.homestay', 'pembayaran', 'invoice')
+        $pemesanan = Pemesanan::with('detailPemesanans.souvenir', 'detailPemesanans.homestay', 'detailPemesanans.ulasan', 'pembayaran', 'invoice')
             ->where('user_id', auth()->user()->user_id)
             ->where('pemesanan_id', $pemesanan_id)
             ->firstOrFail();

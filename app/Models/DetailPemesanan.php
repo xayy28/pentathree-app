@@ -59,4 +59,12 @@ class DetailPemesanan extends Model
     {
         return $this->belongsTo(Souvenir::class, 'souvenir_id', 'souvenir_id');
     }
+
+    /**
+     * Ulasan untuk item pemesanan ini.
+     */
+    public function ulasan()
+    {
+        return $this->hasOne(Ulasan::class, 'detail_pemesanan_id', 'detail_pemesanan_id');
+    }
 }

@@ -169,6 +169,12 @@
                                                 Habis
                                             </span>
                                         @endif
+                                        <div class="absolute top-4 right-4 z-10">
+                                            @include('pelanggan.partials.rating-summary', [
+                                                'rating' => $souvenir->ulasans_avg_rating,
+                                                'count' => $souvenir->ulasans_count,
+                                            ])
+                                        </div>
                                     </div>
 
                                     <!-- Souvenir Info -->

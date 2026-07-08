@@ -110,6 +110,33 @@ class PembayaranController extends Controller
             ->with('success', 'Pembayaran berhasil ditolak.');
     }
 
+    /**
+     * Tandai pesanan souvenir selesai agar customer dapat memberi ulasan.
+     */
+    public function complete($pembayaran_id)
+    {
+        $pembayaran = $this->findSouvenirPaymentOrFail($pembayaran_id, [
+            'pemesanan',
+        ]);
+
+        if ($pembayaran->status_pembayaran !== Pembayaran::STATUS_TERVERIFIKASI) {
+            return redirect()->route('admin.pembayaran.show', $pembayaran->pembayaran_id)
+                ->with('error', 'Pesanan hanya bisa diselesaikan setelah pembayaran terverifikasi.');
+        }
+
+        if ($pembayaran->pemesanan->status_pemesanan === Pemesanan::STATUS_SELESAI) {
+            return redirect()->route('admin.pembayaran.show', $pembayaran->pembayaran_id)
+                ->with('error', 'Pesanan sudah selesai.');
+        }
+
+        $pembayaran->pemesanan->update([
+            'status_pemesanan' => Pemesanan::STATUS_SELESAI,
+        ]);
+
+        return redirect()->route('admin.pembayaran.show', $pembayaran->pembayaran_id)
+            ->with('success', 'Pesanan souvenir berhasil ditandai selesai.');
+    }
+
     private function findSouvenirPaymentOrFail($pembayaran_id, array $relations = []): Pembayaran
     {
         return Pembayaran::with($relations)

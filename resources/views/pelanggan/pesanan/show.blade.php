@@ -53,6 +53,56 @@
                         </div>
                     @endforeach
                 </div>
+
+                @if ($pemesanan->status_pemesanan === \App\Models\Pemesanan::STATUS_SELESAI)
+                    <div class="mt-6 border-t border-[#F2F0EA] pt-6 space-y-4">
+                        <div>
+                            <h3 class="font-serif text-xl font-semibold text-[#2C3E35]">Ulasan Pesanan</h3>
+                            <p class="text-xs text-[#8A9C91] mt-1">Beri rating untuk item yang sudah selesai diproses.</p>
+                        </div>
+
+                        @foreach ($pemesanan->detailPemesanans as $detail)
+                            @php $existingUlasan = $detail->ulasan; @endphp
+                            <form action="{{ route('user.ulasan.store', [$pemesanan->pemesanan_id, $detail->detail_pemesanan_id]) }}" method="POST"
+                                class="rounded-xl border border-[#E6E4DD] bg-[#FAF9F6] p-4 space-y-3">
+                                @csrf
+                                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                                    <div>
+                                        <div class="text-sm font-semibold text-[#2C3E35]">{{ $detail->nama_item }}</div>
+                                        @if ($existingUlasan)
+                                            <div class="text-xs text-[#8A9C91] mt-1">Ulasan terakhir: {{ $existingUlasan->rating }} dari 5</div>
+                                        @endif
+                                    </div>
+                                    <select name="rating" required
+                                        class="rounded-lg border-[#E6E4DD] bg-white text-sm font-semibold text-[#2C3E35] focus:border-[#2B4C3F] focus:ring-[#2B4C3F]">
+                                        <option value="">Pilih rating</option>
+                                        @for ($value = 5; $value >= 1; $value--)
+                                            <option value="{{ $value }}" @selected((int) old('rating', $existingUlasan?->rating) === $value)>
+                                                {{ $value }} / 5
+                                            </option>
+                                        @endfor
+                                    </select>
+                                </div>
+
+                                <textarea name="komentar" rows="3" maxlength="1000"
+                                    class="w-full rounded-xl border-[#E6E4DD] bg-white text-sm text-[#2C3E35] focus:border-[#2B4C3F] focus:ring-[#2B4C3F]"
+                                    placeholder="Tulis pengalaman singkat Anda">{{ old('komentar', $existingUlasan?->komentar) }}</textarea>
+
+                                @error('rating')
+                                    <p class="text-xs text-[#B91C1C]">{{ $message }}</p>
+                                @enderror
+                                @error('komentar')
+                                    <p class="text-xs text-[#B91C1C]">{{ $message }}</p>
+                                @enderror
+
+                                <button type="submit"
+                                    class="inline-flex items-center justify-center rounded-xl bg-[#2B4C3F] px-4 py-2.5 text-xs font-semibold text-white hover:bg-[#1E362C] transition-colors">
+                                    {{ $existingUlasan ? 'Perbarui Ulasan' : 'Simpan Ulasan' }}
+                                </button>
+                            </form>
+                        @endforeach
+                    </div>
+                @endif
             </div>
 
             <div class="bg-white rounded-2xl border border-[#E6E4DD] p-6 shadow-sm space-y-5">

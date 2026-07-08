@@ -79,4 +79,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Pembayaran::class, 'verified_by', 'user_id');
     }
+
+    /**
+     * Ulasan yang dibuat customer.
+     */
+    public function ulasans()
+    {
+        return $this->hasMany(Ulasan::class, 'user_id', 'user_id');
+    }
 }

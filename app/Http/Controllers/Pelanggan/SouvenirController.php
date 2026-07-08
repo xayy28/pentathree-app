@@ -18,6 +18,8 @@ class SouvenirController extends Controller
         $statuses = ['Tersedia', 'Habis'];
 
         $souvenirs = Souvenir::query()
+            ->withAvg('ulasans', 'rating')
+            ->withCount('ulasans')
             ->when(in_array($status, $statuses, true), fn ($query) => $query->where('status', $status))
             ->when($kategori === 'terlaris',
                 fn ($query) => $query->orderByDesc('jumlah_terjual'),
@@ -33,10 +35,15 @@ class SouvenirController extends Controller
      */
     public function show($souvenir_id)
     {
-        $souvenir = Souvenir::findOrFail($souvenir_id);
+        $souvenir = Souvenir::with('ulasans.user')
+            ->withAvg('ulasans', 'rating')
+            ->withCount('ulasans')
+            ->findOrFail($souvenir_id);
 
         // Ambil souvenir lain sebagai rekomendasi (exclude yang sedang dilihat)
-        $rekomendasi = Souvenir::where('souvenir_id', '!=', $souvenir_id)
+        $rekomendasi = Souvenir::withAvg('ulasans', 'rating')
+            ->withCount('ulasans')
+            ->where('souvenir_id', '!=', $souvenir_id)
             ->where('status', 'Tersedia')
             ->inRandomOrder()
             ->limit(3)
@@ -44,6 +51,4 @@ class SouvenirController extends Controller
 
         return view('pelanggan.souvenir.show', compact('souvenir', 'rekomendasi'));
     }
-
-
 }

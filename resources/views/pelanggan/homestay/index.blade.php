@@ -140,10 +140,6 @@
                     @else
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-8" id="homestay-grid">
                             @foreach ($homestays as $homestay)
-                                @php
-                                    // Dynamic Star Rating calculation based on homestay ID for mockup aesthetic
-                                    $rating = 4.5 + ($homestay->homestay_id % 5) * 0.1;
-                                @endphp
                                 <div class="bg-white rounded-[32px] overflow-hidden border border-gray-200/60 shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-0.5 group flex flex-col justify-between p-4 homestay-card"
                                     data-category="{{ $homestay->kategori_id }}" data-capacity="{{ $homestay->kapasitas }}">
                                     <div>
@@ -172,10 +168,12 @@
                                             @endif
 
                                             <!-- Rating Badge -->
-                                            <span
-                                                class="absolute top-4 right-4 bg-white/95 backdrop-blur-sm px-2.5 py-1 rounded-full text-xs font-bold text-[#E2A829] shadow-sm flex items-center gap-1 z-10">
-                                                ★ {{ number_format($rating, 1) }}
-                                            </span>
+                                            <div class="absolute top-4 right-4 z-10">
+                                                @include('pelanggan.partials.rating-summary', [
+                                                    'rating' => $homestay->ulasans_avg_rating,
+                                                    'count' => $homestay->ulasans_count,
+                                                ])
+                                            </div>
                                         </div>
 
                                         <!-- Room Info -->
