@@ -4,7 +4,8 @@
 
 @section('content')
     @php
-        $statusLabels = \App\Models\Pemesanan::homestayStatusLabels();
+        $homestayStatusLabels = \App\Models\Pemesanan::homestayStatusLabels();
+        $souvenirStatusLabels = \App\Models\Pemesanan::souvenirStatusLabels();
     @endphp
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 bg-[#F8F7F4]">
@@ -55,9 +56,9 @@
                         <div class="flex items-center justify-between lg:justify-end gap-6">
                             <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#FAF9F6] border border-[#E6E4DD] text-[#5C6E65]">
                                 @if ($pemesanan->jenis_pemesanan === \App\Models\Pemesanan::JENIS_HOMESTAY)
-                                    {{ $statusLabels[$pemesanan->status_pemesanan] ?? ucwords(str_replace('_', ' ', $pemesanan->status_pemesanan)) }}
+                                    {{ $homestayStatusLabels[$pemesanan->status_pemesanan] ?? ucwords(str_replace('_', ' ', $pemesanan->status_pemesanan)) }}
                                 @else
-                                    {{ $pemesanan->pembayaran ? str_replace('_', ' ', $pemesanan->pembayaran->status_pembayaran) : str_replace('_', ' ', $pemesanan->status_pemesanan) }}
+                                    {{ $souvenirStatusLabels[$pemesanan->status_pemesanan] ?? ucwords(str_replace('_', ' ', $pemesanan->status_pemesanan)) }}
                                 @endif
                             </span>
                             <span class="text-lg font-bold text-[#2B4C3F]">

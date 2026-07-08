@@ -52,7 +52,7 @@ class PaymentSettlementService
             $pemesanan->update([
                 'status_pemesanan' => $pemesanan->jenis_pemesanan === Pemesanan::JENIS_HOMESTAY
                     ? Pemesanan::STATUS_DIKONFIRMASI
-                    : Pemesanan::STATUS_DIPROSES,
+                    : Pemesanan::STATUS_TERVERIFIKASI,
             ]);
 
             $this->issueInvoice($lockedPayment);

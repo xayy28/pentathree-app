@@ -3,6 +3,28 @@
 @section('title', 'Detail Pembayaran')
 
 @section('content')
+    @php
+        $paymentStatusLabels = [
+            \App\Models\Pembayaran::STATUS_MENUNGGU_PEMBAYARAN => 'Menunggu Pembayaran',
+            \App\Models\Pembayaran::STATUS_MENUNGGU_VERIFIKASI => 'Menunggu Verifikasi',
+            \App\Models\Pembayaran::STATUS_TERVERIFIKASI => 'Terverifikasi',
+            \App\Models\Pembayaran::STATUS_DITOLAK => 'Ditolak',
+        ];
+        $souvenirStatusLabels = \App\Models\Pemesanan::souvenirStatusLabels();
+        $orderStatus = $pembayaran->pemesanan->status_pemesanan;
+        $nextStatusActions = [
+            \App\Models\Pemesanan::STATUS_TERVERIFIKASI => [\App\Models\Pemesanan::STATUS_DIPROSES, 'Proses / Kemas Barang'],
+            \App\Models\Pemesanan::STATUS_DIPROSES => [\App\Models\Pemesanan::STATUS_SIAP_DIAMBIL_DIKIRIM, 'Tandai Siap Diambil / Dikirim'],
+            \App\Models\Pemesanan::STATUS_SIAP_DIAMBIL_DIKIRIM => [\App\Models\Pemesanan::STATUS_SELESAI, 'Tandai Selesai'],
+        ];
+        $nextStatusAction = $nextStatusActions[$orderStatus] ?? null;
+        $terminalStatuses = [
+            \App\Models\Pemesanan::STATUS_SELESAI,
+            \App\Models\Pemesanan::STATUS_DIBATALKAN,
+            \App\Models\Pemesanan::STATUS_KEDALUWARSA,
+        ];
+    @endphp
+
     <div class="space-y-6">
         <div class="flex items-center justify-between">
             <div>
@@ -12,7 +34,7 @@
                 <h1 class="text-3xl font-serif font-semibold text-[#2C3E35] mt-3">Detail Pembayaran</h1>
             </div>
             <span class="px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider bg-[#EAF2EE] text-[#2B4C3F]">
-                {{ str_replace('_', ' ', $pembayaran->status_pembayaran) }}
+                {{ $paymentStatusLabels[$pembayaran->status_pembayaran] ?? str_replace('_', ' ', $pembayaran->status_pembayaran) }}
             </span>
         </div>
 
@@ -40,7 +62,7 @@
                     </div>
                     <div>
                         <div class="text-[#8A9C91] text-xs mb-1">Status Pesanan</div>
-                        <div class="font-semibold text-[#2C3E35]">{{ str_replace('_', ' ', $pembayaran->pemesanan->status_pemesanan) }}</div>
+                        <div class="font-semibold text-[#2C3E35]">{{ $souvenirStatusLabels[$orderStatus] ?? str_replace('_', ' ', $orderStatus) }}</div>
                     </div>
                     <div>
                         <div class="text-[#8A9C91] text-xs mb-1">Verifier</div>
@@ -108,18 +130,52 @@
                     </a>
                 @endif
 
-                @if ($pembayaran->status_pembayaran === \App\Models\Pembayaran::STATUS_TERVERIFIKASI && $pembayaran->pemesanan->status_pemesanan !== \App\Models\Pemesanan::STATUS_SELESAI)
-                    <form action="{{ route('admin.pembayaran.complete', $pembayaran->pembayaran_id) }}" method="POST">
-                        @csrf
-                        <button type="submit"
-                            class="w-full bg-[#EAF2EE] hover:bg-[#DDEBE4] text-[#2B4C3F] text-sm font-semibold py-3 px-4 rounded-xl transition-all">
-                            Tandai Pesanan Selesai
-                        </button>
-                    </form>
-                @elseif ($pembayaran->pemesanan->status_pemesanan === \App\Models\Pemesanan::STATUS_SELESAI)
-                    <p class="text-[11px] leading-relaxed text-[#2B4C3F] bg-[#EAF2EE] border border-[#A7C5B5] rounded-xl p-4">
-                        Pesanan sudah selesai. Customer dapat memberi ulasan dari detail pesanan.
-                    </p>
+                @if ($pembayaran->status_pembayaran === \App\Models\Pembayaran::STATUS_TERVERIFIKASI)
+                    <div class="space-y-3">
+                        @if ($nextStatusAction)
+                            <form action="{{ route('admin.pembayaran.status', $pembayaran->pembayaran_id) }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="status_pemesanan" value="{{ $nextStatusAction[0] }}">
+                                <button type="submit"
+                                    class="w-full bg-[#EAF2EE] hover:bg-[#DDEBE4] text-[#2B4C3F] text-sm font-semibold py-3 px-4 rounded-xl transition-all">
+                                    {{ $nextStatusAction[1] }}
+                                </button>
+                            </form>
+                        @elseif ($orderStatus === \App\Models\Pemesanan::STATUS_SELESAI)
+                            <p class="text-[11px] leading-relaxed text-[#2B4C3F] bg-[#EAF2EE] border border-[#A7C5B5] rounded-xl p-4">
+                                Pesanan sudah selesai. Customer dapat memberi ulasan dari detail pesanan.
+                            </p>
+                        @elseif ($orderStatus === \App\Models\Pemesanan::STATUS_DIBATALKAN)
+                            <p class="text-[11px] leading-relaxed text-[#9B1C1C] bg-[#FDF2F2] border border-[#F5C2C2] rounded-xl p-4">
+                                Pesanan sudah dibatalkan.
+                            </p>
+                        @elseif ($orderStatus === \App\Models\Pemesanan::STATUS_KEDALUWARSA)
+                            <p class="text-[11px] leading-relaxed text-[#5C6E65] bg-[#FAF9F6] border border-[#E6E4DD] rounded-xl p-4">
+                                Pesanan sudah kedaluwarsa.
+                            </p>
+                        @endif
+
+                        @unless (in_array($orderStatus, $terminalStatuses, true))
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <form action="{{ route('admin.pembayaran.status', $pembayaran->pembayaran_id) }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="status_pemesanan" value="{{ \App\Models\Pemesanan::STATUS_DIBATALKAN }}">
+                                    <button type="submit"
+                                        class="w-full bg-[#FDF2F2] hover:bg-[#F8DADA] text-[#B91C1C] text-xs font-semibold py-2.5 px-4 rounded-xl transition-all">
+                                        Batalkan
+                                    </button>
+                                </form>
+                                <form action="{{ route('admin.pembayaran.status', $pembayaran->pembayaran_id) }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="status_pemesanan" value="{{ \App\Models\Pemesanan::STATUS_KEDALUWARSA }}">
+                                    <button type="submit"
+                                        class="w-full bg-[#FAF9F6] hover:bg-[#F2F0EA] text-[#5C6E65] text-xs font-semibold py-2.5 px-4 rounded-xl transition-all border border-[#E6E4DD]">
+                                        Kedaluwarsa
+                                    </button>
+                                </form>
+                            </div>
+                        @endunless
+                    </div>
                 @endif
 
                 @if ($pembayaran->status_pembayaran === \App\Models\Pembayaran::STATUS_MENUNGGU_VERIFIKASI)

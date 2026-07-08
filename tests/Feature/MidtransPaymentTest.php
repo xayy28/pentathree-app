@@ -202,7 +202,7 @@ test('midtrans settlement verifies payment and updates stock once', function () 
     expect($pembayaran->fresh()->status_pembayaran)->toBe(Pembayaran::STATUS_TERVERIFIKASI);
     expect($pembayaran->fresh()->midtrans_transaction_status)->toBe('settlement');
     expect($pembayaran->fresh()->midtrans_va_number)->toBe('1234567890');
-    expect($pemesanan->fresh()->status_pemesanan)->toBe(Pemesanan::STATUS_DIPROSES);
+    expect($pemesanan->fresh()->status_pemesanan)->toBe(Pemesanan::STATUS_TERVERIFIKASI);
     expect($this->souvenir->fresh()->stok)->toBe($initialStock - 2);
     expect($this->souvenir->fresh()->jumlah_terjual)->toBe($initialSold + 2);
 });
@@ -250,7 +250,7 @@ test('user can refresh midtrans status when webhook is unavailable', function ()
         ->postJson(route('user.pembayaran.midtrans.status', $pemesanan->pemesanan_id))
         ->assertOk()
         ->assertJsonPath('pembayaran_status', Pembayaran::STATUS_TERVERIFIKASI)
-        ->assertJsonPath('pemesanan_status', Pemesanan::STATUS_DIPROSES)
+        ->assertJsonPath('pemesanan_status', Pemesanan::STATUS_TERVERIFIKASI)
         ->assertJsonPath('midtrans_status', 'settlement');
 
     expect($pembayaran->fresh()->midtrans_transaction_id)->toBe('trx-midtrans-status-check');

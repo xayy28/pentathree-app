@@ -313,7 +313,7 @@ test('admin can verify payment and update stock once', function () {
     $response->assertSessionHas('success');
 
     expect($pembayaran->fresh()->status_pembayaran)->toBe(Pembayaran::STATUS_TERVERIFIKASI);
-    expect($pemesanan->fresh()->status_pemesanan)->toBe(Pemesanan::STATUS_DIPROSES);
+    expect($pemesanan->fresh()->status_pemesanan)->toBe(Pemesanan::STATUS_TERVERIFIKASI);
     expect($this->souvenir->fresh()->stok)->toBe($initialStock - 2);
     expect($this->souvenir->fresh()->jumlah_terjual)->toBe($initialSold + 2);
 });

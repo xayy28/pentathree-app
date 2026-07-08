@@ -30,6 +30,10 @@ class Pemesanan extends Model
 
     public const STATUS_SELESAI = 'selesai';
 
+    public const STATUS_SIAP_DIAMBIL_DIKIRIM = 'siap_diambil_dikirim';
+
+    public const STATUS_TERVERIFIKASI = 'terverifikasi';
+
     protected $table = 'pemesanans';
 
     protected $primaryKey = 'pemesanan_id';
@@ -78,6 +82,38 @@ class Pemesanan extends Model
         ];
     }
 
+    public static function souvenirStatuses(): array
+    {
+        return [
+            self::STATUS_MENUNGGU_PEMBAYARAN,
+            self::STATUS_MENUNGGU_VERIFIKASI,
+            self::STATUS_TERVERIFIKASI,
+            self::STATUS_DIPROSES,
+            self::STATUS_SIAP_DIAMBIL_DIKIRIM,
+            self::STATUS_SELESAI,
+            self::STATUS_DIBATALKAN,
+            self::STATUS_KEDALUWARSA,
+        ];
+    }
+
+    public static function souvenirStatusLabels(): array
+    {
+        return [
+            self::STATUS_MENUNGGU_PEMBAYARAN => 'Menunggu Pembayaran',
+            self::STATUS_MENUNGGU_VERIFIKASI => 'Menunggu Verifikasi',
+            self::STATUS_TERVERIFIKASI => 'Terverifikasi',
+            self::STATUS_DIPROSES => 'Diproses / Dikemas',
+            self::STATUS_SIAP_DIAMBIL_DIKIRIM => 'Siap Diambil / Dikirim',
+            self::STATUS_SELESAI => 'Selesai',
+            self::STATUS_DIBATALKAN => 'Dibatalkan',
+            self::STATUS_KEDALUWARSA => 'Kedaluwarsa',
+        ];
+    }
+
+    public static function statusLabels(): array
+    {
+        return array_merge(self::homestayStatusLabels(), self::souvenirStatusLabels());
+    }
     public static function inactiveHomestayStatuses(): array
     {
         return [

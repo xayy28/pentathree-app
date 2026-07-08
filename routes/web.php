@@ -138,6 +138,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin/pembayaran/{pembayaran_id}', [AdminPembayaranController::class, 'show'])->name('admin.pembayaran.show');
         Route::post('/admin/pembayaran/{pembayaran_id}/verify', [AdminPembayaranController::class, 'verify'])->name('admin.pembayaran.verify');
         Route::post('/admin/pembayaran/{pembayaran_id}/reject', [AdminPembayaranController::class, 'reject'])->name('admin.pembayaran.reject');
+        Route::post('/admin/pembayaran/{pembayaran_id}/status', [AdminPembayaranController::class, 'updateStatus'])->name('admin.pembayaran.status');
         Route::post('/admin/pembayaran/{pembayaran_id}/complete', [AdminPembayaranController::class, 'complete'])->name('admin.pembayaran.complete');
         Route::get('/admin/laporan', [AdminLaporanController::class, 'index'])->name('admin.laporan');
         Route::get('/admin/laporan/pdf', [AdminLaporanController::class, 'downloadPdf'])->name('admin.laporan.pdf');

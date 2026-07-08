@@ -4,7 +4,9 @@
 
 @section('content')
     @php
-        $statusLabels = \App\Models\Pemesanan::homestayStatusLabels();
+        $statusLabels = $pemesanan->jenis_pemesanan === \App\Models\Pemesanan::JENIS_HOMESTAY
+            ? \App\Models\Pemesanan::homestayStatusLabels()
+            : \App\Models\Pemesanan::souvenirStatusLabels();
         $statusLabel = $statusLabels[$pemesanan->status_pemesanan] ?? ucwords(str_replace('_', ' ', $pemesanan->status_pemesanan));
     @endphp
 
@@ -180,7 +182,7 @@
                             @if ($pemesanan->jenis_pemesanan === \App\Models\Pemesanan::JENIS_HOMESTAY)
                                 Pembayaran sudah terverifikasi. Booking sudah dikonfirmasi dan menunggu jadwal check-in.
                             @else
-                                Pembayaran sudah terverifikasi. Pesanan sedang diproses.
+                                Pembayaran sudah terverifikasi. Status pesanan: {{ $statusLabel }}.
                             @endif
                         </p>
                         @if ($pemesanan->invoice)

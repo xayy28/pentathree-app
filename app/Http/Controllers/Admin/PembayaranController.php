@@ -111,6 +111,48 @@ class PembayaranController extends Controller
     }
 
     /**
+     * Ubah status operasional pesanan souvenir setelah pembayaran valid.
+     */
+    public function updateStatus(Request $request, $pembayaran_id)
+    {
+        $allowedStatuses = [
+            Pemesanan::STATUS_TERVERIFIKASI,
+            Pemesanan::STATUS_DIPROSES,
+            Pemesanan::STATUS_SIAP_DIAMBIL_DIKIRIM,
+            Pemesanan::STATUS_SELESAI,
+            Pemesanan::STATUS_DIBATALKAN,
+            Pemesanan::STATUS_KEDALUWARSA,
+        ];
+
+        $validated = $request->validate([
+            'status_pemesanan' => 'required|in:'.implode(',', $allowedStatuses),
+        ]);
+
+        $pembayaran = $this->findSouvenirPaymentOrFail($pembayaran_id, [
+            'pemesanan',
+        ]);
+
+        if ($pembayaran->status_pembayaran !== Pembayaran::STATUS_TERVERIFIKASI) {
+            return redirect()->route('admin.pembayaran.show', $pembayaran->pembayaran_id)
+                ->with('error', 'Status pesanan hanya bisa diubah setelah pembayaran terverifikasi.');
+        }
+
+        if ($pembayaran->pemesanan->status_pemesanan === $validated['status_pemesanan']) {
+            return redirect()->route('admin.pembayaran.show', $pembayaran->pembayaran_id)
+                ->with('error', 'Pesanan sudah berada pada status tersebut.');
+        }
+
+        $pembayaran->pemesanan->update([
+            'status_pemesanan' => $validated['status_pemesanan'],
+        ]);
+
+        $statusLabels = Pemesanan::souvenirStatusLabels();
+        $statusLabel = $statusLabels[$validated['status_pemesanan']] ?? str_replace('_', ' ', $validated['status_pemesanan']);
+
+        return redirect()->route('admin.pembayaran.show', $pembayaran->pembayaran_id)
+            ->with('success', 'Status pesanan souvenir berhasil diubah menjadi '.$statusLabel.'.');
+    }
+    /**
      * Tandai pesanan souvenir selesai untuk status operasional admin.
      */
     public function complete($pembayaran_id)

@@ -10,6 +10,7 @@
             \App\Models\Pembayaran::STATUS_TERVERIFIKASI => 'Terverifikasi',
             \App\Models\Pembayaran::STATUS_DITOLAK => 'Ditolak',
         ];
+        $orderStatusLabels = \App\Models\Pemesanan::souvenirStatusLabels();
     @endphp
 
     <div class="space-y-6">
@@ -55,7 +56,8 @@
                                 <th class="pb-3">Pelanggan</th>
                                 <th class="pb-3">Jumlah Bayar</th>
                                 <th class="pb-3">Metode</th>
-                                <th class="pb-3">Status</th>
+                                <th class="pb-3">Pembayaran</th>
+                                <th class="pb-3">Status Pesanan</th>
                                 <th class="pb-3 text-right">Aksi</th>
                             </tr>
                         </thead>
@@ -73,6 +75,11 @@
                                     <td class="py-4">
                                         <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#EAF2EE] text-[#2B4C3F]">
                                             {{ $statusLabels[$pembayaran->status_pembayaran] ?? str_replace('_', ' ', $pembayaran->status_pembayaran) }}
+                                        </span>
+                                    </td>
+                                    <td class="py-4">
+                                        <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#FAF9F6] border border-[#E6E4DD] text-[#5C6E65]">
+                                            {{ $orderStatusLabels[$pembayaran->pemesanan->status_pemesanan] ?? str_replace('_', ' ', $pembayaran->pemesanan->status_pemesanan) }}
                                         </span>
                                     </td>
                                     <td class="py-4 text-right">

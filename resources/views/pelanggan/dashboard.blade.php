@@ -372,7 +372,7 @@
                 $statusColor = match($pesanan->status_pemesanan) {
                     'menunggu_pembayaran' => ['pill' => 'bg-amber-50 text-amber-700 border-amber-200', 'dot' => 'bg-amber-400'],
                     'menunggu_verifikasi' => ['pill' => 'bg-blue-50 text-blue-700 border-blue-200', 'dot' => 'bg-blue-400'],
-                    'diproses','dikonfirmasi','sedang_menginap' => ['pill' => 'bg-[#EAF2EE] text-[#2B4C3F] border-[#A7C5B5]', 'dot' => 'bg-[#4ade80]'],
+                    'terverifikasi','diproses','siap_diambil_dikirim','dikonfirmasi','sedang_menginap' => ['pill' => 'bg-[#EAF2EE] text-[#2B4C3F] border-[#A7C5B5]', 'dot' => 'bg-[#4ade80]'],
                     'selesai'             => ['pill' => 'bg-gray-50 text-gray-500 border-gray-200', 'dot' => 'bg-gray-300'],
                     'dibatalkan'          => ['pill' => 'bg-red-50 text-red-600 border-red-200', 'dot' => 'bg-red-400'],
                     'kedaluwarsa'         => ['pill' => 'bg-stone-50 text-stone-600 border-stone-200', 'dot' => 'bg-stone-300'],
@@ -381,7 +381,9 @@
                 $statusLabel = match($pesanan->status_pemesanan) {
                     'menunggu_pembayaran' => 'Menunggu Bayar',
                     'menunggu_verifikasi' => 'Verifikasi',
-                    'diproses'            => 'Diproses',
+                    'terverifikasi'       => 'Terverifikasi',
+                    'diproses'            => 'Diproses / Dikemas',
+                    'siap_diambil_dikirim'=> 'Siap Diambil',
                     'dikonfirmasi'        => 'Dikonfirmasi',
                     'sedang_menginap'     => 'Sedang Menginap',
                     'selesai'             => 'Selesai',
