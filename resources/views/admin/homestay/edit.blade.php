@@ -27,10 +27,10 @@
                 <!-- Nama Homestay -->
                 <div class="space-y-2">
                     <label for="nama_homestay" class="text-xs font-bold uppercase tracking-wider text-[#8A9C91]">Nama Homestay</label>
-                    <input type="text" 
-                           id="nama_homestay" 
-                           name="nama_homestay" 
-                           value="{{ old('nama_homestay', $homestay->nama_homestay) }}" 
+                    <input type="text"
+                           id="nama_homestay"
+                           name="nama_homestay"
+                           value="{{ old('nama_homestay', $homestay->nama_homestay) }}"
                            placeholder="Masukkan nama homestay"
                            class="w-full px-4 py-3 bg-[#FAF9F6] border border-[#E6E4DD] focus:border-[#2B4C3F] focus:ring-1 focus:ring-[#2B4C3F] rounded-xl text-[#2C3E35] placeholder-[#8A9C91] text-sm outline-none transition-all @error('nama_homestay') border-red-500 @enderror">
                     @error('nama_homestay')
@@ -43,10 +43,10 @@
                     <label for="harga_permalam" class="text-xs font-bold uppercase tracking-wider text-[#8A9C91]">Harga Per Malam (Rp)</label>
                     <div style="position: relative; display: flex; align-items: center;">
                         <span style="position: absolute; left: 16px; font-size: 0.875rem; font-weight: 600; color: #8A9C91; pointer-events: none; z-index: 10; line-height: 1;">Rp</span>
-                        <input type="number" 
-                               id="harga_permalam" 
-                               name="harga_permalam" 
-                               value="{{ old('harga_permalam', (int)$homestay->harga_permalam) }}" 
+                        <input type="number"
+                               id="harga_permalam"
+                               name="harga_permalam"
+                               value="{{ old('harga_permalam', (int)$homestay->harga_permalam) }}"
                                placeholder="750000"
                                style="padding-left: 2.75rem;"
                                class="w-full pr-4 py-3 bg-[#FAF9F6] border border-[#E6E4DD] focus:border-[#2B4C3F] focus:ring-1 focus:ring-[#2B4C3F] rounded-xl text-[#2C3E35] placeholder-[#8A9C91] text-sm outline-none transition-all @error('harga_permalam') border-red-500 @enderror">
@@ -59,10 +59,10 @@
                 <!-- Kapasitas -->
                 <div class="space-y-2">
                     <label for="kapasitas" class="text-xs font-bold uppercase tracking-wider text-[#8A9C91]">Kapasitas (Orang)</label>
-                    <input type="number" 
-                           id="kapasitas" 
-                           name="kapasitas" 
-                           value="{{ old('kapasitas', $homestay->kapasitas) }}" 
+                    <input type="number"
+                           id="kapasitas"
+                           name="kapasitas"
+                           value="{{ old('kapasitas', $homestay->kapasitas) }}"
                            placeholder="Jumlah kapasitas tamu"
                            class="w-full px-4 py-3 bg-[#FAF9F6] border border-[#E6E4DD] focus:border-[#2B4C3F] focus:ring-1 focus:ring-[#2B4C3F] rounded-xl text-[#2C3E35] placeholder-[#8A9C91] text-sm outline-none transition-all @error('kapasitas') border-red-500 @enderror">
                     @error('kapasitas')
@@ -73,8 +73,8 @@
                 <!-- Status -->
                 <div class="space-y-2">
                     <label for="status" class="text-xs font-bold uppercase tracking-wider text-[#8A9C91]">Status</label>
-                    <select id="status" 
-                            name="status" 
+                    <select id="status"
+                            name="status"
                             class="w-full px-4 py-3 bg-[#FAF9F6] border border-[#E6E4DD] focus:border-[#2B4C3F] focus:ring-1 focus:ring-[#2B4C3F] rounded-xl text-[#2C3E35] text-sm outline-none transition-all @error('status') border-red-500 @enderror">
                         <option value="Tersedia" {{ old('status', $homestay->status) == 'Tersedia' ? 'selected' : '' }}>Tersedia</option>
                         <option value="Tidak Tersedia" {{ old('status', $homestay->status) == 'Tidak Tersedia' ? 'selected' : '' }}>Tidak Tersedia</option>
@@ -87,8 +87,8 @@
                 <!-- Kategori Homestay -->
                 <div class="space-y-2">
                     <label for="kategori_id" class="text-xs font-bold uppercase tracking-wider text-[#8A9C91]">Kategori Homestay</label>
-                    <select id="kategori_id" 
-                            name="kategori_id" 
+                    <select id="kategori_id"
+                            name="kategori_id"
                             class="w-full px-4 py-3 bg-[#FAF9F6] border border-[#E6E4DD] focus:border-[#2B4C3F] focus:ring-1 focus:ring-[#2B4C3F] rounded-xl text-[#2C3E35] text-sm outline-none transition-all @error('kategori_id') border-red-500 @enderror">
                         <option value="">-- Pilih Kategori --</option>
                         @foreach($categories as $category)
@@ -106,9 +106,9 @@
             <!-- Detail / Deskripsi -->
             <div class="space-y-2">
                 <label for="detail" class="text-xs font-bold uppercase tracking-wider text-[#8A9C91]">Detail / Deskripsi</label>
-                <textarea id="detail" 
-                          name="detail" 
-                          rows="4" 
+                <textarea id="detail"
+                          name="detail"
+                          rows="4"
                           placeholder="Jelaskan fasilitas, kelebihan, dan detail homestay di sini..."
                           class="w-full px-4 py-3 bg-[#FAF9F6] border border-[#E6E4DD] focus:border-[#2B4C3F] focus:ring-1 focus:ring-[#2B4C3F] rounded-xl text-[#2C3E35] placeholder-[#8A9C91] text-sm outline-none transition-all @error('detail') border-red-500 @enderror">{{ old('detail', $homestay->detail) }}</textarea>
                 @error('detail')
@@ -116,10 +116,33 @@
                 @enderror
             </div>
 
+            <!-- Fasilitas -->
+            <div class="space-y-3">
+                <label class="text-xs font-bold uppercase tracking-wider text-[#8A9C91] block">Fasilitas</label>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    @foreach ($fasilitas as $f)
+                        @php
+                            $checked = in_array($f->fasilitas_id, old('fasilitas', $selectedFasilitas));
+                        @endphp
+                        <label class="flex items-center gap-2.5 p-3 bg-[#FAF9F6] border {{ $checked ? 'border-[#2B4C3F] bg-[#EAF2EE]' : 'border-[#E6E4DD]' }} rounded-xl cursor-pointer hover:border-[#2B4C3F] transition-all has-[:checked]:bg-[#EAF2EE] has-[:checked]:border-[#2B4C3F]">
+                            <input type="checkbox"
+                                   name="fasilitas[]"
+                                   value="{{ $f->fasilitas_id }}"
+                                   {{ $checked ? 'checked' : '' }}
+                                   class="rounded border-[#D5D3C7] text-[#2B4C3F] focus:ring-[#2B4C3F]">
+                            <span class="text-xs font-medium text-[#2C3E35]">{{ $f->nama_fasilitas }}</span>
+                        </label>
+                    @endforeach
+                </div>
+                @error('fasilitas')
+                    <p class="text-xs text-[#E65F5F] font-semibold mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
             <!-- Upload Foto -->
             <div class="space-y-2">
                 <label class="text-xs font-bold uppercase tracking-wider text-[#8A9C91] block">Foto Homestay</label>
-                
+
                 @if($homestay->foto)
                     <div id="existing-image-container" style="margin-bottom: 12px;">
                         <p style="font-size: 0.7rem; color: #8A9C91; margin-bottom: 8px;">Foto Saat Ini:</p>
@@ -128,7 +151,7 @@
                 @endif
 
                 <!-- Custom Upload Zone -->
-                <label for="foto" 
+                <label for="foto"
                        id="upload-zone"
                        style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 28px 20px; background: #FAF9F6; border: 2px dashed #D5D3C7; border-radius: 14px; cursor: pointer; transition: all 0.2s ease;"
                        onmouseover="this.style.borderColor='#2B4C3F'; this.style.background='#EEF7F2';"
@@ -142,9 +165,9 @@
                         <span style="display: block; font-size: 0.82rem; font-weight: 600; color: #2C3E35;">Klik untuk ganti foto</span>
                         <span style="display: block; font-size: 0.7rem; color: #8A9C91; margin-top: 3px;">PNG, JPG, JPEG hingga 2MB</span>
                     </div>
-                    <input type="file" 
-                           id="foto" 
-                           name="foto" 
+                    <input type="file"
+                           id="foto"
+                           name="foto"
                            accept="image/*"
                            onchange="previewImage(event)"
                            style="display: none;">
@@ -189,11 +212,11 @@
         const fileNameDisplay = document.getElementById('file-name-display');
         const fileNameText = document.getElementById('file-name-text');
         const uploadZone = document.getElementById('upload-zone');
-        
+
         if (input.files && input.files[0]) {
             const file = input.files[0];
             const reader = new FileReader();
-            
+
             reader.onload = function(e) {
                 preview.src = e.target.result;
                 container.style.display = 'block';
@@ -207,7 +230,7 @@
                 }
                 if (existing) existing.style.opacity = '0.5';
             }
-            
+
             reader.readAsDataURL(file);
         } else {
             preview.src = "#";

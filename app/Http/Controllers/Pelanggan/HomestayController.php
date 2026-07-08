@@ -37,7 +37,7 @@ class HomestayController extends Controller
      */
     public function show($homestay_id)
     {
-        $homestay = Homestay::with('kategori', 'ulasans.user')
+        $homestay = Homestay::with('kategori', 'ulasans.user', 'fasilitas')
             ->withAvg('ulasans', 'rating')
             ->withCount('ulasans')
             ->findOrFail($homestay_id);

@@ -98,6 +98,9 @@ class DatabaseSeeder extends Seeder
             'foto' => 'images/hero-banner1.png',
         ]);
 
+        // Seeding Fasilitas
+        $this->call(FasilitasSeeder::class);
+
         // Ambil user_id admin untuk updated_by
         $adminId = User::where('role', 'admin')->first()->user_id;
 

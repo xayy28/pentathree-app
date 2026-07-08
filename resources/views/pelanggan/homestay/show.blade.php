@@ -107,25 +107,34 @@
                     </div>
                 @endif
 
-                {{-- Amenities (dekoratif) --}}
-                <div class="space-y-2">
-                    <h3 class="text-[10px] font-bold uppercase tracking-widest text-[#8A9C91]">Fasilitas Umum</h3>
-                    <div class="grid grid-cols-2 gap-2">
-                        @foreach ([
-                            ['WiFi Gratis', 'M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0'],
-                            ['Parkir Tersedia', 'M19 9l-7 7-7-7'],
-                            ['Air Panas', 'M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z'],
-                            ['Dapur Bersama', 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6'],
-                        ] as [$label, $icon])
-                            <div class="flex items-center gap-2.5 text-xs text-[#5C6E65] bg-[#FAF9F6] rounded-xl p-3 border border-[#E6E4DD]">
-                                <svg class="w-4 h-4 text-[#A7C5B5] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $icon }}" />
-                                </svg>
-                                {{ $label }}
-                            </div>
-                        @endforeach
+                {{-- Fasilitas dari database --}}
+                @if ($homestay->fasilitas->isNotEmpty())
+                    <div class="space-y-2">
+                        <h3 class="text-[10px] font-bold uppercase tracking-widest text-[#8A9C91]">Fasilitas Umum</h3>
+                        <div class="grid grid-cols-2 gap-2">
+                            @foreach ($homestay->fasilitas as $f)
+                                @php
+                                    $ikonMap = [
+                                        'wifi'     => 'M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0',
+                                        'ac'       => 'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
+                                        'shower'  => 'M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z',
+                                        'parking' => 'M19 9l-7 7-7-7',
+                                        'kitchen' => 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6',
+                                        'pool'    => 'M10 21h4a2 2 0 002-2v-2a2 2 0 00-2-2h-4a2 2 0 00-2 2v2a2 2 0 002 2zm-4-8h12M6 9V7a6 6 0 1112 0v2',
+                                        'tv'      => 'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
+                                        'breakfast' => 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2-1.343-2-3-2zm0 0c1.657 0 3-.895 3-2s-1.343-2-3-2-3 .895-3 2 1.343 2 3 2zm-6 8h12M4 22h16',
+                                    ];
+                                @endphp
+                                <div class="flex items-center gap-2.5 text-xs text-[#5C6E65] bg-[#FAF9F6] rounded-xl p-3 border border-[#E6E4DD]">
+                                    <svg class="w-4 h-4 text-[#A7C5B5] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $ikonMap[$f->ikon] ?? 'M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0' }}" />
+                                    </svg>
+                                    {{ $f->nama_fasilitas }}
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
-                </div>
+                @endif
 
                 {{-- Info baris --}}
                 <div class="space-y-2.5 py-4 border-t border-[#E6E4DD]">

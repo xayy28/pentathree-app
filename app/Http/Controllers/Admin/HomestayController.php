@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\DetailPemesanan;
+use App\Models\Fasilitas;
 use App\Models\Homestay;
 use App\Models\KategoriHomestay;
 use App\Models\Pemesanan;
@@ -121,8 +122,9 @@ class HomestayController extends Controller
     public function create()
     {
         $categories = KategoriHomestay::all();
+        $fasilitas = Fasilitas::orderBy('nama_fasilitas')->get();
 
-        return view('admin.homestay.tambah', compact('categories'));
+        return view('admin.homestay.tambah', compact('categories', 'fasilitas'));
     }
 
     /**
@@ -138,6 +140,8 @@ class HomestayController extends Controller
             'status' => 'required|in:Tersedia,Tidak Tersedia',
             'detail' => 'nullable|string',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'fasilitas' => 'nullable|array',
+            'fasilitas.*' => 'exists:fasilitas,fasilitas_id',
         ]);
 
         $data = $request->only(['kategori_id', 'nama_homestay', 'harga_permalam', 'kapasitas', 'status', 'detail']);
@@ -151,7 +155,9 @@ class HomestayController extends Controller
             );
         }
 
-        Homestay::create($data);
+        $homestay = Homestay::create($data);
+
+        $homestay->fasilitas()->sync($request->input('fasilitas', []));
 
         return redirect()->route('admin.homestay')->with('success', 'Homestay berhasil ditambahkan.');
     }
@@ -161,10 +167,12 @@ class HomestayController extends Controller
      */
     public function edit($homestay_id)
     {
-        $homestay = Homestay::findOrFail($homestay_id);
+        $homestay = Homestay::with('fasilitas')->findOrFail($homestay_id);
         $categories = KategoriHomestay::all();
+        $fasilitas = Fasilitas::orderBy('nama_fasilitas')->get();
+        $selectedFasilitas = $homestay->fasilitas->pluck('fasilitas_id')->toArray();
 
-        return view('admin.homestay.edit', compact('homestay', 'categories'));
+        return view('admin.homestay.edit', compact('homestay', 'categories', 'fasilitas', 'selectedFasilitas'));
     }
 
     /**
@@ -182,6 +190,8 @@ class HomestayController extends Controller
             'status' => 'required|in:Tersedia,Tidak Tersedia',
             'detail' => 'nullable|string',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'fasilitas' => 'nullable|array',
+            'fasilitas.*' => 'exists:fasilitas,fasilitas_id',
         ]);
 
         $homestay->kategori_id = $request->kategori_id;
@@ -204,6 +214,8 @@ class HomestayController extends Controller
         }
 
         $homestay->save();
+
+        $homestay->fasilitas()->sync($request->input('fasilitas', []));
 
         return redirect()->route('admin.homestay')->with('success', 'Homestay berhasil diperbarui.');
     }

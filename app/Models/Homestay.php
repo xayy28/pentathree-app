@@ -46,4 +46,17 @@ class Homestay extends Model
     {
         return $this->hasMany(Ulasan::class, 'homestay_id', 'homestay_id');
     }
+
+    /**
+     * Fasilitas yang tersedia di homestay ini.
+     */
+    public function fasilitas()
+    {
+        return $this->belongsToMany(
+            Fasilitas::class,
+            'homestay_fasilitas',
+            'homestay_id',
+            'fasilitas_id'
+        );
+    }
 }
