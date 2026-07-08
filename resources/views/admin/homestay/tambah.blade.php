@@ -5,7 +5,7 @@
 @section('content')
 <div class="max-w-4xl mx-auto space-y-6">
     <!-- Header with Back Button -->
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
         <div>
             <h1 class="text-2xl sm:text-3xl font-serif font-semibold text-[#2C3E35] mb-1">
                 Tambah Homestay Baru
@@ -14,12 +14,7 @@
                 Lengkapi formulir di bawah ini untuk mendaftarkan homestay baru ke dalam sistem.
             </p>
         </div>
-        <a href="{{ route('admin.homestay') }}" class="px-4 py-2 border border-[#E6E4DD] hover:bg-[#FAF9F6] text-[#2C3E35] text-xs font-semibold rounded-lg transition-colors flex items-center gap-1.5">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-            </svg>
-            Kembali
-        </a>
+        @include('components.back-link', ['href' => route('admin.homestay'), 'label' => 'Kembali'])
     </div>
 
     <!-- Form Card -->

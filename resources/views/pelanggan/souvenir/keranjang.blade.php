@@ -190,10 +190,7 @@
                         </div>
 
                         <div class="text-center">
-                            <a href="{{ route('user.souvenir') }}"
-                                class="text-xs text-[#5C6E65] hover:text-[#2B4C3F] font-semibold transition-colors">
-                                ← Kembali Belanja
-                            </a>
+                            @include('components.back-link', ['href' => route('user.souvenir'), 'label' => 'Kembali Belanja'])
                         </div>
         </div>
     @endif

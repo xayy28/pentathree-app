@@ -13,9 +13,7 @@
     <div class="space-y-6">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-                <a href="{{ route('admin.reservasi') }}" class="text-xs font-semibold text-[#5C6E65] hover:text-[#2B4C3F]">
-                    &larr; Kembali ke Reservasi
-                </a>
+                @include('components.back-link', ['href' => route('admin.reservasi'), 'label' => 'Kembali ke Reservasi'])
                 <h1 class="text-3xl font-serif font-semibold text-[#2C3E35] mt-3">Detail Reservasi</h1>
             </div>
             <span class="px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider bg-[#EAF2EE] text-[#2B4C3F]">

@@ -5,13 +5,12 @@
 @section('content')
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div class="bg-white rounded-[32px] border border-[#E6E4DD] shadow-sm p-8">
-            <div class="flex items-center justify-between gap-6 mb-8">
+            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-8">
                 <div>
                     <h1 class="text-3xl font-serif font-semibold text-[#2B4C3F]">Ubah Password</h1>
                     <p class="text-sm text-[#5C6E65] mt-1">Perbarui password Anda untuk menjaga keamanan akun.</p>
                 </div>
-                <a href="{{ route('profile.show') }}"
-                    class="inline-flex items-center justify-center rounded-full border border-[#D5D3C7] px-4 py-2 text-sm font-semibold text-[#2C3E35] hover:bg-[#F8F7F4] transition">Kembali</a>
+                @include('components.back-link', ['href' => route('profile.show'), 'label' => 'Kembali'])
             </div>
 
             <form action="{{ route('profile.password.update') }}" method="POST" class="space-y-6">

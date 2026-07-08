@@ -16,9 +16,7 @@
 
     <div class="invoice-shell max-w-4xl mx-auto {{ $isAdmin ? '' : 'px-4 sm:px-6 lg:px-8 py-10' }}">
         <div class="no-print mb-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <a href="{{ $backRoute }}" class="text-xs font-semibold text-[#5C6E65] hover:text-[#2B4C3F]">
-                &larr; {{ $backLabel }}
-            </a>
+            @include('components.back-link', ['href' => $backRoute, 'label' => $backLabel])
             <div class="flex items-center gap-3">
                 @if ($isAdmin)
                     <a href="{{ route('admin.invoices.pdf', $invoice->invoice_id) }}"

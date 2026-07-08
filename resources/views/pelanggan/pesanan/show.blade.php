@@ -13,9 +13,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 bg-[#F8F7F4]">
         <div class="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-                <a href="{{ route('user.pesanan.index') }}" class="text-xs font-semibold text-[#5C6E65] hover:text-[#2B4C3F]">
-                    &larr; Kembali ke Riwayat
-                </a>
+                @include('components.back-link', ['href' => route('user.pesanan.index'), 'label' => 'Kembali ke Riwayat'])
                 <h2 class="font-serif text-3xl sm:text-4xl text-[#2B4C3F] font-semibold tracking-widest uppercase mt-3">
                     Detail Pesanan
                 </h2>

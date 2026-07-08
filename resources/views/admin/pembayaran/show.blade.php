@@ -26,11 +26,9 @@
     @endphp
 
     <div class="space-y-6">
-        <div class="flex items-center justify-between">
+        <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
             <div>
-                <a href="{{ route('admin.pembayaran') }}" class="text-xs font-semibold text-[#5C6E65] hover:text-[#2B4C3F]">
-                    &larr; Kembali ke Pembayaran
-                </a>
+                @include('components.back-link', ['href' => route('admin.pembayaran'), 'label' => 'Kembali ke Pembayaran'])
                 <h1 class="text-3xl font-serif font-semibold text-[#2C3E35] mt-3">Detail Pembayaran</h1>
             </div>
             <span class="px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider bg-[#EAF2EE] text-[#2B4C3F]">

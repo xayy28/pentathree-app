@@ -29,9 +29,7 @@
             </p>
 
             <div class="flex flex-col sm:flex-row gap-4">
-                <a href="/" class="inline-flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-xl text-white bg-blue-600 hover:bg-blue-700 shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 focus:ring-offset-gray-900">
-                    Back to Home
-                </a>
+                @include('components.back-link', ['href' => '/', 'label' => 'Kembali ke Home'])
                 <button class="inline-flex justify-center items-center px-6 py-3 border border-gray-600 text-base font-medium rounded-xl text-gray-300 bg-transparent hover:bg-gray-700 hover:text-white transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 focus:ring-offset-gray-900">
                     Explore More
                 </button>

@@ -6,9 +6,7 @@
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 bg-[#F8F7F4]">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
             <div class="lg:col-span-2 bg-white rounded-2xl border border-[#E6E4DD] p-6 sm:p-8 shadow-sm">
-                <a href="{{ route('user.homestay') }}" class="text-xs font-semibold text-[#5C6E65] hover:text-[#2B4C3F]">
-                    &larr; Kembali ke Homestay
-                </a>
+                @include('components.back-link', ['href' => route('user.homestay'), 'label' => 'Kembali ke Homestay'])
                 <h2 class="font-serif text-3xl text-[#2B4C3F] font-semibold tracking-widest uppercase mt-4">
                     Booking Homestay
                 </h2>
