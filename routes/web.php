@@ -41,8 +41,25 @@ Route::get('/', function () {
             : redirect()->route('dashboard');
     }
 
-    return redirect()->route('login');
-});
+    $homestays = Homestay::with('kategori')
+        ->where('status', 'Tersedia')
+        ->latest()
+        ->limit(3)
+        ->get();
+
+    $souvenirs = Souvenir::where('status', 'Tersedia')
+        ->where('stok', '>', 0)
+        ->orderByDesc('jumlah_terjual')
+        ->limit(4)
+        ->get();
+
+    $statTotalHomestay = Homestay::where('status', 'Tersedia')->count();
+    $statTotalSouvenir = Souvenir::where('status', 'Tersedia')->count();
+    $statTotalUser     = User::where('role', 'user')->count();
+    $statAvgRating     = \App\Models\Ulasan::avg('rating');
+
+    return view('welcome', compact('homestays', 'souvenirs', 'statTotalHomestay', 'statTotalSouvenir', 'statTotalUser', 'statAvgRating'));
+})->name('home');
 
 // Route untuk Guest (Belum Login)
 Route::middleware('guest')->group(function () {
