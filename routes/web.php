@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\FasilitasController as AdminFasilitasController;
 use App\Http\Controllers\Admin\HomestayController as AdminHomestayController;
 use App\Http\Controllers\Admin\KategoriHomestayController as AdminKategoriHomestayController;
@@ -21,15 +22,12 @@ use App\Http\Controllers\Pelanggan\SouvenirController as PelangganSouvenirContro
 use App\Http\Controllers\Pelanggan\UlasanController as PelangganUlasanController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Homestay;
-use App\Models\Pembayaran;
 use App\Models\Pemesanan;
 use App\Models\Souvenir;
 use App\Models\Ulasan;
 use App\Models\User;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Schema;
 
 Route::post('/midtrans/notification', [MidtransWebhookController::class, 'handle'])
     ->withoutMiddleware([VerifyCsrfToken::class])
@@ -99,55 +97,7 @@ Route::middleware('auth')->group(function () {
 
     // Halaman khusus Admin
     Route::middleware('role:admin')->group(function () {
-        Route::get('/admin/dashboard', function () {
-            $totalHomestay = Homestay::count();
-            $homestayBaruBulanIni = Homestay::whereMonth('created_at', now()->month)
-                ->whereYear('created_at', now()->year)
-                ->count();
-            $totalSouvenir = Souvenir::count();
-            $souvenirTersedia = Souvenir::where('status', 'Tersedia')->count();
-            $totalReservasi = Schema::hasTable('pemesanans')
-                ? DB::table('pemesanans')->where('jenis_pemesanan', 'homestay')->count()
-                : 0;
-            $reservasiAktif = Schema::hasTable('pemesanans')
-                ? DB::table('pemesanans')
-                    ->where('jenis_pemesanan', Pemesanan::JENIS_HOMESTAY)
-                    ->whereNotIn('status_pemesanan', [
-                        Pemesanan::STATUS_DIBATALKAN,
-                        Pemesanan::STATUS_SELESAI,
-                        Pemesanan::STATUS_KEDALUWARSA,
-                    ])
-                    ->count()
-                : 0;
-            $pendapatanBulanIni = Schema::hasTable('pembayarans')
-                ? Pembayaran::where('status_pembayaran', Pembayaran::STATUS_TERVERIFIKASI)
-                    ->whereMonth('tanggal_pembayaran', now()->month)
-                    ->whereYear('tanggal_pembayaran', now()->year)
-                    ->sum('jumlah_bayar')
-                : 0;
-            $pembayaranMenunggu = Schema::hasTable('pembayarans')
-                ? Pembayaran::where('status_pembayaran', Pembayaran::STATUS_MENUNGGU_VERIFIKASI)->count()
-                : 0;
-            $totalUser = User::count();
-            $userBaruBulanIni = User::whereMonth('created_at', now()->month)
-                ->whereYear('created_at', now()->year)
-                ->count();
-            $recentUsers = User::latest()->take(3)->get();
-
-            return view('admin.dashboard', compact(
-                'totalHomestay',
-                'homestayBaruBulanIni',
-                'totalSouvenir',
-                'souvenirTersedia',
-                'totalReservasi',
-                'reservasiAktif',
-                'pendapatanBulanIni',
-                'pembayaranMenunggu',
-                'totalUser',
-                'userBaruBulanIni',
-                'recentUsers',
-            ));
-        })->name('admin.dashboard');
+        Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 
         // Scaffolding Rute Modul PBL Admin
         Route::get('/admin/homestay', [AdminHomestayController::class, 'index'])->name('admin.homestay');

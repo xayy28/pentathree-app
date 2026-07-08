@@ -23,6 +23,22 @@
             \App\Models\Pemesanan::STATUS_DIBATALKAN,
             \App\Models\Pemesanan::STATUS_KEDALUWARSA,
         ];
+        $_pColors = [
+            'menunggu_pembayaran' => 'bg-[#FFF8E1] text-[#F59E0B] border border-[#FCD34D]',
+            'menunggu_verifikasi' => 'bg-[#E8F0FE] text-[#3B82F6] border border-[#93C5FD]',
+            'terverifikasi' => 'bg-[#EAF2EE] text-[#2B4C3F] border border-[#B8DEC8]',
+            'ditolak' => 'bg-[#FDE8E8] text-[#DC2626] border border-[#FCA5A5]',
+        ];
+        $_sColors = [
+            'menunggu_pembayaran' => 'bg-[#FFF8E1] text-[#F59E0B] border border-[#FCD34D]',
+            'menunggu_verifikasi' => 'bg-[#E8F0FE] text-[#3B82F6] border border-[#93C5FD]',
+            'terverifikasi' => 'bg-[#EAF2EE] text-[#2B4C3F] border border-[#B8DEC8]',
+            'diproses' => 'bg-[#EAF2EE] text-[#2B4C3F] border border-[#B8DEC8]',
+            'siap_diambil_dikirim' => 'bg-[#FFF3E0] text-[#E65100] border border-[#FFB74D]',
+            'selesai' => 'bg-[#E8F5E9] text-[#2E7D32] border border-[#A5D6A7]',
+            'dibatalkan' => 'bg-[#FDE8E8] text-[#DC2626] border border-[#FCA5A5]',
+            'kedaluwarsa' => 'bg-[#F5F5F5] text-[#9CA3AF] border border-[#D4D4D8]',
+        ];
     @endphp
 
     <div class="space-y-6">
@@ -31,9 +47,14 @@
                 @include('components.back-link', ['href' => route('admin.pembayaran'), 'label' => 'Kembali ke Pembayaran'])
                 <h1 class="text-3xl font-serif font-semibold text-[#2C3E35] mt-3">Detail Pembayaran</h1>
             </div>
-            <span class="px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider bg-[#EAF2EE] text-[#2B4C3F]">
-                {{ $paymentStatusLabels[$pembayaran->status_pembayaran] ?? str_replace('_', ' ', $pembayaran->status_pembayaran) }}
-            </span>
+            <div class="flex flex-wrap gap-2">
+                <span class="px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider {{ $_pColors[$pembayaran->status_pembayaran] ?? 'bg-[#EAF2EE] text-[#2B4C3F]' }}">
+                    {{ $paymentStatusLabels[$pembayaran->status_pembayaran] ?? str_replace('_', ' ', $pembayaran->status_pembayaran) }}
+                </span>
+                <span class="px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider {{ $_sColors[$orderStatus] ?? 'bg-[#FAF9F6] text-[#5C6E65] border border-[#E6E4DD]' }}">
+                    {{ $souvenirStatusLabels[$orderStatus] ?? str_replace('_', ' ', $orderStatus) }}
+                </span>
+            </div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">

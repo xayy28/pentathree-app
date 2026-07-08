@@ -178,9 +178,9 @@ test('admin dashboard shows report metrics', function () {
     $this->actingAs($this->admin)
         ->get(route('admin.dashboard'))
         ->assertStatus(200)
-        ->assertSee('Pendapatan Bulan Ini')
+        ->assertSee('Pesanan Terbaru')
         ->assertSee('Rp 100.000')
-        ->assertSee('Pembayaran Menunggu')
+        ->assertSee('Menunggu Verifikasi')
         ->assertSee('1');
 });
 

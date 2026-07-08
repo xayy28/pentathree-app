@@ -8,6 +8,18 @@
             ? \App\Models\Pemesanan::homestayStatusLabels()
             : \App\Models\Pemesanan::souvenirStatusLabels();
         $statusLabel = $statusLabels[$pemesanan->status_pemesanan] ?? ucwords(str_replace('_', ' ', $pemesanan->status_pemesanan));
+        $_badgeColors = [
+            'menunggu_pembayaran' => 'bg-[#FFF8E1] text-[#F59E0B] border border-[#FCD34D]',
+            'menunggu_verifikasi' => 'bg-[#E8F0FE] text-[#3B82F6] border border-[#93C5FD]',
+            'dikonfirmasi' => 'bg-[#EAF2EE] text-[#2B4C3F] border border-[#B8DEC8]',
+            'sedang_menginap' => 'bg-[#F3EEFF] text-[#8B5CF6] border border-[#C4B5FD]',
+            'terverifikasi' => 'bg-[#EAF2EE] text-[#2B4C3F] border border-[#B8DEC8]',
+            'diproses' => 'bg-[#EAF2EE] text-[#2B4C3F] border border-[#B8DEC8]',
+            'siap_diambil_dikirim' => 'bg-[#FFF3E0] text-[#E65100] border border-[#FFB74D]',
+            'selesai' => 'bg-[#E8F5E9] text-[#2E7D32] border border-[#A5D6A7]',
+            'dibatalkan' => 'bg-[#FDE8E8] text-[#DC2626] border border-[#FCA5A5]',
+            'kedaluwarsa' => 'bg-[#F5F5F5] text-[#9CA3AF] border border-[#D4D4D8]',
+        ];
     @endphp
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 bg-[#F8F7F4]">
@@ -18,7 +30,7 @@
                     Detail Pesanan
                 </h2>
             </div>
-            <span class="px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider bg-[#EAF2EE] text-[#2B4C3F] self-start sm:self-auto">
+            <span class="px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider {{ $_badgeColors[$pemesanan->status_pemesanan] ?? 'bg-[#EAF2EE] text-[#2B4C3F]' }} self-start sm:self-auto">
                 {{ $statusLabel }}
             </span>
         </div>

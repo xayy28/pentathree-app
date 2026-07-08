@@ -380,13 +380,17 @@
         @foreach ($pesananTerakhir as $pesanan)
             @php
                 $statusColor = match($pesanan->status_pemesanan) {
-                    'menunggu_pembayaran' => ['pill' => 'bg-amber-50 text-amber-700 border-amber-200', 'dot' => 'bg-amber-400'],
-                    'menunggu_verifikasi' => ['pill' => 'bg-blue-50 text-blue-700 border-blue-200', 'dot' => 'bg-blue-400'],
-                    'terverifikasi','diproses','siap_diambil_dikirim','dikonfirmasi','sedang_menginap' => ['pill' => 'bg-[#EAF2EE] text-[#2B4C3F] border-[#A7C5B5]', 'dot' => 'bg-[#4ade80]'],
-                    'selesai'             => ['pill' => 'bg-gray-50 text-gray-500 border-gray-200', 'dot' => 'bg-gray-300'],
-                    'dibatalkan'          => ['pill' => 'bg-red-50 text-red-600 border-red-200', 'dot' => 'bg-red-400'],
-                    'kedaluwarsa'         => ['pill' => 'bg-stone-50 text-stone-600 border-stone-200', 'dot' => 'bg-stone-300'],
-                    default               => ['pill' => 'bg-gray-50 text-gray-500 border-gray-200', 'dot' => 'bg-gray-300'],
+                    'menunggu_pembayaran' => ['pill' => 'bg-[#FFF8E1] text-[#F59E0B] border border-[#FCD34D]', 'dot' => 'bg-[#F59E0B]'],
+                    'menunggu_verifikasi' => ['pill' => 'bg-[#E8F0FE] text-[#3B82F6] border border-[#93C5FD]', 'dot' => 'bg-[#3B82F6]'],
+                    'dikonfirmasi'        => ['pill' => 'bg-[#EAF2EE] text-[#2B4C3F] border border-[#B8DEC8]', 'dot' => 'bg-[#2B4C3F]'],
+                    'sedang_menginap'    => ['pill' => 'bg-[#F3EEFF] text-[#8B5CF6] border border-[#C4B5FD]', 'dot' => 'bg-[#8B5CF6]'],
+                    'terverifikasi'      => ['pill' => 'bg-[#EAF2EE] text-[#2B4C3F] border border-[#B8DEC8]', 'dot' => 'bg-[#2B4C3F]'],
+                    'diproses'           => ['pill' => 'bg-[#EAF2EE] text-[#2B4C3F] border border-[#B8DEC8]', 'dot' => 'bg-[#2B4C3F]'],
+                    'siap_diambil_dikirim'=> ['pill' => 'bg-[#FFF3E0] text-[#E65100] border border-[#FFB74D]', 'dot' => 'bg-[#E65100]'],
+                    'selesai'             => ['pill' => 'bg-[#E8F5E9] text-[#2E7D32] border border-[#A5D6A7]', 'dot' => 'bg-[#2E7D32]'],
+                    'dibatalkan'          => ['pill' => 'bg-[#FDE8E8] text-[#DC2626] border border-[#FCA5A5]', 'dot' => 'bg-[#DC2626]'],
+                    'kedaluwarsa'         => ['pill' => 'bg-[#F5F5F5] text-[#9CA3AF] border border-[#D4D4D8]', 'dot' => 'bg-[#9CA3AF]'],
+                    default               => ['pill' => 'bg-[#F5F5F5] text-[#6B7280] border border-[#D4D4D8]', 'dot' => 'bg-[#6B7280]'],
                 };
                 $statusLabel = match($pesanan->status_pemesanan) {
                     'menunggu_pembayaran' => 'Menunggu Bayar',
@@ -416,7 +420,7 @@
                             </svg>
                         @endif
                     </div>
-                    <span class="text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border {{ $statusColor['pill'] }} flex items-center gap-1.5">
+                    <span class="text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full {{ $statusColor['pill'] }} flex items-center gap-1.5">
                         <span class="w-1.5 h-1.5 rounded-full {{ $statusColor['dot'] }}"></span>
                         {{ $statusLabel }}
                     </span>

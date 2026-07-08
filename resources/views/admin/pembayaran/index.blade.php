@@ -72,12 +72,32 @@
                                     </td>
                                     <td class="py-4 text-[#5C6E65]">{{ str_replace('_', ' ', $pembayaran->metode_pembayaran) }}</td>
                                     <td class="py-4">
-                                        <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#EAF2EE] text-[#2B4C3F]">
+                                        @php
+                                        $_pColors = [
+                                            'menunggu_pembayaran' => 'bg-[#FFF8E1] text-[#F59E0B] border border-[#FCD34D]',
+                                            'menunggu_verifikasi' => 'bg-[#E8F0FE] text-[#3B82F6] border border-[#93C5FD]',
+                                            'terverifikasi' => 'bg-[#EAF2EE] text-[#2B4C3F] border border-[#B8DEC8]',
+                                            'ditolak' => 'bg-[#FDE8E8] text-[#DC2626] border border-[#FCA5A5]',
+                                        ];
+                                        @endphp
+                                        <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider {{ $_pColors[$pembayaran->status_pembayaran] ?? 'bg-[#EAF2EE] text-[#2B4C3F]' }}">
                                             {{ $statusLabels[$pembayaran->status_pembayaran] ?? str_replace('_', ' ', $pembayaran->status_pembayaran) }}
                                         </span>
                                     </td>
                                     <td class="py-4">
-                                        <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#FAF9F6] border border-[#E6E4DD] text-[#5C6E65]">
+                                        @php
+                                        $_sColors = [
+                                            'menunggu_pembayaran' => 'bg-[#FFF8E1] text-[#F59E0B] border border-[#FCD34D]',
+                                            'menunggu_verifikasi' => 'bg-[#E8F0FE] text-[#3B82F6] border border-[#93C5FD]',
+                                            'terverifikasi' => 'bg-[#EAF2EE] text-[#2B4C3F] border border-[#B8DEC8]',
+                                            'diproses' => 'bg-[#EAF2EE] text-[#2B4C3F] border border-[#B8DEC8]',
+                                            'siap_diambil_dikirim' => 'bg-[#FFF3E0] text-[#E65100] border border-[#FFB74D]',
+                                            'selesai' => 'bg-[#E8F5E9] text-[#2E7D32] border border-[#A5D6A7]',
+                                            'dibatalkan' => 'bg-[#FDE8E8] text-[#DC2626] border border-[#FCA5A5]',
+                                            'kedaluwarsa' => 'bg-[#F5F5F5] text-[#9CA3AF] border border-[#D4D4D8]',
+                                        ];
+                                        @endphp
+                                        <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider {{ $_sColors[$pembayaran->pemesanan->status_pemesanan] ?? 'bg-[#FAF9F6] text-[#5C6E65]' }}">
                                             {{ $orderStatusLabels[$pembayaran->pemesanan->status_pemesanan] ?? str_replace('_', ' ', $pembayaran->pemesanan->status_pemesanan) }}
                                         </span>
                                     </td>

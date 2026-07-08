@@ -54,7 +54,21 @@
                             </div>
                         </div>
                         <div class="flex items-center justify-between lg:justify-end gap-6">
-                            <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#FAF9F6] border border-[#E6E4DD] text-[#5C6E65]">
+                            @php
+                            $_idxColors = [
+                                'menunggu_pembayaran' => 'bg-[#FFF8E1] text-[#F59E0B] border border-[#FCD34D]',
+                                'menunggu_verifikasi' => 'bg-[#E8F0FE] text-[#3B82F6] border border-[#93C5FD]',
+                                'dikonfirmasi' => 'bg-[#EAF2EE] text-[#2B4C3F] border border-[#B8DEC8]',
+                                'sedang_menginap' => 'bg-[#F3EEFF] text-[#8B5CF6] border border-[#C4B5FD]',
+                                'terverifikasi' => 'bg-[#EAF2EE] text-[#2B4C3F] border border-[#B8DEC8]',
+                                'diproses' => 'bg-[#EAF2EE] text-[#2B4C3F] border border-[#B8DEC8]',
+                                'siap_diambil_dikirim' => 'bg-[#FFF3E0] text-[#E65100] border border-[#FFB74D]',
+                                'selesai' => 'bg-[#E8F5E9] text-[#2E7D32] border border-[#A5D6A7]',
+                                'dibatalkan' => 'bg-[#FDE8E8] text-[#DC2626] border border-[#FCA5A5]',
+                                'kedaluwarsa' => 'bg-[#F5F5F5] text-[#9CA3AF] border border-[#D4D4D8]',
+                            ];
+                            @endphp
+                            <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider {{ $_idxColors[$pemesanan->status_pemesanan] ?? 'bg-[#FAF9F6] border border-[#E6E4DD] text-[#5C6E65]' }}">
                                 @if ($pemesanan->jenis_pemesanan === \App\Models\Pemesanan::JENIS_HOMESTAY)
                                     {{ $homestayStatusLabels[$pemesanan->status_pemesanan] ?? ucwords(str_replace('_', ' ', $pemesanan->status_pemesanan)) }}
                                 @else

@@ -8,6 +8,15 @@
         $detail = $reservasi->detailPemesanans->first();
         $paymentWaitingVerification = $reservasi->pembayaran?->status_pembayaran === \App\Models\Pembayaran::STATUS_MENUNGGU_VERIFIKASI;
         $paymentVerified = $reservasi->pembayaran?->status_pembayaran === \App\Models\Pembayaran::STATUS_TERVERIFIKASI;
+        $_hColors = [
+            'menunggu_pembayaran' => 'bg-[#FFF8E1] text-[#F59E0B] border border-[#FCD34D]',
+            'menunggu_verifikasi' => 'bg-[#E8F0FE] text-[#3B82F6] border border-[#93C5FD]',
+            'dikonfirmasi' => 'bg-[#EAF2EE] text-[#2B4C3F] border border-[#B8DEC8]',
+            'sedang_menginap' => 'bg-[#F3EEFF] text-[#8B5CF6] border border-[#C4B5FD]',
+            'selesai' => 'bg-[#E8F5E9] text-[#2E7D32] border border-[#A5D6A7]',
+            'dibatalkan' => 'bg-[#FDE8E8] text-[#DC2626] border border-[#FCA5A5]',
+            'kedaluwarsa' => 'bg-[#F5F5F5] text-[#9CA3AF] border border-[#D4D4D8]',
+        ];
     @endphp
 
     <div class="space-y-6">
@@ -16,7 +25,7 @@
                 @include('components.back-link', ['href' => route('admin.reservasi'), 'label' => 'Kembali ke Reservasi'])
                 <h1 class="text-3xl font-serif font-semibold text-[#2C3E35] mt-3">Detail Reservasi</h1>
             </div>
-            <span class="px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider bg-[#EAF2EE] text-[#2B4C3F]">
+            <span class="px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider {{ $_hColors[$reservasi->status_pemesanan] ?? 'bg-[#EAF2EE] text-[#2B4C3F]' }}">
                 {{ $statusLabels[$reservasi->status_pemesanan] ?? str_replace('_', ' ', $reservasi->status_pemesanan) }}
             </span>
         </div>
