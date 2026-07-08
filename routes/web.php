@@ -168,12 +168,16 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:user')->group(function () {
         Route::get('/dashboard', function () {
             $homestays = Homestay::with('kategori')
+                ->withAvg('ulasans', 'rating')
+                ->withCount('ulasans')
                 ->where('status', 'Tersedia')
                 ->latest()
                 ->limit(4)
                 ->get();
 
-            $souvenirs = Souvenir::where('status', 'Tersedia')
+            $souvenirs = Souvenir::withAvg('ulasans', 'rating')
+                ->withCount('ulasans')
+                ->where('status', 'Tersedia')
                 ->where('stok', '>', 0)
                 ->orderByDesc('jumlah_terjual')
                 ->limit(4)
@@ -196,6 +200,9 @@ Route::middleware('auth')->group(function () {
                 ->limit(3)
                 ->get();
 
+            $totalUlasan = Ulasan::count();
+            $avgRating = Ulasan::avg('rating');
+
             return view('pelanggan.dashboard', compact(
                 'homestays',
                 'souvenirs',
@@ -203,6 +210,8 @@ Route::middleware('auth')->group(function () {
                 'totalSouvenir',
                 'pesananAktif',
                 'pesananTerakhir',
+                'totalUlasan',
+                'avgRating',
             ));
         })->name('dashboard');
 

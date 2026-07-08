@@ -107,8 +107,13 @@
                 </svg>
             </div>
             <div>
-                <p class="text-lg font-bold text-[#1E362C] leading-none">4.8</p>
-                <p class="text-[10px] text-[#8A9C91] mt-0.5 uppercase tracking-wider">Rating</p>
+                @if ($totalUlasan > 0)
+                    <p class="text-lg font-bold text-[#1E362C] leading-none">{{ number_format($avgRating, 1) }}</p>
+                    <p class="text-[10px] text-[#8A9C91] mt-0.5 uppercase tracking-wider">{{ $totalUlasan }} Ulasan</p>
+                @else
+                    <p class="text-lg font-bold text-[#1E362C] leading-none">-</p>
+                    <p class="text-[10px] text-[#8A9C91] mt-0.5 uppercase tracking-wider">Belum Ada Rating</p>
+                @endif
             </div>
         </div>
     </div>
@@ -138,7 +143,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-5 gap-5">
 
             {{-- Featured card — spans 3 cols --}}
-            @php $featured = $homestays->first(); $rating = 4.5 + ($featured->homestay_id % 5) * 0.1; @endphp
+            @php $featured = $homestays->first(); @endphp
             <a href="{{ route('user.homestay.show', $featured->homestay_id) }}"
                 class="lg:col-span-3 group relative rounded-[28px] overflow-hidden shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 block" style="min-height: 420px;">
                 {{-- Image --}}
@@ -156,9 +161,10 @@
                     <span class="bg-white/95 backdrop-blur-sm text-[9px] font-bold uppercase tracking-wider text-[#1E362C] px-3 py-1.5 rounded-full shadow-sm">
                         ✦ Featured
                     </span>
-                    <span class="bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-full text-[10px] font-bold text-[#E2A829] shadow-sm">
-                        ★ {{ number_format($rating, 1) }}
-                    </span>
+                    @include('pelanggan.partials.rating-summary', [
+                        'rating' => $featured->ulasans_avg_rating,
+                        'count' => $featured->ulasans_count,
+                    ])
                 </div>
 
                 {{-- Bottom info --}}
@@ -180,7 +186,6 @@
             {{-- Side cards — spans 2 cols, stacked --}}
             <div class="lg:col-span-2 flex flex-row lg:flex-col gap-5">
                 @foreach ($homestays->skip(1)->take(2) as $hs)
-                    @php $r = 4.5 + ($hs->homestay_id % 5) * 0.1; @endphp
                     <a href="{{ route('user.homestay.show', $hs->homestay_id) }}"
                         class="group flex-1 bg-white rounded-[24px] overflow-hidden border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 flex flex-col">
                         <div class="relative h-36 sm:h-44 overflow-hidden bg-[#EAF2EE]/30">
@@ -191,7 +196,12 @@
                                 <img src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=500&q=70"
                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="">
                             @endif
-                            <span class="absolute top-3 right-3 bg-white/95 backdrop-blur-sm px-2 py-1 rounded-full text-[10px] font-bold text-[#E2A829] shadow-sm">★ {{ number_format($r, 1) }}</span>
+                            <div class="absolute top-3 right-3">
+                                @include('pelanggan.partials.rating-summary', [
+                                    'rating' => $hs->ulasans_avg_rating,
+                                    'count' => $hs->ulasans_count,
+                                ])
+                            </div>
                         </div>
                         <div class="p-4 flex-grow flex flex-col justify-between">
                             <div>
