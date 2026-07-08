@@ -11,35 +11,7 @@
     @endphp
 
     <style>
-        @page {
-            size: A4;
-            margin: 14mm;
-        }
-
-        @media print {
-            body {
-                background: white !important;
-                color: #111827 !important;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
-
-            .no-print {
-                display: none !important;
-            }
-
-            .invoice-shell {
-                max-width: none !important;
-                padding: 0 !important;
-            }
-
-            .invoice-paper {
-                border: 0 !important;
-                border-radius: 0 !important;
-                box-shadow: none !important;
-                padding: 0 !important;
-            }
-        }
+        /* no print styles needed — use PDF route for printing */
     </style>
 
     <div class="invoice-shell max-w-4xl mx-auto {{ $isAdmin ? '' : 'px-4 sm:px-6 lg:px-8 py-10' }}">
@@ -47,10 +19,25 @@
             <a href="{{ $backRoute }}" class="text-xs font-semibold text-[#5C6E65] hover:text-[#2B4C3F]">
                 &larr; {{ $backLabel }}
             </a>
-            <button type="button" onclick="window.print()"
-                class="inline-flex items-center justify-center rounded-lg bg-[#2B4C3F] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#1E362C] transition-all">
-                Cetak Invoice
-            </button>
+            <div class="flex items-center gap-3">
+                @if ($isAdmin)
+                    <a href="{{ route('admin.invoices.pdf', $invoice->invoice_id) }}"
+                        class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2B4C3F] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#1E362C] transition-all">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        Unduh PDF
+                    </a>
+                @else
+                    <a href="{{ route('user.invoices.pdf', $invoice->pemesanan_id) }}"
+                        class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2B4C3F] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#1E362C] transition-all">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        Unduh PDF
+                    </a>
+                @endif
+            </div>
         </div>
 
         <div class="invoice-paper bg-white rounded-lg border border-[#E6E4DD] p-6 sm:p-8 shadow-sm">

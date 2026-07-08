@@ -182,3 +182,45 @@ test('guest cannot access invoice pages', function () {
     $this->get(route('user.invoices.show', $pemesanan->pemesanan_id))->assertRedirect(route('login'));
     $this->get(route('admin.invoices.show', $invoice->invoice_id))->assertRedirect(route('login'));
 });
+
+test('user can download invoice as pdf', function () {
+    $pemesanan = createSouvenirPemesananForInvoiceTest($this->user, $this->souvenir);
+    $pembayaran = createPaymentForInvoiceTest($pemesanan);
+    app(PaymentSettlementService::class)->verify($pembayaran, $this->admin->user_id);
+
+    $this->actingAs($this->user)
+        ->get(route('user.invoices.pdf', $pemesanan->pemesanan_id))
+        ->assertStatus(200)
+        ->assertHeader('Content-Type', 'application/pdf');
+});
+
+test('admin can download invoice as pdf', function () {
+    $pemesanan = createSouvenirPemesananForInvoiceTest($this->user, $this->souvenir);
+    $pembayaran = createPaymentForInvoiceTest($pemesanan);
+    app(PaymentSettlementService::class)->verify($pembayaran, $this->admin->user_id);
+    $invoice = Invoice::first();
+
+    $this->actingAs($this->admin)
+        ->get(route('admin.invoices.pdf', $invoice->invoice_id))
+        ->assertStatus(200)
+        ->assertHeader('Content-Type', 'application/pdf');
+});
+
+test('user cannot download another customers invoice pdf', function () {
+    $pemesanan = createSouvenirPemesananForInvoiceTest($this->user, $this->souvenir);
+    $pembayaran = createPaymentForInvoiceTest($pemesanan);
+    app(PaymentSettlementService::class)->verify($pembayaran, $this->admin->user_id);
+
+    $otherUser = User::create([
+        'nama' => 'Customer Lain PDF',
+        'email' => 'pdf-other@example.com',
+        'password' => bcrypt('password'),
+        'no_hp' => '081222222222',
+        'alamat' => 'Padang',
+        'role' => 'user',
+    ]);
+
+    $this->actingAs($otherUser)
+        ->get(route('user.invoices.pdf', $pemesanan->pemesanan_id))
+        ->assertNotFound();
+});
