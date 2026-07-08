@@ -34,25 +34,27 @@
 
                 <div class="space-y-4">
                     @foreach ($pemesanan->detailPemesanans as $detail)
-                        <div class="flex items-center gap-4 border-b border-[#F2F0EA] pb-4 last:border-0 last:pb-0">
-                            <div class="w-16 h-16 bg-[#EAF2EE]/50 flex-shrink-0 border border-[#E6E4DD]/40 rounded-lg overflow-hidden">
-                                @if ($detail->souvenir?->foto)
-                                    <img src="{{ asset($detail->souvenir->foto) }}" alt="{{ $detail->nama_item }}" class="w-full h-full object-cover">
-                                @else
-                                    <div class="w-full h-full flex items-center justify-center text-xs text-[#8A9C91] bg-[#FAF9F6]">Item</div>
-                                @endif
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <h3 class="font-semibold text-[#2C3E35] truncate">{{ $detail->nama_item }}</h3>
-                                <p class="text-xs text-[#8A9C91] mt-1">
-                                    @if ($detail->homestay_id)
-                                        {{ $detail->jumlah_malam }} malam · {{ $detail->check_in->format('d M Y') }} - {{ $detail->check_out->format('d M Y') }}
+                        <div class="flex flex-col sm:flex-row sm:items-center gap-4 border-b border-[#F2F0EA] pb-4 last:border-0 last:pb-0">
+                            <div class="flex items-center gap-4 w-full min-w-0">
+                                <div class="w-16 h-16 bg-[#EAF2EE]/50 flex-shrink-0 border border-[#E6E4DD]/40 rounded-lg overflow-hidden">
+                                    @if ($detail->souvenir?->foto)
+                                        <img src="{{ asset($detail->souvenir->foto) }}" alt="{{ $detail->nama_item }}" class="w-full h-full object-cover">
                                     @else
-                                        {{ $detail->jumlah }} x Rp {{ number_format($detail->harga, 0, ',', '.') }}
+                                        <div class="w-full h-full flex items-center justify-center text-xs text-[#8A9C91] bg-[#FAF9F6]">Item</div>
                                     @endif
-                                </p>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h3 class="font-semibold text-[#2C3E35] leading-snug break-words sm:truncate">{{ $detail->nama_item }}</h3>
+                                    <p class="text-xs text-[#8A9C91] mt-1">
+                                        @if ($detail->homestay_id)
+                                            {{ $detail->jumlah_malam }} malam &middot; {{ $detail->check_in->format('d M Y') }} - {{ $detail->check_out->format('d M Y') }}
+                                        @else
+                                            {{ $detail->jumlah }} x Rp {{ number_format($detail->harga, 0, ',', '.') }}
+                                        @endif
+                                    </p>
+                                </div>
                             </div>
-                            <div class="text-right font-semibold text-[#2B4C3F]">
+                            <div class="w-full sm:w-auto text-left sm:text-right font-semibold text-[#2B4C3F]">
                                 Rp {{ number_format($detail->subtotal, 0, ',', '.') }}
                             </div>
                         </div>
@@ -81,7 +83,7 @@
                                     </div>
 
                                     <div class="rating-picker rounded-2xl border border-[#E6E4DD] bg-white px-4 py-3" data-rating-picker>
-                                        <div class="flex items-center justify-between gap-3">
+                                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3">
                                             <div class="flex items-center gap-1" role="radiogroup" aria-label="Rating untuk {{ $detail->nama_item }}">
                                                 @for ($value = 1; $value <= 5; $value++)
                                                     <input type="radio" id="rating-{{ $detail->detail_pemesanan_id }}-{{ $value }}" name="rating" value="{{ $value }}"
@@ -95,7 +97,7 @@
                                                     </label>
                                                 @endfor
                                             </div>
-                                            <span class="rating-label text-xs font-bold text-[#8A9C91] whitespace-nowrap">
+                                            <span class="rating-label block text-xs font-bold leading-relaxed text-[#8A9C91]">
                                                 {{ $selectedRating ? $selectedRating . ' dari 5' : 'Pilih rating' }}
                                             </span>
                                         </div>
