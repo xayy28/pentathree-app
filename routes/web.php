@@ -43,12 +43,16 @@ Route::get('/', function () {
     }
 
     $homestays = Homestay::with('kategori')
+        ->withAvg('ulasans', 'rating')
+        ->withCount('ulasans')
         ->where('status', 'Tersedia')
         ->latest()
         ->limit(3)
         ->get();
 
-    $souvenirs = Souvenir::where('status', 'Tersedia')
+    $souvenirs = Souvenir::withAvg('ulasans', 'rating')
+        ->withCount('ulasans')
+        ->where('status', 'Tersedia')
         ->where('stok', '>', 0)
         ->orderByDesc('jumlah_terjual')
         ->limit(4)
@@ -58,8 +62,26 @@ Route::get('/', function () {
     $statTotalSouvenir = Souvenir::where('status', 'Tersedia')->count();
     $statTotalUser = User::where('role', 'user')->count();
     $statAvgRating = Ulasan::avg('rating');
+    $statTotalUlasan = Ulasan::count();
 
-    return view('welcome', compact('homestays', 'souvenirs', 'statTotalHomestay', 'statTotalSouvenir', 'statTotalUser', 'statAvgRating'));
+    $ulasanTerbaru = Ulasan::with('user')
+        ->whereNotNull('komentar')
+        ->where('komentar', '!=', '')
+        ->where('rating', '>=', 4)
+        ->latest()
+        ->limit(3)
+        ->get();
+
+    return view('welcome', compact(
+        'homestays',
+        'souvenirs',
+        'statTotalHomestay',
+        'statTotalSouvenir',
+        'statTotalUser',
+        'statAvgRating',
+        'statTotalUlasan',
+        'ulasanTerbaru',
+    ));
 })->name('home');
 
 // Route untuk Guest (Belum Login)

@@ -27,11 +27,14 @@
             <img src="{{ asset('images/Logo-Natasha.jpg') }}" alt="Logo" class="h-9 w-9 rounded-full object-cover border-2 border-[#2B4C3F]/20">
             <span class="font-serif font-semibold text-[#2B4C3F] text-base leading-tight">Natasha Homestay</span>
         </a>
+
+        {{-- Desktop nav --}}
         <div class="hidden sm:flex items-center gap-6 text-sm font-medium text-[#5C6E65]">
             <a href="#homestay" class="hover:text-[#2B4C3F] transition-colors">Homestay</a>
             <a href="#souvenir" class="hover:text-[#2B4C3F] transition-colors">Souvenir</a>
             <a href="#tentang"  class="hover:text-[#2B4C3F] transition-colors">Tentang</a>
         </div>
+
         <div class="flex items-center gap-2.5">
             <a href="{{ route('login') }}"
                class="inline-flex items-center gap-1.5 text-sm font-semibold text-[#2B4C3F] border border-[#2B4C3F]/30 hover:border-[#2B4C3F] hover:bg-[#EAF2EE] px-4 py-2 rounded-full transition-all duration-200">
@@ -41,7 +44,7 @@
                 Masuk
             </a>
             <a href="{{ route('register') }}"
-               class="inline-flex items-center gap-1.5 bg-[#2B4C3F] hover:bg-[#1E362C] text-white text-sm font-semibold px-5 py-2 rounded-full transition-all duration-200 shadow-md hover:shadow-lg">
+               class="hidden sm:inline-flex items-center gap-1.5 bg-[#2B4C3F] hover:bg-[#1E362C] text-white text-sm font-semibold px-5 py-2 rounded-full transition-all duration-200 shadow-md hover:shadow-lg">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
                 </svg>
@@ -111,10 +114,16 @@
                     —
                 @endif
             </span>
-            <span class="text-[10px] font-bold uppercase tracking-wider text-[#8A9C91]">Rating Tamu</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-[#8A9C91]">
+                @if ($statTotalUlasan > 0)
+                    {{ $statTotalUlasan }} Ulasan
+                @else
+                    Rating Tamu
+                @endif
+            </span>
         </div>
         <div class="flex flex-col items-center py-6 px-4 gap-1">
-            <span class="text-2xl font-bold text-[#2B4C3F]">{{ $statTotalUser }}</span>
+            <span class="text-2xl font-bold text-[#2B4C3F]">{{ $statTotalUser }}+</span>
             <span class="text-[10px] font-bold uppercase tracking-wider text-[#8A9C91]">Pelanggan</span>
         </div>
     </div>
@@ -140,7 +149,6 @@
     @else
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach ($homestays as $hs)
-                @php $rating = 4.5 + ($hs->homestay_id % 5) * 0.1; @endphp
                 <div class="group bg-white rounded-[24px] overflow-hidden border border-[#E6E4DD] shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col">
                     <div class="relative h-52 overflow-hidden bg-[#EAF2EE]/30">
                         @if ($hs->foto)
@@ -148,7 +156,17 @@
                         @else
                             <img src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=600&q=70" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="">
                         @endif
-                        <span class="absolute top-3 right-3 bg-white/95 backdrop-blur-sm px-2.5 py-1 rounded-full text-[10px] font-bold text-[#E2A829] shadow-sm">★ {{ number_format($rating, 1) }}</span>
+                        {{-- Rating real dari DB --}}
+                        @if ($hs->ulasans_count > 0)
+                            <span class="absolute top-3 right-3 bg-white/95 backdrop-blur-sm px-2.5 py-1 rounded-full text-[10px] font-bold text-[#E2A829] shadow-sm">
+                                ★ {{ number_format($hs->ulasans_avg_rating, 1) }}
+                                <span class="text-[#8A9C91] font-medium">({{ $hs->ulasans_count }})</span>
+                            </span>
+                        @else
+                            <span class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-full text-[10px] font-semibold text-[#8A9C91] shadow-sm">
+                                Belum ada ulasan
+                            </span>
+                        @endif
                         <span class="absolute top-3 left-3 bg-white/90 text-[#2B4C3F] text-[9px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full">{{ $hs->kategori->nama_kategori ?? 'Standard' }}</span>
                     </div>
                     <div class="p-5 flex flex-col flex-grow">
@@ -198,6 +216,11 @@
                             @endif
                             @if ($sv->jumlah_terjual > 0)
                                 <span class="absolute top-2.5 left-2.5 bg-[#E9C46A] text-[#1E362C] text-[8px] font-bold px-2 py-1 rounded-full shadow-sm">🔥 {{ $sv->jumlah_terjual }}x</span>
+                            @endif
+                            @if ($sv->ulasans_count > 0)
+                                <span class="absolute top-2.5 right-2.5 bg-white/95 backdrop-blur-sm px-2 py-1 rounded-full text-[9px] font-bold text-[#E2A829] shadow-sm">
+                                    ★ {{ number_format($sv->ulasans_avg_rating, 1) }}
+                                </span>
                             @endif
                         </div>
                         <div class="p-4 flex flex-col flex-grow gap-2">
@@ -266,6 +289,56 @@
         </div>
     </div>
 </section>
+
+{{-- ═══════ TESTIMONIAL ═══════ --}}
+@if ($ulasanTerbaru->isNotEmpty())
+<section class="bg-[#F2F0EA] py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <p class="text-[10px] font-bold uppercase tracking-[0.3em] text-[#A7C5B5] mb-2">Kata Tamu Kami</p>
+            <h2 class="font-serif text-3xl sm:text-4xl text-[#1E362C] font-semibold">Ulasan Nyata dari Pelanggan</h2>
+            @if ($statAvgRating)
+                <p class="text-sm text-[#8A9C91] mt-3">
+                    Rata-rata
+                    <span class="font-bold text-[#E2A829]">★ {{ number_format($statAvgRating, 1) }}</span>
+                    dari {{ $statTotalUlasan }} ulasan tamu
+                </p>
+            @endif
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            @foreach ($ulasanTerbaru as $ulasan)
+                <div class="bg-white rounded-[24px] p-6 border border-[#E6E4DD] shadow-sm flex flex-col gap-4">
+                    {{-- Bintang --}}
+                    <div class="flex items-center gap-0.5">
+                        @for ($i = 1; $i <= 5; $i++)
+                            <svg class="w-4 h-4 {{ $i <= $ulasan->rating ? 'text-[#E2A829]' : 'text-[#E6E4DD]' }}" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                            </svg>
+                        @endfor
+                    </div>
+                    {{-- Komentar --}}
+                    <p class="text-sm text-[#5C6E65] leading-relaxed flex-grow">"{{ Str::limit($ulasan->komentar, 120) }}"</p>
+                    {{-- User --}}
+                    <div class="flex items-center gap-3 pt-4 border-t border-[#F2F0EA]">
+                        @if ($ulasan->user?->foto_profil)
+                            <img src="{{ asset('storage/' . $ulasan->user->foto_profil) }}" class="w-9 h-9 rounded-full object-cover ring-2 ring-[#EAF2EE]" alt="">
+                        @else
+                            <div class="w-9 h-9 rounded-full bg-[#EAF2EE] flex items-center justify-center text-[#2B4C3F] text-xs font-bold flex-shrink-0">
+                                {{ strtoupper(substr($ulasan->user?->nama ?? 'T', 0, 2)) }}
+                            </div>
+                        @endif
+                        <div>
+                            <p class="text-xs font-semibold text-[#1E362C]">{{ $ulasan->user?->nama ?? 'Tamu' }}</p>
+                            <p class="text-[10px] text-[#8A9C91]">{{ $ulasan->created_at->format('M Y') }}</p>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+@endif
 
 {{-- ═══════ CTA BAND ═══════ --}}
 <section class="bg-[#2B4C3F] py-20">
