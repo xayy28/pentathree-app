@@ -49,9 +49,9 @@
                         class="w-full rounded-3xl border border-[#D5D3C7] bg-[#FAF9F6] px-4 py-3 text-sm text-[#2C3E35] focus:border-[#2B4C3F] focus:outline-none focus:ring-1 focus:ring-[#2B4C3F]/20">
                 </div>
 
-                <button type="submit"
-                    class="w-full rounded-full bg-[#2B4C3F] px-6 py-3 text-sm font-semibold text-white hover:bg-[#25382f] transition">Perbarui
-                    Password</button>
+                <x-ui-button type="submit" variant="primary" block>
+                    Perbarui Password
+                </x-ui-button>
             </form>
         </div>
     </div>
@@ -63,9 +63,12 @@
             <p id="confirm-modal-message" class="text-sm text-[#5C6E65] mt-2">Apakah Anda yakin ingin mengganti password?
             </p>
             <div class="mt-6 flex justify-end gap-3">
-                <button id="confirm-cancel"
-                    class="px-4 py-2 rounded-full border border-[#D5D3C7] bg-white text-sm text-[#2C3E35] hover:bg-[#F8F7F4]">Batal</button>
-                <button id="confirm-ok" class="px-4 py-2 rounded-full bg-[#2B4C3F] text-white text-sm">Oke</button>
+                <x-ui-button type="button" id="confirm-cancel" variant="muted" size="sm">
+                    Batal
+                </x-ui-button>
+                <x-ui-button type="button" id="confirm-ok" variant="primary" size="sm">
+                    Oke
+                </x-ui-button>
             </div>
         </div>
     </div>

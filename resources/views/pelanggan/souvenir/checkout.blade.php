@@ -32,9 +32,9 @@
                             </p>
                             <p class="text-sm text-[#5C6E65]">{{ auth()->user()->alamat }}</p>
                         </div>
-                        <button type="button" class="text-sm text-[#2B4C3F] font-semibold hover:underline border border-[#2B4C3F] px-4 py-1.5 rounded-lg">
+                        <x-ui-button type="button" variant="secondary" size="sm">
                             Ubah
-                        </button>
+                        </x-ui-button>
                     </div>
                 </div>
 
@@ -129,9 +129,9 @@
                 </div>
 
                 <div class="pt-6">
-                    <button type="submit" class="w-full bg-[#2B4C3F] hover:bg-[#1E362C] text-white text-sm font-semibold py-4 px-4 rounded-xl shadow-sm transition-all duration-300 flex items-center justify-center">
+                    <x-ui-button type="submit" variant="primary" size="lg" block>
                         Buat Pesanan
-                    </button>
+                    </x-ui-button>
                 </div>
 
                 <p class="text-[10px] text-center text-[#8A9C91] mt-4 leading-relaxed">

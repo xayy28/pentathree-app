@@ -27,12 +27,12 @@
                         <p class="text-sm text-[#5C6E65] max-w-2xl">Kelola informasi akun Anda, perbarui data kontak, dan
                             unggah foto profil untuk membuat akun Anda lebih personal.</p>
                         <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3">
-                            <a href="{{ route('profile.edit') }}"
-                                class="inline-flex items-center justify-center px-5 py-3 rounded-full bg-[#2B4C3F] text-white text-sm font-semibold hover:bg-[#25382f] transition">Edit
-                                Profil</a>
-                            <a href="{{ route('profile.password.edit') }}"
-                                class="inline-flex items-center justify-center px-5 py-3 rounded-full border border-[#D5D3C7] bg-white text-[#2C3E35] text-sm font-semibold hover:bg-[#F8F7F4] transition">Edit
-                                Password</a>
+                            <x-ui-button href="{{ route('profile.edit') }}" variant="primary">
+                                Edit Profil
+                            </x-ui-button>
+                            <x-ui-button href="{{ route('profile.password.edit') }}" variant="secondary">
+                                Edit Password
+                            </x-ui-button>
                         </div>
                     </div>
                 </div>

@@ -56,19 +56,17 @@
                     </div>
 
                     <div class="flex gap-2">
-                        <button type="submit"
-                            class="bg-[#1E362C] hover:bg-[#152720] text-white font-semibold rounded-2xl sm:rounded-full px-6 py-3 flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                        </svg>
-                            <span class="text-xs uppercase tracking-widest">Filter</span>
-                        </button>
-                        <a href="{{ route('user.homestay') }}"
-                            class="bg-[#FAF9F6] hover:bg-[#F2F0EA] text-[#5C6E65] font-semibold rounded-2xl sm:rounded-full px-5 py-3 flex items-center justify-center text-xs uppercase tracking-widest border border-gray-200 transition-all">
+                        <x-ui-button type="submit" variant="primary">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                            <span>Filter</span>
+                        </x-ui-button>
+                        <x-ui-button href="{{ route('user.homestay') }}" variant="muted">
                             Reset
-                        </a>
+                        </x-ui-button>
                     </div>
                 </form>
             </div>
@@ -208,20 +206,17 @@
                                                         class="text-[10px] text-[#8A9C91] font-normal uppercase tracking-normal">/malam</span></span>
                                             </div>
                                             <div class="flex items-center gap-2">
-                                                <a href="{{ route('user.homestay.show', $homestay->homestay_id) }}"
-                                                    class="px-4 py-2.5 border border-[#A7C5B5] text-[#2B4C3F] hover:bg-[#EAF2EE] text-xs font-semibold rounded-xl transition-all cursor-pointer">
+                                                <x-ui-button href="{{ route('user.homestay.show', $homestay->homestay_id) }}" variant="secondary" size="sm">
                                                     Detail
-                                                </a>
+                                                </x-ui-button>
                                                 @if ($homestay->status === 'Tersedia')
-                                                    <a href="{{ route('user.homestay.booking.create', $homestay->homestay_id) }}"
-                                                        class="px-4 py-2.5 bg-[#1E362C] hover:bg-[#152720] text-white text-xs font-semibold rounded-xl transition-all shadow-sm cursor-pointer">
-                                                        BOOKING
-                                                    </a>
+                                                    <x-ui-button href="{{ route('user.homestay.booking.create', $homestay->homestay_id) }}" variant="primary" size="sm">
+                                                        Booking
+                                                    </x-ui-button>
                                                 @else
-                                                    <button disabled
-                                                        class="px-4 py-2.5 bg-[#FAF9F6] border border-gray-200 text-[#8A9C91] text-xs font-semibold rounded-xl cursor-not-allowed">
+                                                    <x-ui-button variant="disabled" size="sm" disabled>
                                                         Penuh
-                                                    </button>
+                                                    </x-ui-button>
                                                 @endif
                                             </div>
                                         </div>

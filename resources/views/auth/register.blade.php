@@ -125,10 +125,9 @@
             </div>
 
             <!-- Submit Button -->
-            <button type="submit"
-                    class="w-full bg-[#2B4C3F] hover:bg-[#1E362C] text-white py-3.5 px-4 rounded-lg font-semibold text-sm tracking-wider uppercase transition-all duration-300 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#2B4C3F] focus:ring-offset-2 mt-2">
+            <x-ui-button type="submit" variant="primary" size="lg" block class="mt-2">
                 Create Account
-            </button>
+            </x-ui-button>
         </form>
 
         <p class="text-center text-sm text-[#5C6E65] mt-6">

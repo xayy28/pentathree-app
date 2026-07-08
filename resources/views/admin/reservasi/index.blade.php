@@ -27,10 +27,9 @@
                             </option>
                         @endforeach
                     </select>
-                    <button type="submit"
-                        class="bg-[#2B4C3F] hover:bg-[#1E362C] text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-all">
+                    <x-ui-button type="submit" variant="primary">
                         Filter
-                    </button>
+                    </x-ui-button>
                 </form>
             </div>
 
@@ -82,10 +81,9 @@
                                         </span>
                                     </td>
                                     <td class="py-4 text-right">
-                                        <a href="{{ route('admin.reservasi.show', $reservasi->pemesanan_id) }}"
-                                            class="text-xs font-semibold text-[#2B4C3F] hover:underline">
+                                        <x-ui-button href="{{ route('admin.reservasi.show', $reservasi->pemesanan_id) }}" variant="secondary" size="sm">
                                             Detail
-                                        </a>
+                                        </x-ui-button>
                                     </td>
                                 </tr>
                             @endforeach

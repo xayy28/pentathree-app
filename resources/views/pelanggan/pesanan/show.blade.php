@@ -113,10 +113,9 @@
                                     <p class="text-xs text-[#B91C1C]">{{ $message }}</p>
                                 @enderror
 
-                                <button type="submit"
-                                    class="inline-flex items-center justify-center rounded-xl bg-[#2B4C3F] px-4 py-2.5 text-xs font-semibold text-white hover:bg-[#1E362C] transition-colors">
+                                <x-ui-button type="submit" variant="primary">
                                     {{ $existingUlasan ? 'Perbarui Ulasan' : 'Simpan Ulasan' }}
-                                </button>
+                                </x-ui-button>
                             </form>
                         @endforeach
                     </div>
@@ -148,25 +147,21 @@
                     </div>
                 </div>
                 @if (! $pemesanan->pembayaran || $pemesanan->pembayaran->status_pembayaran === \App\Models\Pembayaran::STATUS_DITOLAK)
-                    <a href="{{ route('user.pembayaran.create', $pemesanan->pemesanan_id) }}"
-                        class="w-full bg-[#2B4C3F] hover:bg-[#1E362C] text-white text-sm font-semibold py-3 px-4 rounded-xl transition-all flex items-center justify-center">
+                    <x-ui-button href="{{ route('user.pembayaran.create', $pemesanan->pemesanan_id) }}" variant="primary" block>
                         Bayar Sekarang
-                    </a>
+                    </x-ui-button>
                 @elseif ($pemesanan->pembayaran->status_pembayaran === \App\Models\Pembayaran::STATUS_MENUNGGU_PEMBAYARAN)
                     <div class="space-y-3">
                         <p class="text-[11px] leading-relaxed text-[#8A5A10] bg-[#FFF8E8] border border-[#F2D8A8] rounded-xl p-4">
                             Pembayaran Midtrans masih menunggu penyelesaian atau sinkronisasi status. Jika sudah membayar, cek status pembayaran.
                         </p>
                         @if ($pemesanan->pembayaran->metode_pembayaran === 'midtrans')
-                            <a href="{{ route('user.pembayaran.create', $pemesanan->pemesanan_id) }}"
-                                class="w-full bg-[#B7791F] hover:bg-[#975A16] text-white text-sm font-semibold py-3 px-4 rounded-xl transition-all flex items-center justify-center">
+                            <x-ui-button href="{{ route('user.pembayaran.create', $pemesanan->pemesanan_id) }}" variant="primary" block>
                                 Lanjutkan Pembayaran
-                            </a>
-                            <button type="button" id="midtrans-status-button"
-                                data-status-url="{{ route('user.pembayaran.midtrans.status', $pemesanan->pemesanan_id) }}"
-                                class="w-full border border-[#C9D8D0] bg-white hover:bg-[#F3F7F5] text-[#2B4C3F] text-sm font-semibold py-3 px-4 rounded-xl transition-all flex items-center justify-center disabled:cursor-not-allowed disabled:opacity-60">
+                            </x-ui-button>
+                            <x-ui-button type="button" id="midtrans-status-button" data-status-url="{{ route('user.pembayaran.midtrans.status', $pemesanan->pemesanan_id) }}" variant="secondary" block>
                                 Cek Status Pembayaran
-                            </button>
+                            </x-ui-button>
                             <p id="midtrans-status-message" class="hidden text-[11px] leading-relaxed"></p>
                         @endif
                     </div>
@@ -184,10 +179,9 @@
                             @endif
                         </p>
                         @if ($pemesanan->invoice)
-                            <a href="{{ route('user.invoices.show', $pemesanan->pemesanan_id) }}"
-                                class="w-full border border-[#C9D8D0] bg-white hover:bg-[#F3F7F5] text-[#2B4C3F] text-sm font-semibold py-3 px-4 rounded-xl transition-all flex items-center justify-center">
+                            <x-ui-button href="{{ route('user.invoices.show', $pemesanan->pemesanan_id) }}" variant="secondary" block>
                                 Lihat Invoice
-                            </a>
+                            </x-ui-button>
                         @endif
                     </div>
                 @endif

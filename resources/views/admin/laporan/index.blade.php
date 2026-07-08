@@ -33,18 +33,15 @@
                         <input id="date_to" type="date" name="date_to" value="{{ $dateTo?->toDateString() }}"
                             class="w-full bg-[#FAF9F6] text-[#2C3E35] border border-[#E6E4DD] rounded-xl px-4 py-2.5 text-sm focus:bg-white focus:border-[#2B4C3F] focus:outline-none">
                     </div>
-                    <button type="submit"
-                        class="self-end inline-flex h-11 min-w-[112px] items-center justify-center whitespace-nowrap bg-[#2B4C3F] hover:bg-[#1E362C] text-white text-sm font-semibold px-5 rounded-xl transition-all">
+                    <x-ui-button type="submit" variant="primary" class="self-end min-w-[112px] whitespace-nowrap">
                         Filter
-                    </button>
-                    <a href="{{ route('admin.laporan') }}"
-                        class="self-end inline-flex h-11 min-w-[112px] items-center justify-center whitespace-nowrap bg-[#FAF9F6] hover:bg-[#F2F0EA] text-[#5C6E65] text-sm font-semibold px-5 rounded-xl border border-[#E6E4DD] transition-all text-center">
+                    </x-ui-button>
+                    <x-ui-button href="{{ route('admin.laporan') }}" variant="muted" class="self-end min-w-[112px] whitespace-nowrap">
                         Reset
-                    </a>
-                    <a href="{{ route('admin.laporan.pdf', request()->only(['date_from', 'date_to'])) }}"
-                        class="self-end inline-flex h-11 min-w-[112px] items-center justify-center whitespace-nowrap bg-[#B7791F] hover:bg-[#975A16] text-white text-sm font-semibold px-5 rounded-xl transition-all text-center">
+                    </x-ui-button>
+                    <x-ui-button href="{{ route('admin.laporan.pdf', request()->only(['date_from', 'date_to'])) }}" variant="warning" class="self-end min-w-[112px] whitespace-nowrap">
                         Unduh PDF
-                    </a>
+                    </x-ui-button>
                 </form>
             </div>
         </div>

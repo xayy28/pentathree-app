@@ -122,10 +122,9 @@
                 @endif
 
                 @if ($pembayaran->pemesanan->invoice)
-                    <a href="{{ route('admin.invoices.show', $pembayaran->pemesanan->invoice->invoice_id) }}"
-                        class="w-full border border-[#C9D8D0] bg-white hover:bg-[#F3F7F5] text-[#2B4C3F] text-sm font-semibold py-3 px-4 rounded-xl transition-all flex items-center justify-center">
+                    <x-ui-button href="{{ route('admin.invoices.show', $pembayaran->pemesanan->invoice->invoice_id) }}" variant="secondary" block>
                         Lihat Invoice
-                    </a>
+                    </x-ui-button>
                 @endif
 
                 @if ($pembayaran->status_pembayaran === \App\Models\Pembayaran::STATUS_TERVERIFIKASI)
@@ -134,10 +133,9 @@
                             <form action="{{ route('admin.pembayaran.status', $pembayaran->pembayaran_id) }}" method="POST">
                                 @csrf
                                 <input type="hidden" name="status_pemesanan" value="{{ $nextStatusAction[0] }}">
-                                <button type="submit"
-                                    class="w-full bg-[#EAF2EE] hover:bg-[#DDEBE4] text-[#2B4C3F] text-sm font-semibold py-3 px-4 rounded-xl transition-all">
+                                <x-ui-button type="submit" variant="secondary" block>
                                     {{ $nextStatusAction[1] }}
-                                </button>
+                                </x-ui-button>
                             </form>
                         @elseif ($orderStatus === \App\Models\Pemesanan::STATUS_SELESAI)
                             <p class="text-[11px] leading-relaxed text-[#2B4C3F] bg-[#EAF2EE] border border-[#A7C5B5] rounded-xl p-4">
@@ -158,18 +156,16 @@
                                 <form action="{{ route('admin.pembayaran.status', $pembayaran->pembayaran_id) }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="status_pemesanan" value="{{ \App\Models\Pemesanan::STATUS_DIBATALKAN }}">
-                                    <button type="submit"
-                                        class="w-full bg-[#FDF2F2] hover:bg-[#F8DADA] text-[#B91C1C] text-xs font-semibold py-2.5 px-4 rounded-xl transition-all">
+                                    <x-ui-button type="submit" variant="danger" size="sm" block>
                                         Batalkan
-                                    </button>
+                                    </x-ui-button>
                                 </form>
                                 <form action="{{ route('admin.pembayaran.status', $pembayaran->pembayaran_id) }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="status_pemesanan" value="{{ \App\Models\Pemesanan::STATUS_KEDALUWARSA }}">
-                                    <button type="submit"
-                                        class="w-full bg-[#FAF9F6] hover:bg-[#F2F0EA] text-[#5C6E65] text-xs font-semibold py-2.5 px-4 rounded-xl transition-all border border-[#E6E4DD]">
+                                    <x-ui-button type="submit" variant="muted" size="sm" block>
                                         Kedaluwarsa
-                                    </button>
+                                    </x-ui-button>
                                 </form>
                             </div>
                         @endunless
@@ -179,20 +175,18 @@
                 @if ($pembayaran->status_pembayaran === \App\Models\Pembayaran::STATUS_MENUNGGU_VERIFIKASI)
                     <form action="{{ route('admin.pembayaran.verify', $pembayaran->pembayaran_id) }}" method="POST">
                         @csrf
-                        <button type="submit"
-                            class="w-full bg-[#2B4C3F] hover:bg-[#1E362C] text-white text-sm font-semibold py-3 px-4 rounded-xl transition-all">
+                        <x-ui-button type="submit" variant="primary" block>
                             Verifikasi Pembayaran
-                        </button>
+                        </x-ui-button>
                     </form>
 
                     <form action="{{ route('admin.pembayaran.reject', $pembayaran->pembayaran_id) }}" method="POST" class="space-y-3">
                         @csrf
                         <textarea name="catatan_admin" rows="3" placeholder="Catatan penolakan..."
                             class="w-full bg-[#FAF9F6] text-[#2C3E35] border border-[#E6E4DD] rounded-xl px-4 py-3 text-sm focus:bg-white focus:border-[#2B4C3F] focus:outline-none"></textarea>
-                        <button type="submit"
-                            class="w-full bg-[#FDF2F2] hover:bg-[#F8DADA] text-[#B91C1C] text-sm font-semibold py-3 px-4 rounded-xl transition-all">
+                        <x-ui-button type="submit" variant="danger" block>
                             Tolak Pembayaran
-                        </button>
+                        </x-ui-button>
                     </form>
                 @endif
             </div>

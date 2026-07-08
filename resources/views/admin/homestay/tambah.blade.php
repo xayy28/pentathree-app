@@ -161,12 +161,12 @@
 
             <!-- Submit Button -->
             <div class="pt-4 border-t border-[#F2F0EA] flex justify-end gap-3">
-                <a href="{{ route('admin.homestay') }}" class="px-5 py-2.5 bg-[#FAF9F6] border border-[#D5D3C7] hover:bg-[#F2F0EA] text-[#2C3E35] text-sm font-semibold rounded-xl transition-all">
+                <x-ui-button href="{{ route('admin.homestay') }}" variant="muted">
                     Batalkan
-                </a>
-                <button type="submit" class="px-6 py-2.5 bg-[#2B4C3F] hover:bg-[#1E362C] text-white text-sm font-semibold rounded-xl transition-all shadow-sm">
+                </x-ui-button>
+                <x-ui-button type="submit" variant="primary">
                     Simpan Homestay
-                </button>
+                </x-ui-button>
             </div>
         </form>
     </div>

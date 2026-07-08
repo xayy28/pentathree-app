@@ -96,10 +96,9 @@
             </div>
 
             <!-- Submit Button -->
-            <button type="submit"
-                    class="w-full bg-[#2B4C3F] hover:bg-[#1E362C] text-white py-3.5 px-4 rounded-lg font-semibold text-sm tracking-wider uppercase transition-all duration-300 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#2B4C3F] focus:ring-offset-2">
+            <x-ui-button type="submit" variant="primary" size="lg" block>
                 Sign In
-            </button>
+            </x-ui-button>
         </form>
 
         <!-- Divider -->
@@ -113,7 +112,7 @@
         </div>
 
         <!-- Google Button -->
-        <button type="button" class="w-full flex items-center justify-center gap-3 px-4 py-3 border border-[#D5D3C7] rounded-lg text-sm font-semibold text-[#5C6E65] bg-white hover:bg-[#FAF9F6] transition-colors focus:outline-none">
+        <x-ui-button type="button" variant="secondary" size="lg" block>
             <svg class="w-5 h-5" viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg">
                 <g transform="matrix(1, 0, 0, 1, 0, 0)">
                     <path d="M21.35,11.1H12v2.7h5.38c-0.24,1.28 -0.96,2.37 -2.04,3.1v2.56h3.3c1.93,-1.78 3.04,-4.4 3.04,-7.4C21.68,11.77 21.56,11.4 21.35,11.1z" fill="#4285F4" />
@@ -123,7 +122,7 @@
                 </g>
             </svg>
             <span>Google Account</span>
-        </button>
+        </x-ui-button>
 
         <p class="text-center text-sm text-[#5C6E65] mt-8">
             Don't have an account yet?

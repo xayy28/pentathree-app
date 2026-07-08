@@ -156,26 +156,22 @@
                         </div>
 
                         <div class="flex flex-col sm:flex-row gap-3">
-                            <button type="submit" name="redirect_to" value="checkout"
-                                class="flex-1 py-4 bg-[#2B4C3F] hover:bg-[#1E362C] text-white text-sm font-semibold rounded-2xl transition-all shadow-sm flex items-center justify-center gap-2">
+                            <x-ui-button type="submit" name="redirect_to" value="checkout" variant="primary" size="lg" class="flex-1">
                                 Pesan Sekarang
-                            </button>
-                            <button type="submit" name="redirect_to" value="cart"
-                                class="flex-1 py-4 border border-[#A7C5B5] text-[#2B4C3F] hover:bg-[#EAF2EE] text-sm font-semibold rounded-2xl transition-all flex items-center justify-center gap-2">
+                            </x-ui-button>
+                            <x-ui-button type="submit" name="redirect_to" value="cart" variant="secondary" size="lg" class="flex-1">
                                 Tambahkan ke Keranjang
-                            </button>
+                            </x-ui-button>
                         </div>
                     </form>
                 @else
                     <div class="space-y-3 pt-2">
-                        <button disabled
-                            class="w-full py-4 bg-[#F3F4F6] border border-[#E6E4DD] text-[#8A9C91] text-sm font-semibold rounded-2xl cursor-not-allowed flex items-center justify-center gap-2">
+                        <x-ui-button variant="disabled" size="lg" block disabled>
                             Stok Habis
-                        </button>
-                        <a href="{{ route('user.souvenir') }}"
-                            class="w-full py-3 border border-[#A7C5B5] text-[#2B4C3F] hover:bg-[#EAF2EE] text-sm font-semibold rounded-2xl transition-all flex items-center justify-center gap-2">
+                        </x-ui-button>
+                        <x-ui-button href="{{ route('user.souvenir') }}" variant="secondary" block>
                             Lihat Souvenir Lainnya
-                        </a>
+                        </x-ui-button>
                     </div>
                 @endif
             </div>

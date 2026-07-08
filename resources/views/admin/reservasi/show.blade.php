@@ -97,30 +97,27 @@
                 @endif
 
                 @if ($reservasi->invoice)
-                    <a href="{{ route('admin.invoices.show', $reservasi->invoice->invoice_id) }}"
-                        class="w-full border border-[#C9D8D0] bg-white hover:bg-[#F3F7F5] text-[#2B4C3F] text-sm font-semibold py-3 px-4 rounded-xl transition-all flex items-center justify-center">
+                    <x-ui-button href="{{ route('admin.invoices.show', $reservasi->invoice->invoice_id) }}" variant="secondary" block>
                         Lihat Invoice
-                    </a>
+                    </x-ui-button>
                 @endif
 
                 <div class="space-y-3">
                     @if ($paymentWaitingVerification)
                         <form action="{{ route('admin.reservasi.verify-payment', $reservasi->pemesanan_id) }}" method="POST">
                             @csrf
-                            <button type="submit"
-                                class="w-full bg-[#2B4C3F] hover:bg-[#1E362C] text-white text-sm font-semibold py-3 px-4 rounded-xl transition-all">
+                            <x-ui-button type="submit" variant="primary" block>
                                 Verifikasi Pembayaran & Konfirmasi Booking
-                            </button>
+                            </x-ui-button>
                         </form>
 
                         <form action="{{ route('admin.reservasi.reject-payment', $reservasi->pemesanan_id) }}" method="POST" class="space-y-3">
                             @csrf
                             <textarea name="catatan_admin" rows="3" placeholder="Catatan penolakan..."
                                 class="w-full bg-[#FAF9F6] text-[#2C3E35] border border-[#E6E4DD] rounded-xl px-4 py-3 text-sm focus:bg-white focus:border-[#2B4C3F] focus:outline-none"></textarea>
-                            <button type="submit"
-                                class="w-full bg-[#FDF2F2] hover:bg-[#F8DADA] text-[#B91C1C] text-sm font-semibold py-3 px-4 rounded-xl transition-all">
+                            <x-ui-button type="submit" variant="danger" block>
                                 Tolak Pembayaran
-                            </button>
+                            </x-ui-button>
                         </form>
                     @endif
 
@@ -128,28 +125,25 @@
                         <form action="{{ route('admin.reservasi.status', $reservasi->pemesanan_id) }}" method="POST">
                             @csrf
                             <input type="hidden" name="status_pemesanan" value="{{ \App\Models\Pemesanan::STATUS_DIKONFIRMASI }}">
-                            <button type="submit"
-                                class="w-full bg-[#2B4C3F] hover:bg-[#1E362C] text-white text-sm font-semibold py-3 px-4 rounded-xl transition-all">
+                            <x-ui-button type="submit" variant="primary" block>
                                 Konfirmasi Booking
-                            </button>
+                            </x-ui-button>
                         </form>
 
                         <form action="{{ route('admin.reservasi.status', $reservasi->pemesanan_id) }}" method="POST">
                             @csrf
                             <input type="hidden" name="status_pemesanan" value="{{ \App\Models\Pemesanan::STATUS_SEDANG_MENGINAP }}">
-                            <button type="submit"
-                                class="w-full bg-[#EAF2EE] hover:bg-[#DDEBE4] text-[#2B4C3F] text-sm font-semibold py-3 px-4 rounded-xl transition-all">
+                            <x-ui-button type="submit" variant="secondary" block>
                                 Check-in / Sedang Menginap
-                            </button>
+                            </x-ui-button>
                         </form>
 
                         <form action="{{ route('admin.reservasi.status', $reservasi->pemesanan_id) }}" method="POST">
                             @csrf
                             <input type="hidden" name="status_pemesanan" value="{{ \App\Models\Pemesanan::STATUS_SELESAI }}">
-                            <button type="submit"
-                                class="w-full bg-[#F3F7F5] hover:bg-[#EAF2EE] text-[#2B4C3F] text-sm font-semibold py-3 px-4 rounded-xl transition-all">
+                            <x-ui-button type="submit" variant="secondary" block>
                                 Tandai Check-out / Selesai
-                            </button>
+                            </x-ui-button>
                         </form>
                     @else
                         <p class="text-[11px] leading-relaxed text-[#8A5A10] bg-[#FFF8E8] border border-[#F2D8A8] rounded-xl p-4">
@@ -161,20 +155,18 @@
                         onsubmit="return confirm('Batalkan reservasi ini?')">
                         @csrf
                         <input type="hidden" name="status_pemesanan" value="{{ \App\Models\Pemesanan::STATUS_DIBATALKAN }}">
-                        <button type="submit"
-                            class="w-full bg-[#FDF2F2] hover:bg-[#F8DADA] text-[#B91C1C] text-sm font-semibold py-3 px-4 rounded-xl transition-all">
+                        <x-ui-button type="submit" variant="danger" block>
                             Batalkan Reservasi
-                        </button>
+                        </x-ui-button>
                     </form>
 
                     <form action="{{ route('admin.reservasi.status', $reservasi->pemesanan_id) }}" method="POST"
                         onsubmit="return confirm('Tandai reservasi ini sebagai kedaluwarsa?')">
                         @csrf
                         <input type="hidden" name="status_pemesanan" value="{{ \App\Models\Pemesanan::STATUS_KEDALUWARSA }}">
-                        <button type="submit"
-                            class="w-full bg-[#F8F7F4] hover:bg-[#F2F0EA] text-[#5C6E65] text-sm font-semibold py-3 px-4 rounded-xl transition-all">
+                        <x-ui-button type="submit" variant="muted" block>
                             Tandai Kedaluwarsa
-                        </button>
+                        </x-ui-button>
                     </form>
                 </div>
             </div>

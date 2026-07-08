@@ -24,15 +24,14 @@
                     <p class="text-xs text-[#8A9C91] mb-6 max-w-xs leading-relaxed">
                         Sepertinya Anda belum menambahkan souvenir apa pun ke keranjang belanja Anda.
                     </p>
-                    <a href="{{ route('user.souvenir') }}"
-                        class="inline-flex items-center justify-center bg-[#2B4C3F] hover:bg-[#1E362C] text-white text-xs font-semibold py-3 px-6 rounded-xl shadow-sm transition-all duration-300 gap-2">
+                    <x-ui-button href="{{ route('user.souvenir') }}" variant="primary">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                             xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18">
                             </path>
                         </svg>
                         <span>Lihat Katalog Souvenir</span>
-                    </a>
+                    </x-ui-button>
                 </div>
             @else
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
@@ -132,15 +131,9 @@
                                             onsubmit="return confirm('Apakah Anda yakin ingin menghapus item ini?')">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit"
-                                                class="p-2.5 text-[#E65F5F] hover:bg-[#FDF2F2] hover:text-[#B91C1C] rounded-xl transition-all duration-300">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                                    xmlns="http://www.w3.org/2000/svg">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-                                                    </path>
-                                                </svg>
-                                            </button>
+                                            <x-ui-button type="submit" variant="danger" size="sm">
+                                                Hapus
+                                            </x-ui-button>
                                         </form>
                                     </div>
 
@@ -178,15 +171,14 @@
                         </div>
 
                         <div class="pt-4">
-                            <a href="{{ route('checkout.index') }}"
-                                class="w-full bg-[#2B4C3F] hover:bg-[#1E362C] text-white text-sm font-semibold py-3.5 px-4 rounded-xl shadow-sm transition-all duration-300 flex items-center justify-center gap-2">
+                            <x-ui-button href="{{ route('checkout.index') }}" variant="primary" block>
                                 <span>Lanjut ke Checkout</span>
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                     xmlns="http://www.w3.org/2000/svg">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
                                 </svg>
-                            </a>
+                            </x-ui-button>
                         </div>
 
                         <div class="text-center">

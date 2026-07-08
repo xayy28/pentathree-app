@@ -53,10 +53,9 @@
                                 QRIS, Virtual Account, e-wallet, dan metode online lain dalam satu popup.
                             </p>
                         </div>
-                        <button type="button" id="midtrans-pay-button"
-                            class="inline-flex h-12 items-center justify-center rounded-xl bg-[#B7791F] px-5 text-sm font-semibold text-white transition-all hover:bg-[#975A16] disabled:cursor-not-allowed disabled:opacity-60">
+                        <x-ui-button type="button" id="midtrans-pay-button" variant="primary">
                             Bayar Sekarang
-                        </button>
+                        </x-ui-button>
                     </div>
                     <p id="midtrans-payment-message" class="mt-3 hidden text-xs leading-relaxed"></p>
                 </div>
@@ -124,10 +123,9 @@
                         @enderror
                     </div>
 
-                    <button type="submit"
-                        class="w-full bg-[#2B4C3F] hover:bg-[#1E362C] text-white text-sm font-semibold py-4 px-4 rounded-xl shadow-sm transition-all">
+                    <x-ui-button type="submit" variant="primary" size="lg" block>
                         Kirim Bukti Pembayaran
-                    </button>
+                    </x-ui-button>
                 </form>
             </div>
             @endif

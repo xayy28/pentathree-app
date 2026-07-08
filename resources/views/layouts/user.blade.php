@@ -244,10 +244,9 @@
                     <p class="text-xs text-[#8A9C91]">Logged in as</p>
                     <p class="text-sm font-semibold text-[#2C3E35]">{{ auth()->user()->nama }}</p>
                 </div>
-                <button onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-                    class="w-full flex items-center justify-center gap-2 mt-2 px-4 py-2.5 bg-[#E65F5F]/10 text-[#E65F5F] hover:bg-[#E65F5F]/20 transition-all rounded-lg text-sm font-semibold">
+                <x-ui-button type="button" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" variant="danger" block class="mt-2">
                     Logout
-                </button>
+                </x-ui-button>
             </div>
         </div>
     </header>

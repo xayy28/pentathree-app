@@ -6,11 +6,7 @@
 <div class="max-w-3xl mx-auto space-y-8">
     <div class="bg-white rounded-2xl border border-[#E6E4DD] p-6 sm:p-8 shadow-sm">
         <div class="flex items-center gap-4 mb-8 border-b border-[#F2F0EA] pb-6">
-            <a href="{{ route('admin.kategori-homestay') }}" class="p-2 text-[#5C6E65] hover:bg-[#FAF9F6] hover:text-[#2C3E35] rounded-xl border border-[#E6E4DD] transition-all">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                </svg>
-            </a>
+            @include('components.back-link', ['href' => route('admin.kategori-homestay'), 'label' => 'Kembali'])
             <div>
                 <h1 class="text-xl sm:text-2xl font-serif font-semibold text-[#2C3E35] mb-1">
                     Tambah Kategori Baru
@@ -48,12 +44,12 @@
 
             <!-- Action Buttons -->
             <div class="flex items-center justify-end gap-3 pt-6 border-t border-[#F2F0EA]">
-                <a href="{{ route('admin.kategori-homestay') }}" class="px-5 py-2.5 border border-[#E6E4DD] hover:bg-[#FAF9F6] text-[#5C6E65] text-sm font-semibold rounded-xl transition-all">
+                <x-ui-button href="{{ route('admin.kategori-homestay') }}" variant="muted">
                     Batal
-                </a>
-                <button type="submit" class="px-6 py-2.5 bg-[#2B4C3F] hover:bg-[#1E362C] text-white text-sm font-semibold rounded-xl transition-all shadow-sm cursor-pointer">
+                </x-ui-button>
+                <x-ui-button type="submit" variant="primary">
                     Simpan Kategori
-                </button>
+                </x-ui-button>
             </div>
         </form>
     </div>

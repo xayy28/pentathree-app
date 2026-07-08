@@ -149,29 +149,25 @@
                 {{-- CTA Booking --}}
                 @if ($homestay->status === 'Tersedia')
                     <div class="space-y-3 pt-2">
-                        <a href="{{ route('user.homestay.booking.create', $homestay->homestay_id) }}"
-                            class="w-full py-4 bg-[#2B4C3F] hover:bg-[#1E362C] text-white text-sm font-semibold rounded-2xl transition-all shadow-sm flex items-center justify-center gap-2">
+                        <x-ui-button href="{{ route('user.homestay.booking.create', $homestay->homestay_id) }}" variant="primary" size="lg" block>
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
                             Booking Sekarang
-                        </a>
-                        <a href="{{ route('user.homestay') }}"
-                            class="w-full py-3 border border-[#A7C5B5] text-[#2B4C3F] hover:bg-[#EAF2EE] text-sm font-semibold rounded-2xl transition-all flex items-center justify-center gap-2">
+                        </x-ui-button>
+                        <x-ui-button href="{{ route('user.homestay') }}" variant="secondary" block>
                             Lihat Homestay Lainnya
-                        </a>
+                        </x-ui-button>
                     </div>
                 @else
                     <div class="space-y-3 pt-2">
-                        <button disabled
-                            class="w-full py-4 bg-[#F3F4F6] border border-[#E6E4DD] text-[#8A9C91] text-sm font-semibold rounded-2xl cursor-not-allowed flex items-center justify-center gap-2">
+                        <x-ui-button variant="disabled" size="lg" block disabled>
                             Tidak Tersedia
-                        </button>
-                        <a href="{{ route('user.homestay') }}"
-                            class="w-full py-3 border border-[#A7C5B5] text-[#2B4C3F] hover:bg-[#EAF2EE] text-sm font-semibold rounded-2xl transition-all flex items-center justify-center gap-2">
+                        </x-ui-button>
+                        <x-ui-button href="{{ route('user.homestay') }}" variant="secondary" block>
                             Lihat Homestay Lainnya
-                        </a>
+                        </x-ui-button>
                     </div>
                 @endif
             </div>

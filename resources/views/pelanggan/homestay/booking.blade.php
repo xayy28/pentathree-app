@@ -92,10 +92,9 @@
                         @enderror
                     </div>
 
-                    <button type="submit" id="booking_submit"
-                        class="w-full bg-[#2B4C3F] hover:bg-[#1E362C] disabled:bg-[#8A9C91] disabled:cursor-not-allowed text-white text-sm font-semibold py-4 px-4 rounded-xl shadow-sm transition-all">
+                    <x-ui-button type="submit" id="booking_submit" variant="primary" size="lg" block>
                         Buat Booking
-                    </button>
+                    </x-ui-button>
                 </form>
             </div>
 

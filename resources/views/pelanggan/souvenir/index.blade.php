@@ -37,19 +37,17 @@
                 </div>
 
                 <div class="flex gap-2">
-                    <button type="submit"
-                        class="bg-[#2B4C3F] hover:bg-[#1E362C] text-white font-semibold rounded-2xl sm:rounded-full px-6 py-3 flex items-center justify-center gap-2 shadow-sm transition-all">
+                    <x-ui-button type="submit" variant="primary">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                             xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
-                        <span class="text-xs uppercase tracking-widest">Filter</span>
-                    </button>
-                    <a href="{{ route('user.souvenir') }}"
-                        class="bg-[#FAF9F6] hover:bg-[#F2F0EA] text-[#5C6E65] font-semibold rounded-2xl sm:rounded-full px-5 py-3 flex items-center justify-center text-xs uppercase tracking-widest border border-[#E6E4DD] transition-all">
+                        <span>Filter</span>
+                    </x-ui-button>
+                    <x-ui-button href="{{ route('user.souvenir') }}" variant="muted">
                         Reset
-                    </a>
+                    </x-ui-button>
                 </div>
             </form>
         </div>
@@ -211,24 +209,22 @@
                                         </div>
                                     </div>
                                     <div class="flex flex-col gap-2 mt-4 pt-4 border-t border-[#F2F0EA]">
-                                        <a href="{{ route('user.souvenir.show', $souvenir->souvenir_id) }}"
-                                            class="w-full py-2.5 rounded-xl border border-[#A7C5B5] text-[#2B4C3F] text-xs font-semibold tracking-wide bg-[#EAF2EE] hover:bg-[#2B4C3F] hover:text-white transition-all duration-200 flex items-center justify-center gap-2">
+                                        <x-ui-button href="{{ route('user.souvenir.show', $souvenir->souvenir_id) }}" variant="secondary" size="sm" block>
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                             <span>Lihat Detail</span>
-                                        </a>
+                                        </x-ui-button>
 
                                         @if ($souvenir->status === 'Tersedia' && $souvenir->stok > 0)
-                                            <button type="button" onclick="openAddToCartModal('{{ $souvenir->souvenir_id }}', '{{ addslashes($souvenir->nama_souvenir) }}', {{ $souvenir->stok }}, '{{ $souvenir->foto ? asset($souvenir->foto) : '' }}')" class="w-full bg-[#2B4C3F] hover:bg-[#1E362C] text-white text-xs font-semibold py-2.5 px-4 rounded-xl shadow-sm transition-all duration-300 flex items-center justify-center gap-2">
+                                            <x-ui-button type="button" onclick="openAddToCartModal('{{ $souvenir->souvenir_id }}', '{{ addslashes($souvenir->nama_souvenir) }}', {{ $souvenir->stok }}, '{{ $souvenir->foto ? asset($souvenir->foto) : '' }}')" variant="primary" size="sm" block>
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                                                 </svg>
                                                 <span>Tambah ke Keranjang</span>
-                                            </button>
+                                            </x-ui-button>
                                         @else
-                                            <button disabled
-                                                class="w-full bg-gray-100 text-gray-400 text-xs font-semibold py-2.5 px-4 rounded-xl cursor-not-allowed flex items-center justify-center gap-2">
+                                            <x-ui-button variant="disabled" size="sm" block disabled>
                                                 <span>Stok Habis / Tidak Tersedia</span>
-                                            </button>
+                                            </x-ui-button>
                                         @endif
                                     </div>
                                 </div>
@@ -301,10 +297,9 @@
                     </div>
                 </div>
 
-                <button type="submit"
-                    class="w-full bg-[#2B4C3F] hover:bg-[#1E362C] text-white text-sm font-semibold py-3.5 px-4 rounded-xl shadow-sm transition-all duration-300 flex items-center justify-center gap-2">
+                <x-ui-button type="submit" variant="primary" block>
                     <span>Konfirmasi Tambah</span>
-                </button>
+                </x-ui-button>
             </form>
         </div>
     </div>
