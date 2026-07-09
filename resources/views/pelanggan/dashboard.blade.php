@@ -3,42 +3,51 @@
 @section('title', 'Explore')
 
 @section('content')
-
-{{-- ═══════════════ HERO ═══════════════ --}}
-<section class="relative h-[88vh] min-h-[560px] max-h-[780px] overflow-hidden">
-
-    {{-- Background --}}
-    <div class="absolute inset-0">
-        <div class="absolute inset-0 bg-cover bg-center"
-            style="background-image: url('{{ asset('images/hero-banner1.png') }}');"></div>
-        <div class="absolute inset-0 bg-gradient-to-br from-[#0d1f18]/70 via-[#1E362C]/50 to-black/30"></div>
-        <div class="absolute inset-0 bg-gradient-to-t from-[#F3F4F6] via-transparent to-transparent" style="background: linear-gradient(to top, #F3F4F6 0%, transparent 35%)"></div>
-    </div>
-
-    {{-- Greeting pill --}}
-    <div class="absolute top-6 right-6 sm:top-8 sm:right-8 z-20">
-        <div class="flex items-center gap-2.5 bg-white/10 backdrop-blur-xl border border-white/20 rounded-full pl-1 pr-4 py-1 shadow-lg">
-            @if (auth()->user()->foto_profil)
-                <img src="{{ asset('storage/' . auth()->user()->foto_profil) }}" class="w-7 h-7 rounded-full object-cover ring-2 ring-white/40" alt="">
-            @else
-                <div class="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0">
-                    {{ strtoupper(substr(auth()->user()->nama, 0, 2)) }}
+    {{-- Banner Verifikasi Email --}}
+    @if (auth()->check() && !auth()->user()->hasVerifiedEmail())
+        <div class="bg-amber-50 border-b border-amber-200 px-4 py-3">
+            <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div class="flex items-start gap-3">
+                    <svg class="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                    </svg>
+                    <div>
+                        <p class="text-sm font-semibold text-amber-800">Email Anda belum terverifikasi.</p>
+                        <p class="text-xs text-amber-700 mt-0.5">
+                            Silakan verifikasi email Anda agar dapat menggunakan seluruh fitur sistem.
+                        </p>
+                    </div>
                 </div>
-            @endif
-            <span class="text-white text-xs font-medium">Halo, {{ explode(' ', auth()->user()->nama)[0] }} 👋</span>
-        </div>
-    </div>
-
-    {{-- Main content --}}
-    <div class="relative z-10 h-full flex flex-col justify-end pb-20 sm:pb-24 px-4 sm:px-8 lg:px-16 max-w-7xl mx-auto">
-        <div class="max-w-2xl space-y-5">
-            <div class="flex items-center gap-2">
-                <div class="h-px w-8 bg-[#A7C5B5]"></div>
-                <span class="text-[10px] font-bold tracking-[0.35em] uppercase text-[#A7C5B5]">Natasha Retreat · Lembah Harau</span>
+                <form action="{{ route('verification.send') }}" method="POST" class="flex-shrink-0">
+                    @csrf
+                    <button type="submit"
+                        class="inline-flex items-center gap-2 px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold rounded-lg transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                        Kirim Email Verifikasi
+                    </button>
+                </form>
             </div>
-            <h1 class="font-serif text-4xl sm:text-5xl lg:text-6xl font-semibold text-white leading-[1.1] tracking-tight">
-                Temukan Ketenangan<br>
-                <span class="text-[#A7C5B5]">di Alam Lembah Harau</span>
+        </div>
+    @endif
+
+    <!-- Hero Section (Seamless with navbar) -->
+    <div class="relative h-[450px] sm:h-[550px] bg-cover bg-center flex items-center justify-center"
+        style="background-image: url('{{ asset('images/hero-banner1.png') }}');">
+        <!-- Dark overlay to ensure text contrast -->
+        <div class="absolute inset-0 bg-black/30"></div>
+
+        <!-- Hero Text Content -->
+        <div class="relative z-10 text-center text-white px-4 max-w-3xl space-y-4">
+            <span class="text-xs sm:text-sm font-semibold tracking-[0.25em] uppercase block drop-shadow-sm text-white/90">
+                The Art of Retreat
+            </span>
+            <h1 class="font-cursive text-3xl sm:text-5xl md:text-7xl font-bold leading-tight drop-shadow-md">
+                Quiet spaces for intentional living.
             </h1>
             <p class="text-white/70 text-sm sm:text-base leading-relaxed max-w-lg">
                 Homestay autentik dan souvenir khas lokal — satu tempat untuk semua pengalaman terbaik kamu.
@@ -47,14 +56,16 @@
                 <a href="{{ route('user.homestay') }}"
                     class="inline-flex items-center gap-2 px-6 py-3 bg-white text-[#1E362C] text-xs font-bold uppercase tracking-widest rounded-full hover:bg-[#EAF2EE] transition-all shadow-xl">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                     </svg>
                     Booking Homestay
                 </a>
                 <a href="{{ route('user.souvenir') }}"
                     class="inline-flex items-center gap-2 px-6 py-3 bg-transparent border border-white/40 text-white text-xs font-bold uppercase tracking-widest rounded-full hover:bg-white/10 backdrop-blur-sm transition-all">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                            d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                     </svg>
                     Lihat Souvenir
                 </a>
@@ -62,383 +73,471 @@
         </div>
     </div>
 
-</section>
+    </section>
 
-{{-- ═══════════════ STAT BAR ═══════════════ --}}
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-5 relative z-10 mb-2">
-    <div class="bg-white rounded-2xl shadow-md border border-gray-100 flex divide-x divide-gray-100">
-        <div class="flex-1 flex items-center gap-3 px-5 py-4">
-            <div class="w-9 h-9 rounded-xl bg-[#EAF2EE] flex items-center justify-center flex-shrink-0">
-                <svg class="w-4.5 h-4.5 text-[#2B4C3F]" style="width:18px;height:18px" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-                </svg>
-            </div>
-            <div>
-                <p class="text-lg font-bold text-[#1E362C] leading-none">{{ $totalHomestay }}</p>
-                <p class="text-[10px] text-[#8A9C91] mt-0.5 uppercase tracking-wider">Homestay</p>
-            </div>
-        </div>
-        <div class="flex-1 flex items-center gap-3 px-5 py-4">
-            <div class="w-9 h-9 rounded-xl bg-[#FEF9EC] flex items-center justify-center flex-shrink-0">
-                <svg style="width:18px;height:18px" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
-                </svg>
-            </div>
-            <div>
-                <p class="text-lg font-bold text-[#1E362C] leading-none">{{ $totalSouvenir }}</p>
-                <p class="text-[10px] text-[#8A9C91] mt-0.5 uppercase tracking-wider">Souvenir</p>
-            </div>
-        </div>
-        <div class="flex-1 flex items-center gap-3 px-5 py-4">
-            <div class="w-9 h-9 rounded-xl {{ $pesananAktif > 0 ? 'bg-blue-50' : 'bg-gray-50' }} flex items-center justify-center flex-shrink-0">
-                <svg style="width:18px;height:18px" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-                </svg>
-            </div>
-            <div>
-                <p class="text-lg font-bold text-[#1E362C] leading-none">{{ $pesananAktif }}</p>
-                <p class="text-[10px] text-[#8A9C91] mt-0.5 uppercase tracking-wider">Pesanan Aktif</p>
-            </div>
-        </div>
-        <div class="hidden sm:flex flex-1 items-center gap-3 px-5 py-4">
-            <div class="w-9 h-9 rounded-xl bg-amber-50 flex items-center justify-center flex-shrink-0">
-                <svg style="width:18px;height:18px" fill="none" stroke="#d97706" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
-                </svg>
-            </div>
-            <div>
-                @if ($totalUlasan > 0)
-                    <p class="text-lg font-bold text-[#1E362C] leading-none">{{ number_format($avgRating, 1) }}</p>
-                    <p class="text-[10px] text-[#8A9C91] mt-0.5 uppercase tracking-wider">{{ $totalUlasan }} Ulasan</p>
-                @else
-                    <p class="text-lg font-bold text-[#1E362C] leading-none">-</p>
-                    <p class="text-[10px] text-[#8A9C91] mt-0.5 uppercase tracking-wider">Belum Ada Rating</p>
-                @endif
-            </div>
-        </div>
-    </div>
-</div>
-
-{{-- ═══════════════ HOMESTAY ═══════════════ --}}
-<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-10">
-
-    {{-- Header --}}
-    <div class="flex items-end justify-between mb-8">
-        <div>
-            <p class="text-[10px] font-bold uppercase tracking-[0.3em] text-[#A7C5B5] mb-1">Curated Sanctuaries</p>
-            <h2 class="font-serif text-2xl sm:text-3xl text-[#1E362C] font-semibold">Homestay Pilihan</h2>
-        </div>
-        <a href="{{ route('user.homestay') }}" class="text-xs font-bold text-[#2B4C3F] hover:underline flex items-center gap-1 pb-1">
-            Semua <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
-        </a>
-    </div>
-
-    @if ($homestays->isEmpty())
-        <div class="bg-white rounded-3xl p-16 text-center border border-gray-100">
-            <p class="text-4xl mb-3">🏠</p>
-            <p class="text-sm text-[#8A9C91]">Belum ada homestay tersedia.</p>
-        </div>
-    @else
-        {{-- Featured + Side layout --}}
-        <div class="grid grid-cols-1 lg:grid-cols-5 gap-5">
-
-            {{-- Featured card — spans 3 cols --}}
-            @php $featured = $homestays->first(); @endphp
-            <a href="{{ route('user.homestay.show', $featured->homestay_id) }}"
-                class="lg:col-span-3 group relative rounded-[28px] overflow-hidden shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 block" style="min-height: 420px;">
-                {{-- Image --}}
-                @if ($featured->foto)
-                    <img src="{{ asset($featured->foto) }}" alt="{{ $featured->nama_homestay }}"
-                        class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                @else
-                    <img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=900&q=80"
-                        class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="">
-                @endif
-                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-
-                {{-- Top badges --}}
-                <div class="absolute top-5 left-5 right-5 flex items-center justify-between">
-                    <span class="bg-white/95 backdrop-blur-sm text-[9px] font-bold uppercase tracking-wider text-[#1E362C] px-3 py-1.5 rounded-full shadow-sm">
-                        ✦ Featured
-                    </span>
-                    @include('pelanggan.partials.rating-summary', [
-                        'rating' => $featured->ulasans_avg_rating,
-                        'count' => $featured->ulasans_count,
-                    ])
-                </div>
-
-                {{-- Bottom info --}}
-                <div class="absolute bottom-0 left-0 right-0 p-6">
-                    <p class="text-white/60 text-[10px] uppercase tracking-widest mb-1">{{ $featured->kategori->nama_kategori ?? 'Standard' }} · {{ $featured->kapasitas }} tamu</p>
-                    <h3 class="font-serif text-2xl sm:text-3xl text-white font-semibold mb-3">{{ $featured->nama_homestay }}</h3>
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <span class="text-white/50 text-[9px] uppercase tracking-widest">Mulai dari</span>
-                            <p class="text-white font-bold text-lg">Rp {{ number_format($featured->harga_permalam, 0, ',', '.') }}<span class="text-white/50 text-xs font-normal">/malam</span></p>
-                        </div>
-                        <span class="px-5 py-2.5 bg-white text-[#1E362C] text-xs font-bold rounded-full group-hover:bg-[#EAF2EE] transition-colors shadow-lg">
-                            Booking →
-                        </span>
-                    </div>
-                </div>
-            </a>
-
-            {{-- Side cards — spans 2 cols, stacked --}}
-            <div class="lg:col-span-2 flex flex-row lg:flex-col gap-5">
-                @foreach ($homestays->skip(1)->take(2) as $hs)
-                    <a href="{{ route('user.homestay.show', $hs->homestay_id) }}"
-                        class="group flex-1 bg-white rounded-[24px] overflow-hidden border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 flex flex-col">
-                        <div class="relative h-36 sm:h-44 overflow-hidden bg-[#EAF2EE]/30">
-                            @if ($hs->foto)
-                                <img src="{{ asset($hs->foto) }}" alt="{{ $hs->nama_homestay }}"
-                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                            @else
-                                <img src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=500&q=70"
-                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="">
-                            @endif
-                            <div class="absolute top-3 right-3">
-                                @include('pelanggan.partials.rating-summary', [
-                                    'rating' => $hs->ulasans_avg_rating,
-                                    'count' => $hs->ulasans_count,
-                                ])
-                            </div>
-                        </div>
-                        <div class="p-4 flex-grow flex flex-col justify-between">
-                            <div>
-                                <h3 class="font-serif font-semibold text-[#1E362C] text-sm leading-snug">{{ $hs->nama_homestay }}</h3>
-                                <p class="text-[10px] text-[#8A9C91] mt-0.5">{{ $hs->kapasitas }} tamu</p>
-                            </div>
-                            <div class="flex items-center justify-between mt-3 pt-3 border-t border-[#F2F0EA]">
-                                <span class="text-sm font-bold text-[#1E362C]">Rp {{ number_format($hs->harga_permalam, 0, ',', '.') }}<span class="text-[9px] text-[#8A9C91] font-normal">/mlm</span></span>
-                                <span class="text-[10px] font-semibold text-[#2B4C3F] bg-[#EAF2EE] px-3 py-1 rounded-full group-hover:bg-[#2B4C3F] group-hover:text-white transition-colors">Lihat</span>
-                            </div>
-                        </div>
-                    </a>
-                @endforeach
-            </div>
-        </div>
-    @endif
-</section>
-
-{{-- ═══════════════ SOUVENIR ═══════════════ --}}
-<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-
-    {{-- Header --}}
-    <div class="flex items-end justify-between mb-8">
-        <div>
-            <p class="text-[10px] font-bold uppercase tracking-[0.3em] text-[#A7C5B5] mb-1">Local Treasures</p>
-            <h2 class="font-serif text-2xl sm:text-3xl text-[#1E362C] font-semibold">Souvenir Terlaris</h2>
-        </div>
-        <a href="{{ route('user.souvenir') }}" class="text-xs font-bold text-[#2B4C3F] hover:underline flex items-center gap-1 pb-1">
-            Semua <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
-        </a>
-    </div>
-
-    @if ($souvenirs->isEmpty())
-        <div class="bg-white rounded-3xl p-16 text-center border border-gray-100">
-            <p class="text-4xl mb-3">🛍️</p>
-            <p class="text-sm text-[#8A9C91]">Belum ada souvenir tersedia.</p>
-        </div>
-    @else
-        {{-- Layout: 1 featured kiri + 3 kartu kanan dalam 2 baris --}}
-        <div class="grid grid-cols-1 lg:grid-cols-5 gap-5">
-
-            {{-- Featured souvenir — kiri, 2 baris tinggi --}}
-            @php $feat = $souvenirs->first(); @endphp
-            <a href="{{ route('user.souvenir.show', $feat->souvenir_id) }}"
-                class="lg:col-span-2 group relative rounded-[28px] overflow-hidden shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 block" style="min-height: 380px;">
-                {{-- Gambar full-bleed --}}
-                @if ($feat->foto)
-                    <img src="{{ asset($feat->foto) }}" alt="{{ $feat->nama_souvenir }}"
-                        class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                @else
-                    <img src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=600&q=80"
-                        class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="">
-                @endif
-                <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent"></div>
-
-                {{-- Badge terlaris --}}
-                <div class="absolute top-5 left-5 right-5 flex items-center justify-between">
-                    <span class="bg-[#E9C46A] text-[#1E362C] text-[9px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full shadow-sm">
-                        🏆 Terlaris
-                    </span>
-                    @if ($feat->jumlah_terjual > 0)
-                        <span class="bg-white/90 backdrop-blur-sm text-[#1E362C] text-[9px] font-bold px-2.5 py-1.5 rounded-full shadow-sm">
-                            🔥 {{ $feat->jumlah_terjual }}x terjual
-                        </span>
-                    @endif
-                </div>
-
-                {{-- Info bawah --}}
-                <div class="absolute bottom-0 left-0 right-0 p-6">
-                    <p class="text-white/50 text-[9px] uppercase tracking-widest mb-1">Produk Lokal Harau</p>
-                    <h3 class="font-serif text-xl sm:text-2xl text-white font-semibold mb-1 line-clamp-2">{{ $feat->nama_souvenir }}</h3>
-                    @if ($feat->detail)
-                        <p class="text-white/60 text-xs line-clamp-1 mb-3">{{ $feat->detail }}</p>
-                    @endif
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <span class="text-white/50 text-[9px] uppercase tracking-widest">Harga</span>
-                            <p class="text-white font-bold text-base">Rp {{ number_format($feat->harga, 0, ',', '.') }}</p>
-                        </div>
-                        <span class="px-5 py-2.5 bg-white text-[#1E362C] text-xs font-bold rounded-full group-hover:bg-[#EAF2EE] transition-colors shadow-lg">
-                            Beli →
-                        </span>
-                    </div>
-                </div>
-            </a>
-
-            {{-- 3 kartu kanan dalam 2 baris: 1 lebar di atas, 2 kecil di bawah --}}
-            <div class="lg:col-span-3 grid grid-cols-2 grid-rows-2 gap-5">
-
-                {{-- Kartu ke-2: lebar 2 kolom, baris pertama --}}
-                @if ($souvenirs->get(1))
-                    @php $sv = $souvenirs->get(1); @endphp
-                    <a href="{{ route('user.souvenir.show', $sv->souvenir_id) }}"
-                        class="col-span-2 group bg-white rounded-[22px] overflow-hidden border border-gray-100 hover:border-[#A7C5B5]/60 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 flex flex-row">
-                        <div class="relative w-2/5 overflow-hidden bg-[#EAF2EE]/30 flex-shrink-0">
-                            @if ($sv->foto)
-                                <img src="{{ asset($sv->foto) }}" alt="{{ $sv->nama_souvenir }}"
-                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                            @else
-                                <img src="https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?auto=format&fit=crop&w=400&q=70"
-                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="">
-                            @endif
-                            @if ($sv->jumlah_terjual > 0)
-                                <span class="absolute top-3 left-3 bg-[#E9C46A] text-[#1E362C] text-[8px] font-bold px-2 py-1 rounded-full">
-                                    🔥 {{ $sv->jumlah_terjual }}x
-                                </span>
-                            @endif
-                        </div>
-                        <div class="p-5 flex flex-col justify-between flex-grow">
-                            <div>
-                                <p class="text-[9px] font-bold uppercase tracking-widest text-[#A7C5B5] mb-1">Pilihan Populer</p>
-                                <h3 class="font-serif font-semibold text-base text-[#1E362C] leading-snug">{{ $sv->nama_souvenir }}</h3>
-                                @if ($sv->detail)
-                                    <p class="text-xs text-[#8A9C91] mt-1 line-clamp-2 leading-relaxed">{{ $sv->detail }}</p>
-                                @endif
-                            </div>
-                            <div class="flex items-center justify-between pt-3 border-t border-[#F2F0EA] mt-3">
-                                <span class="font-bold text-[#1E362C]">Rp {{ number_format($sv->harga, 0, ',', '.') }}</span>
-                                <span class="text-[10px] font-semibold text-[#2B4C3F] bg-[#EAF2EE] px-3 py-1.5 rounded-full group-hover:bg-[#2B4C3F] group-hover:text-white transition-colors">
-                                    Lihat →
-                                </span>
-                            </div>
-                        </div>
-                    </a>
-                @endif
-
-                {{-- Kartu ke-3 dan ke-4: masing-masing 1 kolom, baris ke-2 --}}
-                @foreach ($souvenirs->slice(2, 2) as $sv)
-                    <a href="{{ route('user.souvenir.show', $sv->souvenir_id) }}"
-                        class="group bg-white rounded-[22px] overflow-hidden border border-gray-100 hover:border-[#A7C5B5]/60 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 flex flex-col">
-                        <div class="relative h-32 sm:h-40 overflow-hidden bg-[#EAF2EE]/30">
-                            @if ($sv->foto)
-                                <img src="{{ asset($sv->foto) }}" alt="{{ $sv->nama_souvenir }}"
-                                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                            @else
-                                <img src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=300&q=70"
-                                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="">
-                            @endif
-                            @if ($sv->jumlah_terjual > 0)
-                                <span class="absolute top-2.5 left-2.5 bg-[#E9C46A] text-[#1E362C] text-[8px] font-bold px-2 py-1 rounded-full shadow-sm">
-                                    🔥 {{ $sv->jumlah_terjual }}x
-                                </span>
-                            @endif
-                        </div>
-                        <div class="p-3.5 flex-grow flex flex-col justify-between gap-2">
-                            <h3 class="font-semibold text-xs text-[#1E362C] leading-snug line-clamp-2">{{ $sv->nama_souvenir }}</h3>
-                            <div class="flex items-center justify-between">
-                                <span class="text-sm font-bold text-[#1E362C]">Rp {{ number_format($sv->harga, 0, ',', '.') }}</span>
-                                <span class="text-[9px] font-semibold text-[#2B4C3F] bg-[#EAF2EE] px-2.5 py-1 rounded-full group-hover:bg-[#2B4C3F] group-hover:text-white transition-colors">
-                                    Beli
-                                </span>
-                            </div>
-                        </div>
-                    </a>
-                @endforeach
-
-            </div>
-        </div>
-    @endif
-</section>
-
-{{-- ═══════════════ PESANAN TERAKHIR ═══════════════ --}}
-@if ($pesananTerakhir->isNotEmpty())
-<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-16">
-    <div class="flex items-end justify-between mb-6">
-        <div>
-            <p class="text-[10px] font-bold uppercase tracking-[0.3em] text-[#A7C5B5] mb-1">Aktivitas Kamu</p>
-            <h2 class="font-serif text-2xl sm:text-3xl text-[#1E362C] font-semibold">Pesanan Terakhir</h2>
-        </div>
-        <a href="{{ route('user.pesanan.index') }}" class="text-xs font-bold text-[#2B4C3F] hover:underline flex items-center gap-1 pb-1">
-            Semua <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
-        </a>
-    </div>
-
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        @foreach ($pesananTerakhir as $pesanan)
-            @php
-                $statusColor = match($pesanan->status_pemesanan) {
-                    'menunggu_pembayaran' => ['pill' => 'bg-[#FFF8E1] text-[#F59E0B] border border-[#FCD34D]', 'dot' => 'bg-[#F59E0B]'],
-                    'menunggu_verifikasi' => ['pill' => 'bg-[#E8F0FE] text-[#3B82F6] border border-[#93C5FD]', 'dot' => 'bg-[#3B82F6]'],
-                    'dikonfirmasi'        => ['pill' => 'bg-[#EAF2EE] text-[#2B4C3F] border border-[#B8DEC8]', 'dot' => 'bg-[#2B4C3F]'],
-                    'sedang_menginap'    => ['pill' => 'bg-[#F3EEFF] text-[#8B5CF6] border border-[#C4B5FD]', 'dot' => 'bg-[#8B5CF6]'],
-                    'terverifikasi'      => ['pill' => 'bg-[#EAF2EE] text-[#2B4C3F] border border-[#B8DEC8]', 'dot' => 'bg-[#2B4C3F]'],
-                    'diproses'           => ['pill' => 'bg-[#EAF2EE] text-[#2B4C3F] border border-[#B8DEC8]', 'dot' => 'bg-[#2B4C3F]'],
-                    'siap_diambil_dikirim'=> ['pill' => 'bg-[#FFF3E0] text-[#E65100] border border-[#FFB74D]', 'dot' => 'bg-[#E65100]'],
-                    'selesai'             => ['pill' => 'bg-[#E8F5E9] text-[#2E7D32] border border-[#A5D6A7]', 'dot' => 'bg-[#2E7D32]'],
-                    'dibatalkan'          => ['pill' => 'bg-[#FDE8E8] text-[#DC2626] border border-[#FCA5A5]', 'dot' => 'bg-[#DC2626]'],
-                    'kedaluwarsa'         => ['pill' => 'bg-[#F5F5F5] text-[#9CA3AF] border border-[#D4D4D8]', 'dot' => 'bg-[#9CA3AF]'],
-                    default               => ['pill' => 'bg-[#F5F5F5] text-[#6B7280] border border-[#D4D4D8]', 'dot' => 'bg-[#6B7280]'],
-                };
-                $statusLabel = match($pesanan->status_pemesanan) {
-                    'menunggu_pembayaran' => 'Menunggu Bayar',
-                    'menunggu_verifikasi' => 'Verifikasi',
-                    'terverifikasi'       => 'Terverifikasi',
-                    'diproses'            => 'Diproses / Dikemas',
-                    'siap_diambil_dikirim'=> 'Siap Diambil',
-                    'dikonfirmasi'        => 'Dikonfirmasi',
-                    'sedang_menginap'     => 'Sedang Menginap',
-                    'selesai'             => 'Selesai',
-                    'dibatalkan'          => 'Dibatalkan',
-                    'kedaluwarsa'         => 'Kedaluwarsa',
-                    default               => ucwords(str_replace('_', ' ', $pesanan->status_pemesanan)),
-                };
-            @endphp
-            <a href="{{ route('user.pesanan.show', $pesanan->pemesanan_id) }}"
-                class="group bg-white rounded-2xl border border-gray-100 p-5 hover:border-[#A7C5B5] hover:shadow-md transition-all duration-200 flex flex-col gap-4">
-                <div class="flex items-start justify-between">
-                    <div class="w-10 h-10 rounded-xl bg-[#EAF2EE] flex items-center justify-center flex-shrink-0">
-                        @if ($pesanan->jenis_pemesanan === 'homestay')
-                            <svg class="w-5 h-5 text-[#2B4C3F]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-                            </svg>
-                        @else
-                            <svg class="w-5 h-5 text-[#2B4C3F]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
-                            </svg>
-                        @endif
-                    </div>
-                    <span class="text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full {{ $statusColor['pill'] }} flex items-center gap-1.5">
-                        <span class="w-1.5 h-1.5 rounded-full {{ $statusColor['dot'] }}"></span>
-                        {{ $statusLabel }}
-                    </span>
-                </div>
-                <div>
-                    <p class="font-mono text-xs font-semibold text-[#1E362C]">{{ $pesanan->kode_pemesanan }}</p>
-                    <p class="text-[10px] text-[#8A9C91] capitalize mt-0.5">{{ $pesanan->jenis_pemesanan }} · {{ $pesanan->created_at->diffForHumans() }}</p>
-                </div>
-                <div class="flex items-center justify-between pt-3 border-t border-[#F2F0EA]">
-                    <span class="font-bold text-sm text-[#1E362C]">Rp {{ number_format($pesanan->total_harga, 0, ',', '.') }}</span>
-                    <svg class="w-4 h-4 text-[#8A9C91] group-hover:text-[#2B4C3F] group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+    {{-- ═══════════════ STAT BAR ═══════════════ --}}
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-5 relative z-10 mb-2">
+        <div class="bg-white rounded-2xl shadow-md border border-gray-100 flex divide-x divide-gray-100">
+            <div class="flex-1 flex items-center gap-3 px-5 py-4">
+                <div class="w-9 h-9 rounded-xl bg-[#EAF2EE] flex items-center justify-center flex-shrink-0">
+                    <svg class="w-4.5 h-4.5 text-[#2B4C3F]" style="width:18px;height:18px" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                     </svg>
                 </div>
-            </a>
-        @endforeach
+                <div>
+                    <p class="text-lg font-bold text-[#1E362C] leading-none">{{ $totalHomestay }}</p>
+                    <p class="text-[10px] text-[#8A9C91] mt-0.5 uppercase tracking-wider">Homestay</p>
+                </div>
+            </div>
+            <div class="flex-1 flex items-center gap-3 px-5 py-4">
+                <div class="w-9 h-9 rounded-xl bg-[#FEF9EC] flex items-center justify-center flex-shrink-0">
+                    <svg style="width:18px;height:18px" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-lg font-bold text-[#1E362C] leading-none">{{ $totalSouvenir }}</p>
+                    <p class="text-[10px] text-[#8A9C91] mt-0.5 uppercase tracking-wider">Souvenir</p>
+                </div>
+            </div>
+            <div class="flex-1 flex items-center gap-3 px-5 py-4">
+                <div
+                    class="w-9 h-9 rounded-xl {{ $pesananAktif > 0 ? 'bg-blue-50' : 'bg-gray-50' }} flex items-center justify-center flex-shrink-0">
+                    <svg style="width:18px;height:18px" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-lg font-bold text-[#1E362C] leading-none">{{ $pesananAktif }}</p>
+                    <p class="text-[10px] text-[#8A9C91] mt-0.5 uppercase tracking-wider">Pesanan Aktif</p>
+                </div>
+            </div>
+            <div class="hidden sm:flex flex-1 items-center gap-3 px-5 py-4">
+                <div class="w-9 h-9 rounded-xl bg-amber-50 flex items-center justify-center flex-shrink-0">
+                    <svg style="width:18px;height:18px" fill="none" stroke="#d97706" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                    </svg>
+                </div>
+                <div>
+                    @if ($totalUlasan > 0)
+                        <p class="text-lg font-bold text-[#1E362C] leading-none">{{ number_format($avgRating, 1) }}</p>
+                        <p class="text-[10px] text-[#8A9C91] mt-0.5 uppercase tracking-wider">{{ $totalUlasan }} Ulasan</p>
+                    @else
+                        <p class="text-lg font-bold text-[#1E362C] leading-none">-</p>
+                        <p class="text-[10px] text-[#8A9C91] mt-0.5 uppercase tracking-wider">Belum Ada Rating</p>
+                    @endif
+                </div>
+            </div>
+        </div>
     </div>
-</section>
-@endif
+
+    {{-- ═══════════════ HOMESTAY ═══════════════ --}}
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-10">
+
+        {{-- Header --}}
+        <div class="flex items-end justify-between mb-8">
+            <div>
+                <p class="text-[10px] font-bold uppercase tracking-[0.3em] text-[#A7C5B5] mb-1">Curated Sanctuaries</p>
+                <h2 class="font-serif text-2xl sm:text-3xl text-[#1E362C] font-semibold">Homestay Pilihan</h2>
+            </div>
+            <a href="{{ route('user.homestay') }}"
+                class="text-xs font-bold text-[#2B4C3F] hover:underline flex items-center gap-1 pb-1">
+                Semua <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+                </svg>
+            </a>
+        </div>
+
+        @if ($homestays->isEmpty())
+            <div class="bg-white rounded-3xl p-16 text-center border border-gray-100">
+                <p class="text-4xl mb-3">🏠</p>
+                <p class="text-sm text-[#8A9C91]">Belum ada homestay tersedia.</p>
+            </div>
+        @else
+            {{-- Featured + Side layout --}}
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-5">
+
+                {{-- Featured card — spans 3 cols --}}
+                @php $featured = $homestays->first(); @endphp
+                <a href="{{ route('user.homestay.show', $featured->homestay_id) }}"
+                    class="lg:col-span-3 group relative rounded-[28px] overflow-hidden shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 block"
+                    style="min-height: 420px;">
+                    {{-- Image --}}
+                    @if ($featured->foto)
+                        <img src="{{ asset($featured->foto) }}" alt="{{ $featured->nama_homestay }}"
+                            class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    @else
+                        <img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=900&q=80"
+                            class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                            alt="">
+                    @endif
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+
+                    {{-- Top badges --}}
+                    <div class="absolute top-5 left-5 right-5 flex items-center justify-between">
+                        <span
+                            class="bg-white/95 backdrop-blur-sm text-[9px] font-bold uppercase tracking-wider text-[#1E362C] px-3 py-1.5 rounded-full shadow-sm">
+                            ✦ Featured
+                        </span>
+                        @include('pelanggan.partials.rating-summary', [
+                            'rating' => $featured->ulasans_avg_rating,
+                            'count' => $featured->ulasans_count,
+                        ])
+                    </div>
+
+                    {{-- Bottom info --}}
+                    <div class="absolute bottom-0 left-0 right-0 p-6">
+                        <p class="text-white/60 text-[10px] uppercase tracking-widest mb-1">
+                            {{ $featured->kategori->nama_kategori ?? 'Standard' }} · {{ $featured->kapasitas }} tamu</p>
+                        <h3 class="font-serif text-2xl sm:text-3xl text-white font-semibold mb-3">
+                            {{ $featured->nama_homestay }}</h3>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span class="text-white/50 text-[9px] uppercase tracking-widest">Mulai dari</span>
+                                <p class="text-white font-bold text-lg">Rp
+                                    {{ number_format($featured->harga_permalam, 0, ',', '.') }}<span
+                                        class="text-white/50 text-xs font-normal">/malam</span></p>
+                            </div>
+                            <span
+                                class="px-5 py-2.5 bg-white text-[#1E362C] text-xs font-bold rounded-full group-hover:bg-[#EAF2EE] transition-colors shadow-lg">
+                                Booking →
+                            </span>
+                        </div>
+                    </div>
+                </a>
+
+                {{-- Side cards — spans 2 cols, stacked --}}
+                <div class="lg:col-span-2 flex flex-row lg:flex-col gap-5">
+                    @foreach ($homestays->skip(1)->take(2) as $hs)
+                        <a href="{{ route('user.homestay.show', $hs->homestay_id) }}"
+                            class="group flex-1 bg-white rounded-[24px] overflow-hidden border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 flex flex-col">
+                            <div class="relative h-36 sm:h-44 overflow-hidden bg-[#EAF2EE]/30">
+                                @if ($hs->foto)
+                                    <img src="{{ asset($hs->foto) }}" alt="{{ $hs->nama_homestay }}"
+                                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                @else
+                                    <img src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=500&q=70"
+                                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                        alt="">
+                                @endif
+                                <div class="absolute top-3 right-3">
+                                    @include('pelanggan.partials.rating-summary', [
+                                        'rating' => $hs->ulasans_avg_rating,
+                                        'count' => $hs->ulasans_count,
+                                    ])
+                                </div>
+                            </div>
+                            <div class="p-4 flex-grow flex flex-col justify-between">
+                                <div>
+                                    <h3 class="font-serif font-semibold text-[#1E362C] text-sm leading-snug">
+                                        {{ $hs->nama_homestay }}</h3>
+                                    <p class="text-[10px] text-[#8A9C91] mt-0.5">{{ $hs->kapasitas }} tamu</p>
+                                </div>
+                                <div class="flex items-center justify-between mt-3 pt-3 border-t border-[#F2F0EA]">
+                                    <span class="text-sm font-bold text-[#1E362C]">Rp
+                                        {{ number_format($hs->harga_permalam, 0, ',', '.') }}<span
+                                            class="text-[9px] text-[#8A9C91] font-normal">/mlm</span></span>
+                                    <span
+                                        class="text-[10px] font-semibold text-[#2B4C3F] bg-[#EAF2EE] px-3 py-1 rounded-full group-hover:bg-[#2B4C3F] group-hover:text-white transition-colors">Lihat</span>
+                                </div>
+                            </div>
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+        @endif
+    </section>
+
+    {{-- ═══════════════ SOUVENIR ═══════════════ --}}
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+        {{-- Header --}}
+        <div class="flex items-end justify-between mb-8">
+            <div>
+                <p class="text-[10px] font-bold uppercase tracking-[0.3em] text-[#A7C5B5] mb-1">Local Treasures</p>
+                <h2 class="font-serif text-2xl sm:text-3xl text-[#1E362C] font-semibold">Souvenir Terlaris</h2>
+            </div>
+            <a href="{{ route('user.souvenir') }}"
+                class="text-xs font-bold text-[#2B4C3F] hover:underline flex items-center gap-1 pb-1">
+                Semua <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+                </svg>
+            </a>
+        </div>
+
+        @if ($souvenirs->isEmpty())
+            <div class="bg-white rounded-3xl p-16 text-center border border-gray-100">
+                <p class="text-4xl mb-3">🛍️</p>
+                <p class="text-sm text-[#8A9C91]">Belum ada souvenir tersedia.</p>
+            </div>
+        @else
+            {{-- Layout: 1 featured kiri + 3 kartu kanan dalam 2 baris --}}
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-5">
+
+                {{-- Featured souvenir — kiri, 2 baris tinggi --}}
+                @php $feat = $souvenirs->first(); @endphp
+                <a href="{{ route('user.souvenir.show', $feat->souvenir_id) }}"
+                    class="lg:col-span-2 group relative rounded-[28px] overflow-hidden shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 block"
+                    style="min-height: 380px;">
+                    {{-- Gambar full-bleed --}}
+                    @if ($feat->foto)
+                        <img src="{{ asset($feat->foto) }}" alt="{{ $feat->nama_souvenir }}"
+                            class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    @else
+                        <img src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=600&q=80"
+                            class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                            alt="">
+                    @endif
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent"></div>
+
+                    {{-- Badge terlaris --}}
+                    <div class="absolute top-5 left-5 right-5 flex items-center justify-between">
+                        <span
+                            class="bg-[#E9C46A] text-[#1E362C] text-[9px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full shadow-sm">
+                            🏆 Terlaris
+                        </span>
+                        @if ($feat->jumlah_terjual > 0)
+                            <span
+                                class="bg-white/90 backdrop-blur-sm text-[#1E362C] text-[9px] font-bold px-2.5 py-1.5 rounded-full shadow-sm">
+                                🔥 {{ $feat->jumlah_terjual }}x terjual
+                            </span>
+                        @endif
+                    </div>
+
+                    {{-- Info bawah --}}
+                    <div class="absolute bottom-0 left-0 right-0 p-6">
+                        <p class="text-white/50 text-[9px] uppercase tracking-widest mb-1">Produk Lokal Harau</p>
+                        <h3 class="font-serif text-xl sm:text-2xl text-white font-semibold mb-1 line-clamp-2">
+                            {{ $feat->nama_souvenir }}</h3>
+                        @if ($feat->detail)
+                            <p class="text-white/60 text-xs line-clamp-1 mb-3">{{ $feat->detail }}</p>
+                        @endif
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span class="text-white/50 text-[9px] uppercase tracking-widest">Harga</span>
+                                <p class="text-white font-bold text-base">Rp
+                                    {{ number_format($feat->harga, 0, ',', '.') }}</p>
+                            </div>
+                            <span
+                                class="px-5 py-2.5 bg-white text-[#1E362C] text-xs font-bold rounded-full group-hover:bg-[#EAF2EE] transition-colors shadow-lg">
+                                Beli →
+                            </span>
+                        </div>
+                    </div>
+                </a>
+
+                {{-- 3 kartu kanan dalam 2 baris: 1 lebar di atas, 2 kecil di bawah --}}
+                <div class="lg:col-span-3 grid grid-cols-2 grid-rows-2 gap-5">
+
+                    {{-- Kartu ke-2: lebar 2 kolom, baris pertama --}}
+                    @if ($souvenirs->get(1))
+                        @php $sv = $souvenirs->get(1); @endphp
+                        <a href="{{ route('user.souvenir.show', $sv->souvenir_id) }}"
+                            class="col-span-2 group bg-white rounded-[22px] overflow-hidden border border-gray-100 hover:border-[#A7C5B5]/60 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 flex flex-row">
+                            <div class="relative w-2/5 overflow-hidden bg-[#EAF2EE]/30 flex-shrink-0">
+                                @if ($sv->foto)
+                                    <img src="{{ asset($sv->foto) }}" alt="{{ $sv->nama_souvenir }}"
+                                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                @else
+                                    <img src="https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?auto=format&fit=crop&w=400&q=70"
+                                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                        alt="">
+                                @endif
+                                @if ($sv->jumlah_terjual > 0)
+                                    <span
+                                        class="absolute top-3 left-3 bg-[#E9C46A] text-[#1E362C] text-[8px] font-bold px-2 py-1 rounded-full">
+                                        🔥 {{ $sv->jumlah_terjual }}x
+                                    </span>
+                                @endif
+                            </div>
+                            <div class="p-5 flex flex-col justify-between flex-grow">
+                                <div>
+                                    <p class="text-[9px] font-bold uppercase tracking-widest text-[#A7C5B5] mb-1">Pilihan
+                                        Populer</p>
+                                    <h3 class="font-serif font-semibold text-base text-[#1E362C] leading-snug">
+                                        {{ $sv->nama_souvenir }}</h3>
+                                    @if ($sv->detail)
+                                        <p class="text-xs text-[#8A9C91] mt-1 line-clamp-2 leading-relaxed">
+                                            {{ $sv->detail }}</p>
+                                    @endif
+                                </div>
+                                <div class="flex items-center justify-between pt-3 border-t border-[#F2F0EA] mt-3">
+                                    <span class="font-bold text-[#1E362C]">Rp
+                                        {{ number_format($sv->harga, 0, ',', '.') }}</span>
+                                    <span
+                                        class="text-[10px] font-semibold text-[#2B4C3F] bg-[#EAF2EE] px-3 py-1.5 rounded-full group-hover:bg-[#2B4C3F] group-hover:text-white transition-colors">
+                                        Lihat →
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+                    @endif
+
+                    {{-- Kartu ke-3 dan ke-4: masing-masing 1 kolom, baris ke-2 --}}
+                    @foreach ($souvenirs->slice(2, 2) as $sv)
+                        <a href="{{ route('user.souvenir.show', $sv->souvenir_id) }}"
+                            class="group bg-white rounded-[22px] overflow-hidden border border-gray-100 hover:border-[#A7C5B5]/60 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 flex flex-col">
+                            <div class="relative h-32 sm:h-40 overflow-hidden bg-[#EAF2EE]/30">
+                                @if ($sv->foto)
+                                    <img src="{{ asset($sv->foto) }}" alt="{{ $sv->nama_souvenir }}"
+                                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                @else
+                                    <img src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=300&q=70"
+                                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                        alt="">
+                                @endif
+                                @if ($sv->jumlah_terjual > 0)
+                                    <span
+                                        class="absolute top-2.5 left-2.5 bg-[#E9C46A] text-[#1E362C] text-[8px] font-bold px-2 py-1 rounded-full shadow-sm">
+                                        🔥 {{ $sv->jumlah_terjual }}x
+                                    </span>
+                                @endif
+                            </div>
+                            <div class="p-3.5 flex-grow flex flex-col justify-between gap-2">
+                                <h3 class="font-semibold text-xs text-[#1E362C] leading-snug line-clamp-2">
+                                    {{ $sv->nama_souvenir }}</h3>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm font-bold text-[#1E362C]">Rp
+                                        {{ number_format($sv->harga, 0, ',', '.') }}</span>
+                                    <span
+                                        class="text-[9px] font-semibold text-[#2B4C3F] bg-[#EAF2EE] px-2.5 py-1 rounded-full group-hover:bg-[#2B4C3F] group-hover:text-white transition-colors">
+                                        Beli
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+                    @endforeach
+
+                </div>
+            </div>
+        @endif
+    </section>
+
+    {{-- ═══════════════ PESANAN TERAKHIR ═══════════════ --}}
+    @if ($pesananTerakhir->isNotEmpty())
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-16">
+            <div class="flex items-end justify-between mb-6">
+                <div>
+                    <p class="text-[10px] font-bold uppercase tracking-[0.3em] text-[#A7C5B5] mb-1">Aktivitas Kamu</p>
+                    <h2 class="font-serif text-2xl sm:text-3xl text-[#1E362C] font-semibold">Pesanan Terakhir</h2>
+                </div>
+                <a href="{{ route('user.pesanan.index') }}"
+                    class="text-xs font-bold text-[#2B4C3F] hover:underline flex items-center gap-1 pb-1">
+                    Semua <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                @foreach ($pesananTerakhir as $pesanan)
+                    @php
+                        $statusColor = match ($pesanan->status_pemesanan) {
+                            'menunggu_pembayaran' => [
+                                'pill' => 'bg-[#FFF8E1] text-[#F59E0B] border border-[#FCD34D]',
+                                'dot' => 'bg-[#F59E0B]',
+                            ],
+                            'menunggu_verifikasi' => [
+                                'pill' => 'bg-[#E8F0FE] text-[#3B82F6] border border-[#93C5FD]',
+                                'dot' => 'bg-[#3B82F6]',
+                            ],
+                            'dikonfirmasi' => [
+                                'pill' => 'bg-[#EAF2EE] text-[#2B4C3F] border border-[#B8DEC8]',
+                                'dot' => 'bg-[#2B4C3F]',
+                            ],
+                            'sedang_menginap' => [
+                                'pill' => 'bg-[#F3EEFF] text-[#8B5CF6] border border-[#C4B5FD]',
+                                'dot' => 'bg-[#8B5CF6]',
+                            ],
+                            'terverifikasi' => [
+                                'pill' => 'bg-[#EAF2EE] text-[#2B4C3F] border border-[#B8DEC8]',
+                                'dot' => 'bg-[#2B4C3F]',
+                            ],
+                            'diproses' => [
+                                'pill' => 'bg-[#EAF2EE] text-[#2B4C3F] border border-[#B8DEC8]',
+                                'dot' => 'bg-[#2B4C3F]',
+                            ],
+                            'siap_diambil_dikirim' => [
+                                'pill' => 'bg-[#FFF3E0] text-[#E65100] border border-[#FFB74D]',
+                                'dot' => 'bg-[#E65100]',
+                            ],
+                            'selesai' => [
+                                'pill' => 'bg-[#E8F5E9] text-[#2E7D32] border border-[#A5D6A7]',
+                                'dot' => 'bg-[#2E7D32]',
+                            ],
+                            'dibatalkan' => [
+                                'pill' => 'bg-[#FDE8E8] text-[#DC2626] border border-[#FCA5A5]',
+                                'dot' => 'bg-[#DC2626]',
+                            ],
+                            'kedaluwarsa' => [
+                                'pill' => 'bg-[#F5F5F5] text-[#9CA3AF] border border-[#D4D4D8]',
+                                'dot' => 'bg-[#9CA3AF]',
+                            ],
+                            default => [
+                                'pill' => 'bg-[#F5F5F5] text-[#6B7280] border border-[#D4D4D8]',
+                                'dot' => 'bg-[#6B7280]',
+                            ],
+                        };
+                        $statusLabel = match ($pesanan->status_pemesanan) {
+                            'menunggu_pembayaran' => 'Menunggu Bayar',
+                            'menunggu_verifikasi' => 'Verifikasi',
+                            'terverifikasi' => 'Terverifikasi',
+                            'diproses' => 'Diproses / Dikemas',
+                            'siap_diambil_dikirim' => 'Siap Diambil',
+                            'dikonfirmasi' => 'Dikonfirmasi',
+                            'sedang_menginap' => 'Sedang Menginap',
+                            'selesai' => 'Selesai',
+                            'dibatalkan' => 'Dibatalkan',
+                            'kedaluwarsa' => 'Kedaluwarsa',
+                            default => ucwords(str_replace('_', ' ', $pesanan->status_pemesanan)),
+                        };
+                    @endphp
+                    <a href="{{ route('user.pesanan.show', $pesanan->pemesanan_id) }}"
+                        class="group bg-white rounded-2xl border border-gray-100 p-5 hover:border-[#A7C5B5] hover:shadow-md transition-all duration-200 flex flex-col gap-4">
+                        <div class="flex items-start justify-between">
+                            <div class="w-10 h-10 rounded-xl bg-[#EAF2EE] flex items-center justify-center flex-shrink-0">
+                                @if ($pesanan->jenis_pemesanan === 'homestay')
+                                    <svg class="w-5 h-5 text-[#2B4C3F]" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                    </svg>
+                                @else
+                                    <svg class="w-5 h-5 text-[#2B4C3F]" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                                    </svg>
+                                @endif
+                            </div>
+                            <span
+                                class="text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full {{ $statusColor['pill'] }} flex items-center gap-1.5">
+                                <span class="w-1.5 h-1.5 rounded-full {{ $statusColor['dot'] }}"></span>
+                                {{ $statusLabel }}
+                            </span>
+                        </div>
+                        <div>
+                            <p class="font-mono text-xs font-semibold text-[#1E362C]">{{ $pesanan->kode_pemesanan }}</p>
+                            <p class="text-[10px] text-[#8A9C91] capitalize mt-0.5">{{ $pesanan->jenis_pemesanan }} ·
+                                {{ $pesanan->created_at->diffForHumans() }}</p>
+                        </div>
+                        <div class="flex items-center justify-between pt-3 border-t border-[#F2F0EA]">
+                            <span class="font-bold text-sm text-[#1E362C]">Rp
+                                {{ number_format($pesanan->total_harga, 0, ',', '.') }}</span>
+                            <svg class="w-4 h-4 text-[#8A9C91] group-hover:text-[#2B4C3F] group-hover:translate-x-0.5 transition-all"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </div>
+                    </a>
+                @endforeach
+            </div>
+        </section>
+    @endif
 
 @endsection
