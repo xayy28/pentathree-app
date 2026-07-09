@@ -59,3 +59,33 @@ test('legacy role column still allows access before spatie role sync', function 
         ->get(route('admin.dashboard'))
         ->assertOk();
 });
+
+test('user login ignores admin intended url and redirects to user dashboard', function () {
+    $this->seed(DatabaseSeeder::class);
+
+    $response = $this->withSession(['url.intended' => route('admin.dashboard')])
+        ->post(route('login'), [
+            'email' => 'user@aura.com',
+            'password' => 'user123',
+        ]);
+
+    $response
+        ->assertRedirect('/dashboard')
+        ->assertSessionHas('success')
+        ->assertSessionMissing('error');
+});
+
+test('admin login ignores user intended url and redirects to admin dashboard', function () {
+    $this->seed(DatabaseSeeder::class);
+
+    $response = $this->withSession(['url.intended' => route('dashboard')])
+        ->post(route('login'), [
+            'email' => 'admin@aura.com',
+            'password' => 'admin123',
+        ]);
+
+    $response
+        ->assertRedirect('/admin/dashboard')
+        ->assertSessionHas('success')
+        ->assertSessionMissing('error');
+});

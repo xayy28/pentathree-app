@@ -34,13 +34,13 @@ class AuthController extends Controller
 
             $user = Auth::user();
 
-            // Redirect berdasarkan role
+            // Redirect berdasarkan role, tetapi jangan pakai intended URL yang beda area akses.
             if ($user->role === 'admin') {
-                return redirect()->intended('/admin/dashboard')
+                return redirect($this->intendedUrlForRole($request, 'admin', '/admin/dashboard'))
                     ->with('success', 'Selamat datang kembali, Admin '.$user->nama.'!');
             }
 
-            return redirect()->intended('/dashboard')
+            return redirect($this->intendedUrlForRole($request, 'user', '/dashboard'))
                 ->with('success', 'Selamat datang kembali, '.$user->nama.'!');
         }
 
@@ -48,6 +48,36 @@ class AuthController extends Controller
         return back()->withErrors([
             'email' => 'Email atau password yang Anda masukkan salah.',
         ])->withInput($request->only('email'));
+    }
+
+    /**
+     * Ambil intended URL hanya jika URL itu aman untuk role yang baru login.
+     */
+    private function intendedUrlForRole(Request $request, string $role, string $fallbackPath): string
+    {
+        $intendedUrl = $request->session()->pull('url.intended');
+
+        if (! $intendedUrl) {
+            return $fallbackPath;
+        }
+
+        $host = parse_url($intendedUrl, PHP_URL_HOST);
+        if ($host && $host !== $request->getHost()) {
+            return $fallbackPath;
+        }
+
+        $path = parse_url($intendedUrl, PHP_URL_PATH) ?: '/';
+        if (in_array($path, ['/login', '/register'], true)) {
+            return $fallbackPath;
+        }
+
+        $isAdminPath = $path === '/admin' || str_starts_with($path, '/admin/');
+
+        if ($role === 'admin') {
+            return $isAdminPath ? $intendedUrl : $fallbackPath;
+        }
+
+        return $isAdminPath ? $fallbackPath : $intendedUrl;
     }
 
     /**
