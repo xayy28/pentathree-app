@@ -44,6 +44,8 @@ class PembayaranController extends Controller
             'verifier',
         ]);
 
+        $pembayaran->pemesanan->tandaiDilihatAdmin();
+
         return view('admin.pembayaran.show', compact('pembayaran'));
     }
 

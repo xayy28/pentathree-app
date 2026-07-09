@@ -94,9 +94,15 @@ class PembayaranController extends Controller
             $validated
         );
 
-        $pemesanan->update([
+        $pemesananUpdates = [
             'status_pemesanan' => Pemesanan::STATUS_MENUNGGU_VERIFIKASI,
-        ]);
+        ];
+
+        if (Pemesanan::hasAdminDilihatPadaColumn()) {
+            $pemesananUpdates['admin_dilihat_pada'] = null;
+        }
+
+        $pemesanan->update($pemesananUpdates);
 
         return redirect()->route('user.pesanan.index')
             ->with('success', 'Bukti pembayaran berhasil dikirim dan menunggu verifikasi admin.');

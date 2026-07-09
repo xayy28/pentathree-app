@@ -36,6 +36,8 @@ class ReservasiController extends Controller
             ->where('jenis_pemesanan', Pemesanan::JENIS_HOMESTAY)
             ->findOrFail($pemesanan_id);
 
+        $reservasi->tandaiDilihatAdmin();
+
         return view('admin.reservasi.show', compact('reservasi'));
     }
 

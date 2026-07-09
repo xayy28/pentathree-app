@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Schema;
 
 class Pemesanan extends Model
 {
@@ -45,6 +46,7 @@ class Pemesanan extends Model
         'tanggal_pemesanan',
         'total_harga',
         'status_pemesanan',
+        'admin_dilihat_pada',
     ];
 
     protected function casts(): array
@@ -52,6 +54,7 @@ class Pemesanan extends Model
         return [
             'tanggal_pemesanan' => 'datetime',
             'total_harga' => 'decimal:2',
+            'admin_dilihat_pada' => 'datetime',
         ];
     }
 
@@ -121,6 +124,22 @@ class Pemesanan extends Model
             self::STATUS_DIBATALKAN,
             self::STATUS_KEDALUWARSA,
         ];
+    }
+
+    public static function hasAdminDilihatPadaColumn(): bool
+    {
+        return Schema::hasColumn('pemesanans', 'admin_dilihat_pada');
+    }
+
+    public function tandaiDilihatAdmin(): void
+    {
+        if (! self::hasAdminDilihatPadaColumn() || $this->admin_dilihat_pada) {
+            return;
+        }
+
+        $this->forceFill([
+            'admin_dilihat_pada' => now(),
+        ])->save();
     }
 
     protected static function booted()

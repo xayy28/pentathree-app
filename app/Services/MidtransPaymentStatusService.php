@@ -72,9 +72,15 @@ class MidtransPaymentStatusService
             'catatan_admin' => 'Transaksi Midtrans masuk fraud challenge dan perlu pengecekan admin.',
         ]));
 
-        $pembayaran->pemesanan->update([
+        $pemesananUpdates = [
             'status_pemesanan' => Pemesanan::STATUS_MENUNGGU_VERIFIKASI,
-        ]);
+        ];
+
+        if (Pemesanan::hasAdminDilihatPadaColumn()) {
+            $pemesananUpdates['admin_dilihat_pada'] = null;
+        }
+
+        $pembayaran->pemesanan->update($pemesananUpdates);
     }
 
     private function markFailed(Pembayaran $pembayaran, array $commonData, string $transactionStatus): void

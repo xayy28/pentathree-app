@@ -238,6 +238,61 @@
 
             <!-- Profile Widget -->
             <div class="flex items-center gap-2 sm:gap-4 flex-shrink-0">
+                @if(auth()->user()->role === 'admin')
+                    <details class="relative group">
+                        <summary class="list-none cursor-pointer" aria-label="Notifikasi transaksi baru">
+                            <span class="relative flex h-10 w-10 items-center justify-center rounded-full border {{ ($unreadTransactionCount ?? 0) > 0 ? 'border-[#E65F5F] bg-[#FDF2F2] text-[#B91C1C] ring-4 ring-[#FDE2E2]' : 'border-[#E6E4DD] bg-[#FAF9F6] text-[#2B4C3F]' }} transition-all hover:border-[#A7C5B5] hover:bg-[#EAF2EE]">
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                </svg>
+                                @if(($unreadTransactionCount ?? 0) > 0)
+                                    <span class="absolute -right-1 -top-1 min-w-5 rounded-full bg-[#E65F5F] px-1.5 py-0.5 text-center text-[10px] font-bold leading-none text-white shadow-sm">
+                                        {{ $unreadTransactionCount > 99 ? '99+' : $unreadTransactionCount }}
+                                    </span>
+                                @endif
+                            </span>
+                        </summary>
+
+                        <div class="absolute right-0 mt-3 w-80 max-w-[calc(100vw-2rem)] overflow-hidden rounded-xl border border-[#E6E4DD] bg-white shadow-xl z-30">
+                            <div class="border-b border-[#E6E4DD] px-4 py-3">
+                                <div class="text-sm font-semibold text-[#2C3E35]">Notifikasi Transaksi</div>
+                                <div class="text-[11px] text-[#8A9C91]">{{ ($unreadTransactionCount ?? 0) }} transaksi perlu dicek</div>
+                            </div>
+
+                            <div class="max-h-80 overflow-y-auto">
+                                @forelse(($unreadTransactions ?? collect()) as $transaction)
+                                    @php
+                                        $transactionLabels = $transaction->jenis_pemesanan === \App\Models\Pemesanan::JENIS_HOMESTAY
+                                            ? \App\Models\Pemesanan::homestayStatusLabels()
+                                            : \App\Models\Pemesanan::souvenirStatusLabels();
+                                        $transactionType = $transaction->jenis_pemesanan === \App\Models\Pemesanan::JENIS_HOMESTAY ? 'Reservasi Homestay' : 'Pesanan Souvenir';
+                                        $needsVerification = $transaction->pembayaran?->status_pembayaran === \App\Models\Pembayaran::STATUS_MENUNGGU_VERIFIKASI;
+                                    @endphp
+                                    <a href="{{ route('admin.notifikasi.transaksi', $transaction->pemesanan_id) }}" class="block border-b border-[#F1EFEA] px-4 py-3 transition-colors last:border-b-0 hover:bg-[#FAF9F6]">
+                                        <div class="flex items-start justify-between gap-3">
+                                            <div class="min-w-0">
+                                                <div class="truncate text-xs font-bold uppercase tracking-wider text-[#2B4C3F]">Transaksi #{{ $transaction->pemesanan_id }}</div>
+                                                <div class="mt-1 text-sm font-semibold text-[#2C3E35]">{{ $transactionType }}</div>
+                                                <div class="mt-1 truncate text-xs text-[#5C6E65]">{{ $transaction->user?->nama ?? 'Pelanggan' }}</div>
+                                            </div>
+                                            <span class="shrink-0 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide {{ $needsVerification ? 'bg-[#FDF2F2] text-[#B91C1C]' : 'bg-[#EAF2EE] text-[#2B4C3F]' }}">
+                                                {{ $needsVerification ? 'Butuh Verifikasi' : 'Baru' }}
+                                            </span>
+                                        </div>
+                                        <div class="mt-2 flex items-center justify-between gap-3 text-[11px] text-[#8A9C91]">
+                                            <span>{{ $transactionLabels[$transaction->status_pemesanan] ?? ucwords(str_replace('_', ' ', $transaction->status_pemesanan)) }}</span>
+                                            <span>{{ optional($transaction->tanggal_pemesanan)->diffForHumans() }}</span>
+                                        </div>
+                                    </a>
+                                @empty
+                                    <div class="px-4 py-6 text-center text-sm text-[#8A9C91]">
+                                        Tidak ada transaksi baru.
+                                    </div>
+                                @endforelse
+                            </div>
+                        </div>
+                    </details>
+                @endif
                 <div class="text-right hidden sm:block">
                     <div class="text-xs sm:text-sm font-semibold text-[#2C3E35] leading-tight">
                         {{ auth()->user()->nama }}

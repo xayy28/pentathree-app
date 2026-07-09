@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\FasilitasController as AdminFasilitasController;
 use App\Http\Controllers\Admin\HomestayController as AdminHomestayController;
 use App\Http\Controllers\Admin\KategoriHomestayController as AdminKategoriHomestayController;
 use App\Http\Controllers\Admin\LaporanController as AdminLaporanController;
+use App\Http\Controllers\Admin\NotifikasiTransaksiController as AdminNotifikasiTransaksiController;
 use App\Http\Controllers\Admin\PembayaranController as AdminPembayaranController;
 use App\Http\Controllers\Admin\ReservasiController as AdminReservasiController;
 use App\Http\Controllers\Admin\SouvenirController as AdminSouvenirController;
@@ -98,6 +99,7 @@ Route::middleware('auth')->group(function () {
     // Halaman khusus Admin
     Route::middleware('role:admin')->group(function () {
         Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+        Route::get('/admin/notifikasi/transaksi/{pemesanan_id}', [AdminNotifikasiTransaksiController::class, 'show'])->name('admin.notifikasi.transaksi');
 
         // Scaffolding Rute Modul PBL Admin
         Route::get('/admin/homestay', [AdminHomestayController::class, 'index'])->name('admin.homestay');
