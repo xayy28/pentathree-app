@@ -38,10 +38,12 @@ class AuthController extends Controller
             if ($user->role === 'admin') {
                 return redirect($this->intendedUrlForRole($request, 'admin', '/admin/dashboard'))
                     ->with('success', 'Selamat datang kembali, Admin '.$user->nama.'!');
+                return redirect()->intended('/admin/dashboard')
+                    ->with('success', 'Selamat datang kembali, Admin ' . $user->nama . '!');
             }
 
-            return redirect($this->intendedUrlForRole($request, 'user', '/dashboard'))
-                ->with('success', 'Selamat datang kembali, '.$user->nama.'!');
+            return redirect()->intended('/dashboard')
+                ->with('success', 'Selamat datang kembali, ' . $user->nama . '!');
         }
 
         // Jika login gagal
