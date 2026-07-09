@@ -36,8 +36,6 @@ class AuthController extends Controller
 
             // Redirect berdasarkan role, tetapi jangan pakai intended URL yang beda area akses.
             if ($user->role === 'admin') {
-                return redirect($this->intendedUrlForRole($request, 'admin', '/admin/dashboard'))
-                    ->with('success', 'Selamat datang kembali, Admin '.$user->nama.'!');
                 return redirect()->intended('/admin/dashboard')
                     ->with('success', 'Selamat datang kembali, Admin ' . $user->nama . '!');
             }

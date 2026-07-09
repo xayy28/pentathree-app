@@ -216,6 +216,7 @@ Route::middleware('auth')->group(function () {
         Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
 
         Route::get('/homestay', [PelangganHomestayController::class, 'index'])->name('user.homestay');
+        Route::get('/homestay/{homestay_id}', [PelangganHomestayController::class, 'show'])->name('user.homestay.show');
         Route::get('/souvenir', [PelangganSouvenirController::class, 'index'])->name('user.souvenir');
         Route::get('/souvenir/{souvenir_id}', [PelangganSouvenirController::class, 'show'])->name('user.souvenir.show');
         Route::get('/reservasi', [PelangganReservasiController::class, 'index'])->name('user.reservasi');
