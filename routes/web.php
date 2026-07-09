@@ -61,6 +61,11 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+    // Email Verification Routes
+    Route::get('/email/verify', [\App\Http\Controllers\EmailVerificationController::class, 'notice'])->name('verification.notice');
+    Route::post('/email/verification-notification', [\App\Http\Controllers\EmailVerificationController::class, 'resend'])->name('verification.send')->middleware('throttle:6,1');
+    Route::get('/email/verify/{id}/{hash}', [\App\Http\Controllers\EmailVerificationController::class, 'verify'])->name('verification.verify')->middleware('signed');
+
     // Halaman khusus Admin
     Route::middleware('role:admin')->group(function () {
         Route::get('/admin/dashboard', function () {
@@ -157,28 +162,31 @@ Route::middleware('auth')->group(function () {
         Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
 
-        // Rute Modul PBL untuk User
         Route::get('/homestay', [PelangganHomestayController::class, 'index'])->name('user.homestay');
-        Route::get('/homestay/{homestay_id}/booking', [PelangganHomestayBookingController::class, 'create'])->name('user.homestay.booking.create');
-        Route::post('/homestay/{homestay_id}/booking', [PelangganHomestayBookingController::class, 'store'])->name('user.homestay.booking.store');
         Route::get('/souvenir', [PelangganSouvenirController::class, 'index'])->name('user.souvenir');
         Route::get('/souvenir/{souvenir_id}', [PelangganSouvenirController::class, 'show'])->name('user.souvenir.show');
         Route::get('/reservasi', [PelangganReservasiController::class, 'index'])->name('user.reservasi');
         Route::get('/pesanan', [PelangganPemesananController::class, 'index'])->name('user.pesanan.index');
         Route::get('/pesanan/{pemesanan_id}', [PelangganPemesananController::class, 'show'])->name('user.pesanan.show');
         Route::get('/pesanan/{pemesanan_id}/invoice', [InvoiceController::class, 'showForUser'])->name('user.invoices.show');
-        Route::get('/pesanan/{pemesanan_id}/pembayaran', [PelangganPembayaranController::class, 'create'])->name('user.pembayaran.create');
-        Route::post('/pesanan/{pemesanan_id}/pembayaran', [PelangganPembayaranController::class, 'store'])->name('user.pembayaran.store');
-        Route::post('/pesanan/{pemesanan_id}/midtrans-token', [PelangganMidtransPaymentController::class, 'token'])->name('user.pembayaran.midtrans.token');
-        Route::post('/pesanan/{pemesanan_id}/midtrans-status', [PelangganMidtransPaymentController::class, 'status'])->name('user.pembayaran.midtrans.status');
-        Route::get('/reservasi/{homestay_id}', [PelangganReservasiController::class, 'create'])->name('user.reservasi.create');
 
-        // Rute Keranjang Belanja User
-        Route::get('/cart', [PelangganKeranjangController::class, 'index'])->name('cart.index');
-        Route::get('/cart/checkout', [PelangganKeranjangController::class, 'checkout'])->name('checkout.index');
-        Route::post('/cart/checkout', [PelangganKeranjangController::class, 'storeCheckout'])->name('checkout.store');
-        Route::post('/cart/add', [PelangganKeranjangController::class, 'addToCart'])->name('cart.add');
-        Route::put('/cart/update', [PelangganKeranjangController::class, 'updateQuantity'])->name('cart.update');
-        Route::delete('/cart/{id}', [PelangganKeranjangController::class, 'destroy'])->name('cart.destroy');
+        // Rute yang memerlukan verifikasi email
+        Route::middleware('verified.email')->group(function () {
+            Route::get('/homestay/{homestay_id}/booking', [PelangganHomestayBookingController::class, 'create'])->name('user.homestay.booking.create');
+            Route::post('/homestay/{homestay_id}/booking', [PelangganHomestayBookingController::class, 'store'])->name('user.homestay.booking.store');
+            Route::get('/reservasi/{homestay_id}', [PelangganReservasiController::class, 'create'])->name('user.reservasi.create');
+            Route::get('/pesanan/{pemesanan_id}/pembayaran', [PelangganPembayaranController::class, 'create'])->name('user.pembayaran.create');
+            Route::post('/pesanan/{pemesanan_id}/pembayaran', [PelangganPembayaranController::class, 'store'])->name('user.pembayaran.store');
+            Route::post('/pesanan/{pemesanan_id}/midtrans-token', [PelangganMidtransPaymentController::class, 'token'])->name('user.pembayaran.midtrans.token');
+            Route::post('/pesanan/{pemesanan_id}/midtrans-status', [PelangganMidtransPaymentController::class, 'status'])->name('user.pembayaran.midtrans.status');
+
+            // Rute Keranjang Belanja User
+            Route::get('/cart', [PelangganKeranjangController::class, 'index'])->name('cart.index');
+            Route::get('/cart/checkout', [PelangganKeranjangController::class, 'checkout'])->name('checkout.index');
+            Route::post('/cart/checkout', [PelangganKeranjangController::class, 'storeCheckout'])->name('checkout.store');
+            Route::post('/cart/add', [PelangganKeranjangController::class, 'addToCart'])->name('cart.add');
+            Route::put('/cart/update', [PelangganKeranjangController::class, 'updateQuantity'])->name('cart.update');
+            Route::delete('/cart/{id}', [PelangganKeranjangController::class, 'destroy'])->name('cart.destroy');
+        });
     });
 });

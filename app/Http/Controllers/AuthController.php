@@ -37,11 +37,11 @@ class AuthController extends Controller
             // Redirect berdasarkan role
             if ($user->role === 'admin') {
                 return redirect()->intended('/admin/dashboard')
-                    ->with('success', 'Selamat datang kembali, Admin '.$user->nama.'!');
+                    ->with('success', 'Selamat datang kembali, Admin ' . $user->nama . '!');
             }
 
             return redirect()->intended('/dashboard')
-                ->with('success', 'Selamat datang kembali, '.$user->nama.'!');
+                ->with('success', 'Selamat datang kembali, ' . $user->nama . '!');
         }
 
         // Jika login gagal

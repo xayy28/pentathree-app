@@ -3,6 +3,37 @@
 @section('title', 'Dashboard')
 
 @section('content')
+    {{-- Banner Verifikasi Email --}}
+    @if(auth()->check() && ! auth()->user()->hasVerifiedEmail())
+        <div class="bg-amber-50 border-b border-amber-200 px-4 py-3">
+            <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div class="flex items-start gap-3">
+                    <svg class="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                    </svg>
+                    <div>
+                        <p class="text-sm font-semibold text-amber-800">Email Anda belum terverifikasi.</p>
+                        <p class="text-xs text-amber-700 mt-0.5">
+                            Silakan verifikasi email Anda agar dapat menggunakan seluruh fitur sistem.
+                        </p>
+                    </div>
+                </div>
+                <form action="{{ route('verification.send') }}" method="POST" class="flex-shrink-0">
+                    @csrf
+                    <button type="submit"
+                        class="inline-flex items-center gap-2 px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold rounded-lg transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                        </svg>
+                        Kirim Email Verifikasi
+                    </button>
+                </form>
+            </div>
+        </div>
+    @endif
+
     <!-- Hero Section (Seamless with navbar) -->
     <div class="relative h-[450px] sm:h-[550px] bg-cover bg-center flex items-center justify-center"
         style="background-image: url('{{ asset('images/hero-banner1.png') }}');">
