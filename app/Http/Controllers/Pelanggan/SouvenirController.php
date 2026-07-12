@@ -13,21 +13,35 @@ class SouvenirController extends Controller
      */
     public function index(Request $request)
     {
-        $kategori = $request->query('kategori');
-        $status = $request->query('status');
-        $statuses = ['Tersedia', 'Habis'];
+        $cari = substr(trim((string) $request->query('cari', '')), 0, 100);
+        $urutkan = $request->query('urutkan', $request->query('kategori') === 'terlaris' ? 'terlaris' : 'terbaru');
+        $allowedSorts = ['terbaru', 'terlaris', 'harga_termurah', 'harga_termahal'];
 
-        $souvenirs = Souvenir::query()
+        if (! in_array($urutkan, $allowedSorts, true)) {
+            $urutkan = 'terbaru';
+        }
+
+        $souvenirQuery = Souvenir::query()
             ->withAvg('ulasans', 'rating')
             ->withCount('ulasans')
-            ->when(in_array($status, $statuses, true), fn ($query) => $query->where('status', $status))
-            ->when($kategori === 'terlaris',
-                fn ($query) => $query->orderByDesc('jumlah_terjual'),
-                fn ($query) => $query->latest(),
-            )
-            ->get();
+            ->when($cari !== '', function ($query) use ($cari) {
+                $query->where(function ($searchQuery) use ($cari) {
+                    $searchQuery
+                        ->where('nama_souvenir', 'like', "%{$cari}%")
+                        ->orWhere('detail', 'like', "%{$cari}%");
+                });
+            });
 
-        return view('pelanggan.souvenir.index', compact('souvenirs', 'kategori', 'status', 'statuses'));
+        match ($urutkan) {
+            'terlaris' => $souvenirQuery->orderByDesc('jumlah_terjual')->latest(),
+            'harga_termurah' => $souvenirQuery->orderBy('harga')->latest(),
+            'harga_termahal' => $souvenirQuery->orderByDesc('harga')->latest(),
+            default => $souvenirQuery->latest(),
+        };
+
+        $souvenirs = $souvenirQuery->get();
+
+        return view('pelanggan.souvenir.index', compact('souvenirs', 'cari', 'urutkan'));
     }
 
     /**

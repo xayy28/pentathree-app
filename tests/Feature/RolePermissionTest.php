@@ -51,6 +51,7 @@ test('legacy role column still allows access before spatie role sync', function 
         'no_hp' => '081234567892',
         'alamat' => 'Padang',
         'role' => 'admin',
+        'email_verified_at' => now(),
     ]);
 
     expect($admin->hasRole('admin'))->toBeFalse();

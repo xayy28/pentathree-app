@@ -129,6 +129,7 @@ test('user cannot view another users order detail', function () {
         'no_hp' => '081111111111',
         'alamat' => 'Padang',
         'role' => 'user',
+        'email_verified_at' => now(),
     ]);
 
     $pemesanan = Pemesanan::first();

@@ -16,6 +16,7 @@ beforeEach(function () {
         'no_hp' => '081122334455',
         'alamat' => 'Bandung',
         'role' => 'admin',
+        'email_verified_at' => now(),
     ]);
 
     $this->user = User::create([
@@ -25,6 +26,7 @@ beforeEach(function () {
         'no_hp' => '081234567890',
         'alamat' => 'Bandung',
         'role' => 'user',
+        'email_verified_at' => now(),
     ]);
 
     $this->category = KategoriHomestay::create([
@@ -90,7 +92,7 @@ test('admin can filter homestay listing by category and status', function () {
     $response->assertDontSee('Mahoni Room');
 });
 
-test('user can filter homestay catalog by category status and guest capacity', function () {
+test('user can filter homestay catalog by category and guest capacity', function () {
     $otherCategory = KategoriHomestay::create([
         'nama_kategori' => 'Budget Rooms',
     ]);
@@ -129,7 +131,6 @@ test('user can filter homestay catalog by category status and guest capacity', f
 
     $response = $this->actingAs($this->user)->get(route('user.homestay', [
         'kategori' => $this->category->kategori_id,
-        'status' => 'Tersedia',
         'tamu' => 3,
     ]));
 

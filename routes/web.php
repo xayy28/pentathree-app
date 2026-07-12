@@ -224,6 +224,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/pesanan/{pemesanan_id}', [PelangganPemesananController::class, 'show'])->name('user.pesanan.show');
         Route::post('/pesanan/{pemesanan_id}/detail/{detail_pemesanan_id}/ulasan', [PelangganUlasanController::class, 'store'])->name('user.ulasan.store');
         Route::get('/pesanan/{pemesanan_id}/invoice', [InvoiceController::class, 'showForUser'])->name('user.invoices.show');
+        Route::get('/pesanan/{pemesanan_id}/invoice/pdf', [InvoiceController::class, 'downloadPdfForUser'])->name('user.invoices.pdf');
 
         // Rute yang memerlukan verifikasi email
         Route::middleware('verified.email')->group(function () {

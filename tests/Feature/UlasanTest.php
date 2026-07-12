@@ -162,6 +162,7 @@ test('user cannot submit ulasan for another customers order', function () {
         'no_hp' => '081222222222',
         'alamat' => 'Padang',
         'role' => 'user',
+        'email_verified_at' => now(),
     ]);
 
     $this->actingAs($otherUser)

@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
             'no_hp' => '081122334455',
             'alamat' => 'Kantor Pusat Aura Stay & Style, Bandung',
             'role' => 'admin',
+            'email_verified_at' => now(),
         ]);
         $admin->assignRole($adminRole);
 
@@ -38,6 +39,7 @@ class DatabaseSeeder extends Seeder
             'no_hp' => '081234567890',
             'alamat' => 'Jl. Kemuning No. 12, Jakarta Selatan',
             'role' => 'user',
+            'email_verified_at' => now(),
         ]);
         $user->assignRole($userRole);
 
