@@ -233,9 +233,7 @@ test('admin can delete homestay after reservation is finished', function () {
         ->assertRedirect(route('admin.homestay'))
         ->assertSessionHas('success');
 
-    $this->assertDatabaseMissing('homestays', [
-        'homestay_id' => $this->homestay->homestay_id,
-    ]);
+    $this->assertSoftDeleted($this->homestay);
 });
 test('admin can delete homestay after reservation is expired', function () {
     createHomestayReservationForAdminTest($this->user, $this->homestay, Pemesanan::STATUS_KEDALUWARSA);
@@ -245,9 +243,7 @@ test('admin can delete homestay after reservation is expired', function () {
         ->assertRedirect(route('admin.homestay'))
         ->assertSessionHas('success');
 
-    $this->assertDatabaseMissing('homestays', [
-        'homestay_id' => $this->homestay->homestay_id,
-    ]);
+    $this->assertSoftDeleted($this->homestay);
 });
 test('admin can view homestay availability calendar', function () {
     createHomestayReservationForAdminTest($this->user, $this->homestay, Pemesanan::STATUS_DIKONFIRMASI);

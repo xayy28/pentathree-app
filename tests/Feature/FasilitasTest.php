@@ -131,7 +131,5 @@ test('admin can delete fasilitas', function () {
 
     $response->assertRedirect(route('admin.fasilitas'));
 
-    $this->assertDatabaseMissing('fasilitas', [
-        'fasilitas_id' => $fasilitas->fasilitas_id,
-    ]);
+    $this->assertSoftDeleted($fasilitas);
 });

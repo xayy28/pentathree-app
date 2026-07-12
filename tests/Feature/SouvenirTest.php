@@ -286,7 +286,5 @@ test('admin can delete a souvenir', function () {
     $response = $this->actingAs($admin)->delete(route('admin.souvenir.destroy', $souvenir->souvenir_id));
 
     $response->assertRedirect(route('admin.souvenir'));
-    $this->assertDatabaseMissing('souvenirs', [
-        'souvenir_id' => $souvenir->souvenir_id,
-    ]);
+    $this->assertSoftDeleted($souvenir);
 });

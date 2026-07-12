@@ -220,7 +220,5 @@ test('admin can delete a homestay', function () {
     $response = $this->actingAs($this->admin)->delete(route('admin.homestay.destroy', $homestay->homestay_id));
     $response->assertRedirect(route('admin.homestay'));
 
-    $this->assertDatabaseMissing('homestays', [
-        'homestay_id' => $homestay->homestay_id,
-    ]);
+    $this->assertSoftDeleted($homestay);
 });

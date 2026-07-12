@@ -86,9 +86,7 @@ test('admin can delete a category without associated homestays', function () {
     $response = $this->actingAs($this->admin)->delete(route('admin.kategori-homestay.destroy', $category->kategori_id));
     $response->assertRedirect(route('admin.kategori-homestay'));
 
-    $this->assertDatabaseMissing('kategori_homestays', [
-        'kategori_id' => $category->kategori_id,
-    ]);
+    $this->assertSoftDeleted($category);
 });
 
 test('admin cannot delete a category with associated homestays', function () {
