@@ -145,6 +145,17 @@
                         </svg>
                         Laporan
                     </a>
+
+                    <a href="{{ route('admin.user') }}"
+                        class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 {{ request()->routeIs('admin.user') ? 'bg-[#3B5D50] text-white' : 'text-[#A7C5B5] hover:bg-[#325547] hover:text-white' }}">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
+                            </path>
+                        </svg>
+                        Kelola User
+                    </a>
                 @else
                     <!-- USER NAVIGATION -->
                     <div class="px-4 py-2 text-[10px] font-bold uppercase tracking-wider text-[#A7C5B5] opacity-80">
@@ -410,6 +421,14 @@
                                     d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                             </svg>
                             Laporan
+                        </a>
+                        <a href="{{ route('admin.user') }}"
+                            class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 {{ request()->routeIs('admin.user') ? 'bg-[#3B5D50] text-white' : 'text-[#A7C5B5] hover:bg-[#325547] hover:text-white' }}">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                            Kelola User
                         </a>
                     @else
                         <div class="px-4 py-2 text-[10px] font-bold uppercase tracking-wider text-[#A7C5B5] opacity-80">

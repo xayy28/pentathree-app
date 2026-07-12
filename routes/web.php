@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\NotifikasiTransaksiController as AdminNotifikasiT
 use App\Http\Controllers\Admin\PembayaranController as AdminPembayaranController;
 use App\Http\Controllers\Admin\ReservasiController as AdminReservasiController;
 use App\Http\Controllers\Admin\SouvenirController as AdminSouvenirController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\MidtransWebhookController;
@@ -152,6 +153,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/admin/pembayaran/{pembayaran_id}/reject', [AdminPembayaranController::class, 'reject'])->name('admin.pembayaran.reject');
         Route::post('/admin/pembayaran/{pembayaran_id}/status', [AdminPembayaranController::class, 'updateStatus'])->name('admin.pembayaran.status');
         Route::post('/admin/pembayaran/{pembayaran_id}/complete', [AdminPembayaranController::class, 'complete'])->name('admin.pembayaran.complete');
+        Route::get('/admin/user', [AdminUserController::class, 'index'])->name('admin.user');
         Route::get('/admin/laporan', [AdminLaporanController::class, 'index'])->name('admin.laporan');
         Route::get('/admin/laporan/pdf', [AdminLaporanController::class, 'downloadPdf'])->name('admin.laporan.pdf');
         Route::get('/admin/invoices/{invoice_id}', [InvoiceController::class, 'showForAdmin'])->name('admin.invoices.show');
