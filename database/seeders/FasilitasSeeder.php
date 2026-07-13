@@ -21,6 +21,12 @@ class FasilitasSeeder extends Seeder
             ['nama_fasilitas' => 'Kolam Renang',        'ikon' => 'pool'],
             ['nama_fasilitas' => 'TV',                  'ikon' => 'tv'],
             ['nama_fasilitas' => 'Sarapan Tersedia',    'ikon' => 'breakfast'],
+            ['nama_fasilitas' => 'Kasur 200x180',       'ikon' => 'bed'],
+            ['nama_fasilitas' => 'Ekstra Bed 1',        'ikon' => 'bed'],
+            ['nama_fasilitas' => 'Kipas Angin',         'ikon' => 'fan'],
+            ['nama_fasilitas' => 'Kamar Mandi Dalam',   'ikon' => 'bath'],
+            ['nama_fasilitas' => '2 Botol Air Minum',   'ikon' => 'drink'],
+            ['nama_fasilitas' => 'Free Kopi & Sarapan', 'ikon' => 'breakfast'],
         ];
 
         foreach ($fasilitas as $item) {

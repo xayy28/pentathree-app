@@ -93,19 +93,19 @@
                     Bantuan
                 </h4>
                 <nav class="flex flex-col space-y-3.5">
-                    <a href="#faq" 
+                    <a href="{{ route('informasi.faq') }}"
                         class="text-xs text-[#A7C5B5] hover:text-white hover:translate-x-1.5 transition-all duration-300 flex items-center gap-2">
                         <span class="text-[#8A9C91]">✦</span> FAQ
                     </a>
-                    <a href="#cara-pemesanan" 
+                    <a href="{{ route('informasi.cara-pemesanan') }}"
                         class="text-xs text-[#A7C5B5] hover:text-white hover:translate-x-1.5 transition-all duration-300 flex items-center gap-2">
                         <span class="text-[#8A9C91]">✦</span> Cara Pemesanan
                     </a>
-                    <a href="#kebijakan-privasi" 
+                    <a href="{{ route('informasi.kebijakan-privasi') }}"
                         class="text-xs text-[#A7C5B5] hover:text-white hover:translate-x-1.5 transition-all duration-300 flex items-center gap-2">
                         <span class="text-[#8A9C91]">✦</span> Kebijakan Privasi
                     </a>
-                    <a href="#syarat-ketentuan" 
+                    <a href="{{ route('informasi.syarat-ketentuan') }}"
                         class="text-xs text-[#A7C5B5] hover:text-white hover:translate-x-1.5 transition-all duration-300 flex items-center gap-2">
                         <span class="text-[#8A9C91]">✦</span> Syarat & Ketentuan
                     </a>
@@ -179,9 +179,9 @@
                     &copy; 2026 PentaThree. All Rights Reserved.
                 </p>
                 <div class="flex items-center gap-4 text-[10px] text-[#8A9C91]">
-                    <a href="#kebijakan-privasi" class="hover:text-white transition-colors">Kebijakan Privasi</a>
+                    <a href="{{ route('informasi.kebijakan-privasi') }}" class="hover:text-white transition-colors">Kebijakan Privasi</a>
                     <span>•</span>
-                    <a href="#syarat-ketentuan" class="hover:text-white transition-colors">Syarat & Ketentuan</a>
+                    <a href="{{ route('informasi.syarat-ketentuan') }}" class="hover:text-white transition-colors">Syarat & Ketentuan</a>
                 </div>
             </div>
         </div>

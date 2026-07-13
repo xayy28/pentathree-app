@@ -173,6 +173,7 @@ test('user cannot upload payment for another users order', function () {
         'no_hp' => '081111111111',
         'alamat' => 'Padang',
         'role' => 'user',
+        'email_verified_at' => now(),
     ]);
 
     $this->actingAs($otherUser)->post(route('user.pembayaran.store', $pemesanan->pemesanan_id), [

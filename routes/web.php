@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\NotifikasiTransaksiController as AdminNotifikasiT
 use App\Http\Controllers\Admin\PembayaranController as AdminPembayaranController;
 use App\Http\Controllers\Admin\ReservasiController as AdminReservasiController;
 use App\Http\Controllers\Admin\SouvenirController as AdminSouvenirController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\MidtransWebhookController;
@@ -21,6 +22,7 @@ use App\Http\Controllers\Pelanggan\PemesananController as PelangganPemesananCont
 use App\Http\Controllers\Pelanggan\ReservasiController as PelangganReservasiController;
 use App\Http\Controllers\Pelanggan\SouvenirController as PelangganSouvenirController;
 use App\Http\Controllers\Pelanggan\UlasanController as PelangganUlasanController;
+use App\Http\Controllers\InformasiController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Homestay;
 use App\Models\Pemesanan;
@@ -102,6 +104,12 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+    // Halaman Informasi
+    Route::get('/informasi/faq', [InformasiController::class, 'faq'])->name('informasi.faq');
+    Route::get('/informasi/cara-pemesanan', [InformasiController::class, 'caraPemesanan'])->name('informasi.cara-pemesanan');
+    Route::get('/informasi/kebijakan-privasi', [InformasiController::class, 'kebijakanPrivasi'])->name('informasi.kebijakan-privasi');
+    Route::get('/informasi/syarat-ketentuan', [InformasiController::class, 'syaratKetentuan'])->name('informasi.syarat-ketentuan');
+
     // Email Verification Routes
     Route::get('/email/verify', [\App\Http\Controllers\EmailVerificationController::class, 'notice'])->name('verification.notice');
     Route::post('/email/verification-notification', [\App\Http\Controllers\EmailVerificationController::class, 'resend'])->name('verification.send')->middleware('throttle:6,1');
@@ -152,6 +160,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/admin/pembayaran/{pembayaran_id}/reject', [AdminPembayaranController::class, 'reject'])->name('admin.pembayaran.reject');
         Route::post('/admin/pembayaran/{pembayaran_id}/status', [AdminPembayaranController::class, 'updateStatus'])->name('admin.pembayaran.status');
         Route::post('/admin/pembayaran/{pembayaran_id}/complete', [AdminPembayaranController::class, 'complete'])->name('admin.pembayaran.complete');
+        Route::get('/admin/user', [AdminUserController::class, 'index'])->name('admin.user');
         Route::get('/admin/laporan', [AdminLaporanController::class, 'index'])->name('admin.laporan');
         Route::get('/admin/laporan/pdf', [AdminLaporanController::class, 'downloadPdf'])->name('admin.laporan.pdf');
         Route::get('/admin/invoices/{invoice_id}', [InvoiceController::class, 'showForAdmin'])->name('admin.invoices.show');
@@ -224,6 +233,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/pesanan/{pemesanan_id}', [PelangganPemesananController::class, 'show'])->name('user.pesanan.show');
         Route::post('/pesanan/{pemesanan_id}/detail/{detail_pemesanan_id}/ulasan', [PelangganUlasanController::class, 'store'])->name('user.ulasan.store');
         Route::get('/pesanan/{pemesanan_id}/invoice', [InvoiceController::class, 'showForUser'])->name('user.invoices.show');
+        Route::get('/pesanan/{pemesanan_id}/invoice/pdf', [InvoiceController::class, 'downloadPdfForUser'])->name('user.invoices.pdf');
 
         // Rute yang memerlukan verifikasi email
         Route::middleware('verified.email')->group(function () {

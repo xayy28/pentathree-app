@@ -16,23 +16,20 @@
 
             <form action="{{ route('user.souvenir') }}" method="GET"
                 class="max-w-4xl mx-auto bg-white rounded-3xl sm:rounded-full border border-[#E6E4DD] shadow-md p-2 sm:p-3 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-                <div class="flex-1 px-5 py-2 border-b sm:border-b-0 sm:border-r border-[#F2F0EA] text-left space-y-0.5">
-                    <span class="block text-[9px] font-bold uppercase tracking-widest text-[#8A9C91]">URUTKAN</span>
-                    <select name="kategori"
-                        class="w-full bg-transparent text-sm font-medium text-[#2B4C3F] border-0 p-0 focus:ring-0">
-                        <option value="" @selected($kategori !== 'terlaris')>Terbaru</option>
-                        <option value="terlaris" @selected($kategori === 'terlaris')>Terlaris</option>
-                    </select>
+                <div class="flex-[2] px-5 py-2 border-b sm:border-b-0 sm:border-r border-[#F2F0EA] text-left space-y-0.5">
+                    <span class="block text-[9px] font-bold uppercase tracking-widest text-[#8A9C91]">CARI SOUVENIR</span>
+                    <input type="search" name="cari" value="{{ $cari }}" placeholder="Cari nama souvenir..."
+                        class="w-full bg-transparent text-sm font-medium text-[#2B4C3F] placeholder:text-[#A7B7AD] border-0 p-0 focus:ring-0">
                 </div>
 
                 <div class="flex-1 px-5 py-2 text-left space-y-0.5">
-                    <span class="block text-[9px] font-bold uppercase tracking-widest text-[#8A9C91]">STATUS</span>
-                    <select name="status"
+                    <span class="block text-[9px] font-bold uppercase tracking-widest text-[#8A9C91]">URUTKAN</span>
+                    <select name="urutkan"
                         class="w-full bg-transparent text-sm font-medium text-[#2B4C3F] border-0 p-0 focus:ring-0">
-                        <option value="">Semua status</option>
-                        @foreach ($statuses as $statusOption)
-                            <option value="{{ $statusOption }}" @selected($status === $statusOption)>{{ $statusOption }}</option>
-                        @endforeach
+                        <option value="terbaru" @selected($urutkan === 'terbaru')>Terbaru</option>
+                        <option value="terlaris" @selected($urutkan === 'terlaris')>Terlaris</option>
+                        <option value="harga_termurah" @selected($urutkan === 'harga_termurah')>Harga termurah</option>
+                        <option value="harga_termahal" @selected($urutkan === 'harga_termahal')>Harga termahal</option>
                     </select>
                 </div>
 
@@ -43,7 +40,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
-                        <span>Filter</span>
+                        <span>Cari</span>
                     </x-ui-button>
                     <x-ui-button href="{{ route('user.souvenir') }}" variant="muted">
                         Reset
@@ -52,78 +49,8 @@
             </form>
         </div>
 
-        <!-- Main Catalog Area (Sidebar + Souvenir Grid) -->
-        <div class="flex flex-col md:flex-row gap-10 items-start">
-
-            <!-- Left Sidebar: Filter & Sort -->
-            <div class="w-full md:w-64 flex-shrink-0 space-y-8">
-                <!-- Urutan Section -->
-                <div class="space-y-4">
-                    <h3
-                        class="font-serif text-2xl text-[#2B4C3F] font-semibold tracking-wide border-b border-[#E6E4DD] pb-3">
-                        Urutkan
-                    </h3>
-                    <div class="flex flex-col gap-3">
-                        <a href="{{ route('user.souvenir', array_filter(['status' => $status])) }}"
-                            class="flex items-center gap-4 w-full px-5 py-4 rounded-2xl border transition-all text-left font-medium shadow-sm {{ $kategori !== 'terlaris' ? 'bg-[#EAF2EE] border-[#A7C5B5] text-[#2B4C3F] font-semibold' : 'bg-white border-[#E6E4DD] text-[#5C6E65] hover:text-[#2B4C3F] hover:bg-[#FAF9F6] hover:shadow-sm' }}">
-                            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            <span>Terbaru</span>
-                        </a>
-                        <a href="{{ route('user.souvenir', array_filter(['kategori' => 'terlaris', 'status' => $status])) }}"
-                            class="flex items-center gap-4 w-full px-5 py-4 rounded-2xl border transition-all text-left font-medium shadow-sm {{ $kategori === 'terlaris' ? 'bg-[#EAF2EE] border-[#A7C5B5] text-[#2B4C3F] font-semibold' : 'bg-white border-[#E6E4DD] text-[#5C6E65] hover:text-[#2B4C3F] hover:bg-[#FAF9F6] hover:shadow-sm' }}">
-                            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z">
-                                </path>
-                            </svg>
-                            <span>Terlaris</span>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Status Section -->
-                <div class="space-y-4">
-                    <h3
-                        class="font-serif text-2xl text-[#2B4C3F] font-semibold tracking-wide border-b border-[#E6E4DD] pb-3">
-                        Status
-                    </h3>
-                    <div class="flex flex-col gap-3" id="souvenir-filters">
-                        <button data-filter="all"
-                            class="flex items-center gap-4 w-full px-5 py-4 rounded-2xl border transition-all text-left font-medium bg-white border-[#E6E4DD] text-[#5C6E65] hover:text-[#2B4C3F] hover:bg-[#FAF9F6] hover:shadow-sm">
-                            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
-                            </svg>
-                            <span>Semua</span>
-                        </button>
-                        <button data-filter="tersedia"
-                            class="flex items-center gap-4 w-full px-5 py-4 rounded-2xl border transition-all text-left font-medium bg-white border-[#E6E4DD] text-[#5C6E65] hover:text-[#2B4C3F] hover:bg-[#FAF9F6] hover:shadow-sm">
-                            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            <span>Tersedia</span>
-                        </button>
-                        <button data-filter="habis"
-                            class="flex items-center gap-4 w-full px-5 py-4 rounded-2xl border transition-all text-left font-medium bg-white border-[#E6E4DD] text-[#5C6E65] hover:text-[#2B4C3F] hover:bg-[#FAF9F6] hover:shadow-sm">
-                            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            <span>Habis</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
+        <!-- Main Catalog Area (Souvenir Grid) -->
+        <div class="space-y-6">
             <!-- Right Content: Souvenir Grid -->
             <div class="flex-grow w-full space-y-6">
                 <span class="block text-[10px] font-bold uppercase tracking-widest text-[#8A9C91]"
@@ -304,7 +231,7 @@
         </div>
     </div>
 
-    <!-- Javascript untuk Filtering & Modal -->
+    <!-- Javascript untuk Modal -->
     <script>
         let maxStock = 1;
 
@@ -367,52 +294,5 @@
                 qtyInput.value = val - 1;
             }
         }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const filters = document.querySelectorAll('#souvenir-filters button');
-            const cards = document.querySelectorAll('.souvenir-card');
-            const label = document.getElementById('souvenir-count-label');
-
-            let activeFilter = 'all';
-
-            function applyFilters() {
-                let visibleCount = 0;
-                cards.forEach(card => {
-                    const cardStatus = card.getAttribute('data-status');
-                    const matches = (activeFilter === 'all' || cardStatus === activeFilter);
-
-                    if (matches) {
-                        card.style.display = 'flex';
-                        visibleCount++;
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
-
-                if (label) {
-                    label.textContent = `Menampilkan ${visibleCount} Souvenir`;
-                }
-            }
-
-            filters.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    filters.forEach(f => {
-                        f.classList.remove('bg-[#EAF2EE]', 'border-[#A7C5B5]',
-                            'text-[#2B4C3F]', 'font-semibold', 'shadow-sm',
-                            'active-filter-btn');
-                        f.classList.add('bg-white', 'border-[#E6E4DD]', 'text-[#5C6E65]',
-                            'font-medium');
-                    });
-
-                    this.classList.remove('bg-white', 'border-[#E6E4DD]', 'text-[#5C6E65]',
-                        'font-medium');
-                    this.classList.add('bg-[#EAF2EE]', 'border-[#A7C5B5]', 'text-[#2B4C3F]',
-                        'font-semibold', 'shadow-sm', 'active-filter-btn');
-
-                    activeFilter = this.getAttribute('data-filter');
-                    applyFilters();
-                });
-            });
-        });
     </script>
 @endsection

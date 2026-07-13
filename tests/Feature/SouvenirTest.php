@@ -180,7 +180,7 @@ test('user can view souvenir catalog sorted by jumlah_terjual for terlaris', fun
     $responseDefault->assertStatus(200);
 
     // Terlaris: sorted by jumlah_terjual desc
-    $responseSorted = $this->actingAs($user)->get(route('user.souvenir', ['kategori' => 'terlaris']));
+    $responseSorted = $this->actingAs($user)->get(route('user.souvenir', ['urutkan' => 'terlaris']));
     $responseSorted->assertStatus(200);
 
     $dataSorted = $responseSorted->original->getData()['souvenirs'];
@@ -190,7 +190,7 @@ test('user can view souvenir catalog sorted by jumlah_terjual for terlaris', fun
     expect($dataSorted->last()->souvenir_id)->toBe($item1->souvenir_id);
 });
 
-test('user can filter souvenir catalog by status', function () {
+test('user can search souvenir catalog and still sees sold out matching items', function () {
     $user = User::where('role', 'user')->first();
     $admin = User::where('role', 'admin')->first();
 
@@ -201,28 +201,39 @@ test('user can filter souvenir catalog by status', function () {
         'harga' => 75000,
         'stok' => 12,
         'status' => 'Tersedia',
+        'detail' => 'Miniatur pajangan adat',
         'updated_by' => $admin->user_id,
     ]);
 
     Souvenir::create([
         'nama_souvenir' => 'Kaos Harau',
         'harga' => 90000,
+        'stok' => 8,
+        'status' => 'Tersedia',
+        'updated_by' => $admin->user_id,
+    ]);
+
+    Souvenir::create([
+        'nama_souvenir' => 'Miniatur Stok Habis',
+        'harga' => 65000,
         'stok' => 0,
         'status' => 'Habis',
         'updated_by' => $admin->user_id,
     ]);
 
     $response = $this->actingAs($user)->get(route('user.souvenir', [
-        'status' => 'Tersedia',
+        'cari' => 'Miniatur',
     ]));
 
     $response->assertStatus(200);
     $response->assertSee('Miniatur Rumah Gadang');
     $response->assertDontSee('Kaos Harau');
+    $response->assertSee('Miniatur Stok Habis');
 });
 
 test('user can add souvenir to cart from detail page', function () {
     $user = User::where('role', 'user')->first();
+    $user->forceFill(['email_verified_at' => now()])->save();
     $souvenir = Souvenir::where('status', 'Tersedia')->where('stok', '>', 0)->first();
 
     $this->actingAs($user)
@@ -247,6 +258,7 @@ test('user can add souvenir to cart from detail page', function () {
 
 test('user can order now from souvenir detail and go to checkout', function () {
     $user = User::where('role', 'user')->first();
+    $user->forceFill(['email_verified_at' => now()])->save();
     $souvenir = Souvenir::where('status', 'Tersedia')->where('stok', '>', 0)->first();
 
     $this->actingAs($user)->post(route('cart.add'), [
@@ -274,7 +286,5 @@ test('admin can delete a souvenir', function () {
     $response = $this->actingAs($admin)->delete(route('admin.souvenir.destroy', $souvenir->souvenir_id));
 
     $response->assertRedirect(route('admin.souvenir'));
-    $this->assertDatabaseMissing('souvenirs', [
-        'souvenir_id' => $souvenir->souvenir_id,
-    ]);
+    $this->assertSoftDeleted($souvenir);
 });

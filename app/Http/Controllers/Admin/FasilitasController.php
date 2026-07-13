@@ -63,6 +63,10 @@ class FasilitasController extends Controller
     {
         $fasilitas = Fasilitas::findOrFail($fasilitas_id);
 
+        if ($fasilitas->homestays()->count() > 0) {
+            return redirect()->route('admin.fasilitas')->with('error', 'Fasilitas tidak dapat dihapus karena masih digunakan oleh homestay.');
+        }
+
         $fasilitas->delete();
 
         return redirect()->route('admin.fasilitas')->with('success', 'Fasilitas berhasil dihapus.');

@@ -142,6 +142,7 @@ test('customer cannot view another customers invoice', function () {
         'no_hp' => '081111111111',
         'alamat' => 'Padang',
         'role' => 'user',
+        'email_verified_at' => now(),
     ]);
 
     $this->actingAs($otherUser)
@@ -218,6 +219,7 @@ test('user cannot download another customers invoice pdf', function () {
         'no_hp' => '081222222222',
         'alamat' => 'Padang',
         'role' => 'user',
+        'email_verified_at' => now(),
     ]);
 
     $this->actingAs($otherUser)

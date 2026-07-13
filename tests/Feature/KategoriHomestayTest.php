@@ -16,6 +16,7 @@ beforeEach(function () {
         'no_hp' => '081122334455',
         'alamat' => 'Bandung',
         'role' => 'admin',
+        'email_verified_at' => now(),
     ]);
 
     $this->user = User::create([
@@ -25,6 +26,7 @@ beforeEach(function () {
         'no_hp' => '081234567890',
         'alamat' => 'Bandung',
         'role' => 'user',
+        'email_verified_at' => now(),
     ]);
 });
 
@@ -84,9 +86,7 @@ test('admin can delete a category without associated homestays', function () {
     $response = $this->actingAs($this->admin)->delete(route('admin.kategori-homestay.destroy', $category->kategori_id));
     $response->assertRedirect(route('admin.kategori-homestay'));
 
-    $this->assertDatabaseMissing('kategori_homestays', [
-        'kategori_id' => $category->kategori_id,
-    ]);
+    $this->assertSoftDeleted($category);
 });
 
 test('admin cannot delete a category with associated homestays', function () {

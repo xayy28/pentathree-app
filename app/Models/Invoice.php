@@ -45,10 +45,19 @@ class Invoice extends Model
                     ? $invoice->tanggal_invoice->format('Ymd')
                     : Carbon::parse($invoice->tanggal_invoice)->format('Ymd');
                 $prefix = 'INV-'.$tanggal.'-';
-                $latestInvoice = static::where('nomor_invoice', 'like', $prefix.'%')
-                    ->orderByDesc('nomor_invoice')
-                    ->first();
-                $lastNumber = $latestInvoice ? (int) substr($latestInvoice->nomor_invoice, -4) : 0;
+
+                $existingNumbers = static::where('nomor_invoice', 'like', $prefix.'%')
+                    ->pluck('nomor_invoice')
+                    ->map(function ($inv) {
+                        $lastDash = strrpos($inv, '-');
+                        $lastSegment = $lastDash !== false ? substr($inv, $lastDash + 1) : $inv;
+
+                        return (int) preg_replace('/[^0-9]/', '', $lastSegment);
+                    })
+                    ->filter()
+                    ->values();
+
+                $lastNumber = $existingNumbers->isEmpty() ? 0 : $existingNumbers->max();
 
                 $invoice->nomor_invoice = $prefix.str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
             }

@@ -14,6 +14,7 @@ beforeEach(function () {
         'no_hp' => '081122334455',
         'alamat' => 'Bandung',
         'role' => 'admin',
+        'email_verified_at' => now(),
     ]);
 
     $this->user = User::create([
@@ -23,6 +24,7 @@ beforeEach(function () {
         'no_hp' => '081234567890',
         'alamat' => 'Bandung',
         'role' => 'user',
+        'email_verified_at' => now(),
     ]);
 });
 
@@ -129,7 +131,5 @@ test('admin can delete fasilitas', function () {
 
     $response->assertRedirect(route('admin.fasilitas'));
 
-    $this->assertDatabaseMissing('fasilitas', [
-        'fasilitas_id' => $fasilitas->fasilitas_id,
-    ]);
+    $this->assertSoftDeleted($fasilitas);
 });

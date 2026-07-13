@@ -21,6 +21,7 @@ beforeEach(function () {
         'no_hp' => '081111111111',
         'alamat' => 'Bandung',
         'role' => 'admin',
+        'email_verified_at' => now(),
     ]);
 
     $this->user = User::create([
@@ -30,6 +31,7 @@ beforeEach(function () {
         'no_hp' => '082222222222',
         'alamat' => 'Garut',
         'role' => 'user',
+        'email_verified_at' => now(),
     ]);
 
     $this->kategori = KategoriHomestay::create([

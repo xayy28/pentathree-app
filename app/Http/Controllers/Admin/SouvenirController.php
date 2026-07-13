@@ -130,6 +130,10 @@ class SouvenirController extends Controller
     {
         $souvenir = Souvenir::findOrFail($souvenir_id);
 
+        if ($souvenir->detailPemesanans()->count() > 0) {
+            return redirect()->route('admin.souvenir')->with('error', 'Souvenir tidak dapat dihapus karena masih memiliki riwayat pemesanan.');
+        }
+
         if ($souvenir->foto && file_exists(public_path($souvenir->foto))) {
             @unlink(public_path($souvenir->foto));
         }

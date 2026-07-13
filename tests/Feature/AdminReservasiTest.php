@@ -18,6 +18,7 @@ beforeEach(function () {
         'no_hp' => '081111111111',
         'alamat' => 'Bandung',
         'role' => 'admin',
+        'email_verified_at' => now(),
     ]);
 
     $this->user = User::create([
@@ -27,6 +28,7 @@ beforeEach(function () {
         'no_hp' => '082222222222',
         'alamat' => 'Garut',
         'role' => 'user',
+        'email_verified_at' => now(),
     ]);
 
     $this->kategori = KategoriHomestay::create([
@@ -231,9 +233,7 @@ test('admin can delete homestay after reservation is finished', function () {
         ->assertRedirect(route('admin.homestay'))
         ->assertSessionHas('success');
 
-    $this->assertDatabaseMissing('homestays', [
-        'homestay_id' => $this->homestay->homestay_id,
-    ]);
+    $this->assertSoftDeleted($this->homestay);
 });
 test('admin can delete homestay after reservation is expired', function () {
     createHomestayReservationForAdminTest($this->user, $this->homestay, Pemesanan::STATUS_KEDALUWARSA);
@@ -243,9 +243,7 @@ test('admin can delete homestay after reservation is expired', function () {
         ->assertRedirect(route('admin.homestay'))
         ->assertSessionHas('success');
 
-    $this->assertDatabaseMissing('homestays', [
-        'homestay_id' => $this->homestay->homestay_id,
-    ]);
+    $this->assertSoftDeleted($this->homestay);
 });
 test('admin can view homestay availability calendar', function () {
     createHomestayReservationForAdminTest($this->user, $this->homestay, Pemesanan::STATUS_DIKONFIRMASI);
