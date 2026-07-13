@@ -313,16 +313,18 @@
             <h3 class="text-base font-serif font-semibold text-[#2C3E35] mb-4">Tren Pendapatan 6 Bulan</h3>
             @php $hasRevenue = collect($revenueTrend)->sum('total') > 0; @endphp
             @if ($hasRevenue)
-                <div class="flex items-end gap-1.5 h-40 pt-2">
+                <div class="flex items-end gap-2 sm:gap-3 h-44 pt-2 pb-1">
                     @php $maxRev = max(collect($revenueTrend)->pluck('total')->max(), 1); @endphp
                     @foreach ($revenueTrend as $r)
                         @php $pct = max(round(($r['total'] / $maxRev) * 100), 2); @endphp
-                        <div class="flex-1 flex flex-col items-center gap-1">
-                            <span class="text-[9px] font-semibold text-[#2C3E35]">{{ $pct > 15 ? 'Rp'.number_format($r['total'], 0, ',', '.') : '' }}</span>
-                            <div class="w-full bg-[#EAF2EE] rounded-t-lg overflow-hidden relative" style="height: 10rem;">
-                                <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[#2B4C3F] to-[#4B7A66] rounded-t-lg transition-all duration-500 hover:opacity-80" style="height: {{ $pct }}%;"></div>
+                        <div class="flex-1 flex flex-col items-center justify-end min-w-0" style="height: 100%;">
+                            <span class="text-[8px] sm:text-[9px] font-semibold text-[#2C3E35] mb-1 text-center leading-tight truncate w-full block">
+                                {{ $pct > 15 ? 'Rp'.number_format($r['total'], 0, ',', '.') : '' }}
+                            </span>
+                            <div class="w-full bg-[#EAF2EE] rounded-t-lg overflow-hidden" style="height: 9rem;">
+                                <div class="w-full h-full bg-gradient-to-t from-[#2B4C3F] to-[#4B7A66] rounded-t-lg transition-all duration-500 hover:opacity-80" style="height: {{ $pct }}%;"></div>
                             </div>
-                            <span class="text-[9px] text-[#5C6E65] font-medium mt-1">{{ $r['bulan'] }}</span>
+                            <span class="text-[8px] sm:text-[9px] text-[#5C6E65] font-medium mt-1.5 text-center leading-tight">{{ $r['bulan'] }}</span>
                         </div>
                     @endforeach
                 </div>
