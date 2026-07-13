@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Homestay;
-use App\Models\KategoriHomestay;
 use App\Models\Souvenir;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -58,7 +57,7 @@ class DatabaseSeeder extends Seeder
         // Seeding Souvenir Real Data from User Photos
         $this->call(SouvenirRealSeeder::class);
 
-        // Seeding Offline Historical Transactions (Homestay & Souvenir)
-        $this->call(TransaksiOfflineSeeder::class);
+        // Seeding Dummy Transactions for Demo (all souvenirs + homestays + reviews)
+        $this->call(DummyTransactionSeeder::class);
     }
 }
