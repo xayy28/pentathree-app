@@ -22,6 +22,7 @@ use App\Http\Controllers\Pelanggan\PemesananController as PelangganPemesananCont
 use App\Http\Controllers\Pelanggan\ReservasiController as PelangganReservasiController;
 use App\Http\Controllers\Pelanggan\SouvenirController as PelangganSouvenirController;
 use App\Http\Controllers\Pelanggan\UlasanController as PelangganUlasanController;
+use App\Http\Controllers\InformasiController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Homestay;
 use App\Models\Pemesanan;
@@ -102,6 +103,12 @@ Route::middleware('guest')->group(function () {
 // Route untuk Auth (Sudah Login)
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+    // Halaman Informasi
+    Route::get('/informasi/faq', [InformasiController::class, 'faq'])->name('informasi.faq');
+    Route::get('/informasi/cara-pemesanan', [InformasiController::class, 'caraPemesanan'])->name('informasi.cara-pemesanan');
+    Route::get('/informasi/kebijakan-privasi', [InformasiController::class, 'kebijakanPrivasi'])->name('informasi.kebijakan-privasi');
+    Route::get('/informasi/syarat-ketentuan', [InformasiController::class, 'syaratKetentuan'])->name('informasi.syarat-ketentuan');
 
     // Email Verification Routes
     Route::get('/email/verify', [\App\Http\Controllers\EmailVerificationController::class, 'notice'])->name('verification.notice');
