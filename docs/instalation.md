@@ -1,90 +1,65 @@
 # Panduan Instalasi Project PentaThree SIMHOSUV
 
-Terakhir diperbarui: 2026-07-02
+Terakhir diperbarui: 2026-07-26
 
-Dokumen ini menjelaskan cara menjalankan project Laravel PentaThree SIMHOSUV berdasarkan kondisi kode terbaru setelah Sprint 8.
+Dokumen ini menjelaskan cara menjalankan project Laravel PentaThree SIMHOSUV.
 
 ## 1. Kebutuhan Sistem
 
-Minimal:
+**Minimal:**
+- PHP 8.3 atau lebih baru
+- Composer
+- Node.js 20 atau lebih baru
+- NPM
+- MySQL/MariaDB
+- Git
 
-- PHP 8.3 atau lebih baru.
-- Composer.
-- Node.js 20 atau lebih baru.
-- NPM.
-- MySQL/MariaDB.
-- Git.
-
-Ekstensi PHP yang disarankan:
-
-- `pdo_mysql`
-- `pdo_sqlite`
-- `mbstring`
-- `fileinfo`
-- `openssl`
-- `curl`
-- `gd`
-- `xml`
-- `ctype`
-- `json`
+**Ekstensi PHP yang disarankan:**
+- `pdo_mysql`, `pdo_sqlite`
+- `mbstring`, `fileinfo`, `openssl`, `curl`, `gd`, `xml`, `ctype`, `json`
 
 ## 2. Clone Repository
 
 ```bash
-git clone <url-repository>
+git clone https://github.com/xayy28/pentathree-app.git
 cd pentathree-app
 ```
 
-Jika project sudah ada di lokal:
-
-```bash
-cd "D:\Project Base Learning\pentathree-app"
-```
-
-## 3. Install Dependency Backend
+## 3. Install Dependency
 
 ```bash
 composer install
 ```
 
-Dependency penting yang akan terinstall:
-
-- Laravel Framework.
-- Spatie Laravel Permission.
-- Midtrans PHP SDK.
-- Laravel DomPDF.
-- Intervention Image Laravel.
-- Pest.
-- Laravel Pint.
-
-## 4. Install Dependency Frontend
+Dependency utama yang terinstall: Laravel 13, Spatie Permission, Midtrans PHP SDK, DomPDF, Intervention Image, Pest, Pint.
 
 ```bash
 npm install
 ```
 
-Dependency frontend:
+Dependency frontend: Tailwind CSS 4, Vite 8, Laravel Vite Plugin, @tailwindcss/vite, concurrently.
 
-- Tailwind CSS.
-- Vite.
-- Laravel Vite Plugin.
-
-## 5. Setup File Environment
-
-Copy file environment:
+## 4. Setup File Environment
 
 ```bash
 copy .env.example .env
-```
-
-Generate app key:
-
-```bash
 php artisan key:generate
 ```
 
-Set database lokal:
+Untuk PowerShell:
+```powershell
+Copy-Item .env.example .env
+php artisan key:generate
+```
 
+## 5. Konfigurasi Database
+
+Buat database MySQL:
+```sql
+CREATE DATABASE pentathree_app;
+```
+
+Sesuaikan `.env`:
 ```env
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
@@ -94,17 +69,9 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-Buat database MySQL:
+## 6. Konfigurasi Midtrans Sandbox
 
-```sql
-CREATE DATABASE pentathree_app;
-```
-
-## 6. Setup Midtrans Sandbox
-
-Isi key Midtrans di `.env` memakai key Sandbox dari dashboard Midtrans.
-
-Contoh format, jangan pakai key asli di dokumentasi atau git:
+Daftar akun di [Midtrans Dashboard](https://dashboard.midtrans.com). Ambil Server Key dan Client Key dari menu Settings → Access Keys (mode Sandbox).
 
 ```env
 MIDTRANS_SERVER_KEY=Mid-server-xxxxx
@@ -114,96 +81,96 @@ MIDTRANS_IS_SANITIZED=true
 MIDTRANS_IS_3DS=true
 ```
 
-Catatan:
+Jangan commit key asli ke repository.
 
-- Sandbox dipakai untuk demo dan testing.
-- Production belum dipakai.
-- Production membutuhkan aktivasi merchant dan dokumen owner/bisnis.
-- Jangan commit key asli ke repository.
+## 7. Konfigurasi Mailtrap (Email)
 
-Setelah mengubah `.env`, jalankan:
+Project menggunakan Mailtrap SMTP Sandbox untuk email verifikasi dan password reset.
 
+### 7.1 Setup Akun Mailtrap
+
+1. Buka [Mailtrap.io](https://mailtrap.io) dan login/daftar.
+2. Masuk ke **Email Testing**.
+3. Buat inbox baru atau gunakan inbox bawaan.
+4. Klik tab **SMTP Settings** → pilih **Laravel 9+** atau **Integration**.
+5. Salin credential SMTP.
+
+### 7.2 Konfigurasi di .env
+
+```env
+MAIL_MAILER=smtp
+MAIL_HOST=sandbox.smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=your_mailtrap_username
+MAIL_PASSWORD=your_mailtrap_password
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS="noreply@example.com"
+MAIL_FROM_NAME="${APP_NAME}"
+```
+
+Setelah mengubah, jalankan:
 ```bash
 php artisan config:clear
 ```
 
-## 7. Migrasi dan Seeder
+### 7.3 Fitur yang Menggunakan Email
 
-Jalankan migration:
+- **Verifikasi email** — otomatis terkirim saat register. Customer harus verifikasi agar bisa akses booking/pembayaran.
+- **Reset password** — link dikirim saat user lupa password.
 
-```bash
-php artisan migrate
-```
+### 7.4 Cara Cek Email di Mailtrap
 
-Jika ingin data demo:
+1. Buka [Mailtrap.io](https://mailtrap.io) → Email Testing
+2. Klik inbox yang sesuai
+3. Email masuk akan muncul di daftar
+4. Klik email untuk lihat isi HTML/plaintext
+5. Untuk verifikasi, klik link di preview email
 
-```bash
-php artisan db:seed
-```
+### 7.5 Troubleshooting Email
 
-Atau langsung:
+| Masalah | Solusi |
+| --- | --- |
+| Email tidak masuk | Cek `.env`, jalankan `php artisan optimize:clear` |
+| Port salah | Pastikan port 2525, bukan 587/465 |
+| Credential salah | Regenerasi dari dashboard Mailtrap |
+| `MAIL_FROM_ADDRESS` kosong | Isi dengan alamat email valid |
+| Cache config usang | `php artisan config:clear` |
+| Queue worker tidak jalan | (Project tidak pakai queue untuk email) |
+
+## 8. Migrasi dan Seeder
 
 ```bash
 php artisan migrate --seed
-```
-
-Tabel utama yang dibuat:
-
-- `users`
-- `roles`, `permissions`, dan tabel pivot Spatie.
-- `kategori_homestays`
-- `homestays`
-- `souvenirs`
-- `keranjangs`
-- `keranjang_items`
-- `pemesanans`
-- `detail_pemesanans`
-- `pembayarans`
-- `cache`
-- `jobs`
-
-## 8. Setup Storage
-
-Jalankan:
-
-```bash
 php artisan storage:link
 ```
 
-Storage dipakai untuk:
+Atau terpisah:
+```bash
+php artisan migrate
+php artisan db:seed
+php artisan storage:link
+```
 
-- Foto profil.
-- Foto homestay.
-- Foto souvenir.
-- Bukti pembayaran.
-
-Upload gambar diproses oleh `ImageUploadService` dan dioptimasi memakai Intervention Image.
+Tabel utama: `users`, `roles`/`permissions` (Spatie), `kategori_homestays`, `homestays`, `fasilitas`, `homestay_fasilitas`, `souvenirs`, `keranjangs`, `keranjang_items`, `pemesanans`, `detail_pemesanans`, `pembayarans`, `invoices`, `ulasans`, `jobs`, `cache`.
 
 ## 9. Menjalankan Project
 
-Jalankan Laravel:
-
+**Backend:**
 ```bash
 php artisan serve
 ```
 
-Jalankan Vite:
-
+**Frontend (Vite):**
 ```bash
 npm run dev
 ```
 
-Atau pakai script gabungan:
-
+**Gabungan (server + queue listen + vite):**
 ```bash
 composer run dev
 ```
 
-URL lokal default:
-
-```text
-http://127.0.0.1:8000
-```
+URL lokal: `http://127.0.0.1:8000`
 
 ## 10. Build Production Asset
 
@@ -211,221 +178,125 @@ http://127.0.0.1:8000
 npm run build
 ```
 
-Build ini wajib sukses sebelum demo atau deploy.
+Wajib sukses sebelum demo atau deploy.
 
 ## 11. Menjalankan Test
-
-Jalankan semua test:
 
 ```bash
 php artisan test
 ```
 
-Status terakhir:
-
-```text
-95 passed
-```
-
-Jalankan test payment saja:
-
-```bash
-php artisan test tests\Feature\PembayaranTest.php tests\Feature\MidtransPaymentTest.php
-```
-
-Jalankan format kode:
-
+Format kode:
 ```bash
 vendor\bin\pint --dirty
 ```
 
 Cek whitespace:
-
 ```bash
 git diff --check
 ```
 
-## 12. Alur Demo User
+## 12. Akun Demo
 
-### 12.1 Pembelian Souvenir
+Setelah `php artisan db:seed`:
 
-1. Login sebagai user.
-2. Buka katalog souvenir.
-3. Tambah souvenir ke keranjang.
-4. Checkout keranjang.
-5. Sistem membuat pemesanan dan langsung membuka halaman pembayaran.
-6. Pilih Midtrans atau transfer manual.
-7. Jika memilih Midtrans, metode pembayaran dikunci ke Midtrans.
-8. Setelah pembayaran sukses/pending, user diarahkan ke riwayat pesanan.
+| Role | Email | Password |
+| --- | --- | --- |
+| Admin | `admin@aura.com` | `admin123` |
+| Customer | `user@aura.com` | `user123` |
 
-### 12.2 Reservasi Homestay
+## 13. Alur Demo
 
-1. Login sebagai user.
-2. Buka katalog homestay.
-3. Pilih homestay dan isi tanggal booking.
-4. Sistem membuat pemesanan homestay dan langsung membuka halaman pembayaran.
-5. Pilih Midtrans atau transfer manual.
-6. Jika memilih Midtrans, metode pembayaran dikunci ke Midtrans.
-7. Setelah pembayaran selesai, user diarahkan ke riwayat pesanan.
+### Pembelian Souvenir
+1. Login sebagai user
+2. Buka katalog souvenir
+3. Tambah ke keranjang
+4. Checkout (wajib email verifikasi)
+5. Pilih Midtrans atau manual transfer
+6. Bayar → lihat riwayat pesanan
+7. Admin verifikasi (jika manual) → invoice terbit
 
-### 12.3 Admin
+### Reservasi Homestay
+1. Login sebagai user
+2. Buka katalog homestay
+3. Pilih homestay → isi tanggal booking
+4. Bayar → admin lihat reservasi
+5. Admin update status reservasi
 
-1. Login sebagai admin.
-2. Kelola kategori homestay.
-3. Kelola homestay.
-4. Kelola souvenir.
-5. Cek pembayaran souvenir.
-6. Cek reservasi homestay.
-7. Cek laporan.
-8. Unduh laporan PDF.
+### Admin
+1. Login sebagai admin
+2. Kelola homestay, fasilitas, kategori, souvenir, user
+3. Verifikasi pembayaran
+4. Kelola reservasi
+5. Lihat laporan + unduh PDF
 
-## 13. Testing Midtrans Sandbox
+## 14. Testing Midtrans Sandbox
 
-Flow test:
-
-1. Buat pesanan souvenir atau booking homestay.
-2. Masuk halaman pembayaran.
-3. Klik Midtrans Online.
-4. Snap popup muncul.
-5. Pilih metode pembayaran Sandbox.
-6. Selesaikan pembayaran.
-7. Sistem sinkron status.
-8. User diarahkan ke riwayat pesanan.
-
-Kartu Sandbox umum:
-
-```text
+Kartu uji Sandbox Midtrans:
+```
 Card Number: 4811 1111 1111 1114
 CVV: 123
 Expiry: bulan/tahun masa depan
 OTP/3DS: 112233
 ```
 
-Untuk Virtual Account, gunakan simulator Midtrans Sandbox:
+Simulator Virtual Account: `https://simulator.sandbox.midtrans.com/`
 
-```text
-https://simulator.sandbox.midtrans.com/
-```
+## 15. Error Umum
 
-## 14. Error Umum
-
-### 14.1 Table Tidak Ada
-
-Contoh:
-
-```text
-Base table or view not found
-```
-
-Solusi:
-
+### Table Tidak Ada
 ```bash
 php artisan migrate
-```
-
-Jika migration sudah pernah gagal, cek status:
-
-```bash
 php artisan migrate:status
 ```
 
-### 14.2 Storage Gambar Tidak Tampil
-
-Solusi:
-
+### Storage Gambar Tidak Tampil
 ```bash
 php artisan storage:link
 php artisan view:clear
 ```
 
-### 14.3 Midtrans 401 Unauthorized
-
-Penyebab paling mungkin:
-
-- Server key salah.
-- Client key salah.
-- Tertukar antara server key dan client key.
-- Mode production/sandbox tidak sesuai.
-
-Solusi:
-
+### Midtrans 401
 ```bash
 php artisan config:clear
 ```
+Cek `MIDTRANS_IS_PRODUCTION=false` dan server key.
 
-Lalu cek `.env`:
+### Curl SSL Error
+Download `cacert.pem`, set `curl.cainfo` dan `openssl.cafile` di `php.ini`, restart server.
 
-```env
-MIDTRANS_IS_PRODUCTION=false
-```
-
-### 14.4 Curl SSL Certificate Error
-
-Contoh error:
-
-```text
-CURL Error: SSL certificate OpenSSL verify result: unable to get local issuer certificate
-```
-
-Solusi aman untuk Windows/XAMPP:
-
-1. Download `cacert.pem` dari sumber resmi curl.
-2. Simpan misalnya di `C:\xampp\php\extras\ssl\cacert.pem`.
-3. Edit `php.ini`.
-4. Isi:
-
-```ini
-curl.cainfo="C:\xampp\php\extras\ssl\cacert.pem"
-openssl.cafile="C:\xampp\php\extras\ssl\cacert.pem"
-```
-
-5. Restart terminal/server.
-6. Jalankan:
-
-```bash
-php artisan config:clear
-```
-
-### 14.5 Halaman Lama Masih Muncul
-
-Solusi:
-
+### Halaman Lama
 ```bash
 php artisan view:clear
 php artisan cache:clear
 php artisan config:clear
 ```
 
-## 15. Progress Sprint Saat Ini
+## 16. Progress Sprint
 
-Sudah selesai:
+| Sprint | Nama | Status |
+| --- | --- | --- |
+| Sprint 0 | Stabilization | Done |
+| Sprint 1 | Pemesanan Core | Done |
+| Sprint 2 | Souvenir Checkout | Done |
+| Sprint 3 | Payment Core | Done |
+| Sprint 4 | Invoice | Done |
+| Sprint 5 | Homestay Booking | Done |
+| Sprint 6 | Admin Reservation Management | Done |
+| Sprint 6.5 | Stabilization and Demo Readiness | Done |
+| Sprint 7 | Reports | Done |
+| Sprint 8 | Midtrans Sandbox Integration | Done |
+| Sprint 9 | Polish and Optional Scope | In Progress |
 
-- Sprint 0: Stabilization.
-- Sprint 1: Pemesanan Core.
-- Sprint 2: Souvenir Checkout.
-- Sprint 3: Payment Core.
-- Sprint 5: Homestay Booking.
-- Sprint 6: Admin Reservation Management.
-- Sprint 6.5: Stabilization and Demo Readiness.
-- Sprint 7: Reports.
-- Sprint 8: Midtrans Sandbox Integration.
+## 17. Kesimpulan
 
-Di-skip sementara:
-
-- Sprint 4: Invoice.
-
-Berikutnya:
-
-- Sprint 9: Polish and Optional Scope.
-
-## 16. Kesimpulan
-
-Project sudah bisa dijalankan untuk demo MVP:
-
-- Admin CRUD homestay/souvenir.
-- Customer checkout souvenir.
-- Customer booking homestay.
-- Payment manual dan Midtrans Sandbox.
-- Admin reservasi.
-- Admin laporan PDF.
-- Test dan build sudah berjalan.
+Project sudah dapat dijalankan untuk demo akhir PBL:
+- Admin CRUD homestay, fasilitas, kategori, souvenir, user
+- Customer checkout souvenir + booking homestay
+- Payment manual + Midtrans Sandbox
+- Admin reservasi + pembayaran + laporan PDF
+- Email verifikasi + password reset via Mailtrap
+- Invoice customer + PDF
+- Ulasan/rating
+- Public homepage
+- Test dan build berjalan stabil

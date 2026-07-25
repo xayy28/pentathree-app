@@ -1,14 +1,12 @@
 # Dokumentasi Refactoring dan Progress Teknis
 
-Terakhir diperbarui: 2026-07-02
+Terakhir diperbarui: 2026-07-26
 
 Dokumen ini mencatat kondisi arsitektur, refactoring yang sudah dilakukan, dan prioritas refactoring berikutnya pada project PentaThree SIMHOSUV.
 
 ## 1. Status Project
 
-Status umum: **MVP hampir selesai, Sprint 8 selesai secara kode, Sprint 9 berikutnya untuk polish dan QA final**.
-
-Sprint selesai:
+**Status umum: MVP selesai, Sprint 9 polish aktif.**
 
 | Sprint | Nama | Status |
 | --- | --- | --- |
@@ -22,345 +20,215 @@ Sprint selesai:
 | Sprint 6.5 | Stabilization and Demo Readiness | Done |
 | Sprint 7 | Reports | Done |
 | Sprint 8 | Midtrans Sandbox Integration | Done |
-| Sprint 9 | Polish and Optional Scope | Next |
+| Sprint 9 | Polish and Optional Scope | In Progress |
 
 ## 2. Struktur Teknis Saat Ini
 
-### 2.1 Model Utama
+### Model Utama
 
 | Model | Fungsi |
 | --- | --- |
 | `User` | Akun admin/user, role Spatie, fallback kolom `role` |
 | `KategoriHomestay` | Kategori homestay |
 | `Homestay` | Data homestay |
+| `Fasilitas` | Fasilitas homestay |
 | `Souvenir` | Data produk souvenir |
 | `Keranjang` | Keranjang user |
 | `KeranjangItem` | Item keranjang |
 | `Pemesanan` | Induk order untuk souvenir dan homestay |
 | `DetailPemesanan` | Detail item souvenir atau detail booking homestay |
 | `Pembayaran` | Data pembayaran manual atau Midtrans |
+| `Invoice` | Invoice otomatis setelah pembayaran valid |
+| `Ulasan` | Review/rating customer |
 
-### 2.2 Controller Admin
+### Controller Admin
 
 | Controller | Fungsi |
 | --- | --- |
+| `Admin\DashboardController` | Dashboard admin dengan statistik komprehensif |
 | `Admin\HomestayController` | CRUD homestay |
 | `Admin\KategoriHomestayController` | CRUD kategori homestay |
+| `Admin\FasilitasController` | CRUD fasilitas homestay |
 | `Admin\SouvenirController` | CRUD souvenir |
+| `Admin\UserController` | Manajemen user |
 | `Admin\PembayaranController` | Pembayaran souvenir manual/Midtrans |
 | `Admin\ReservasiController` | Manajemen reservasi homestay |
 | `Admin\LaporanController` | Laporan dan unduh PDF |
+| `Admin\NotifikasiTransaksiController` | Notifikasi transaksi baru untuk admin |
 
-### 2.3 Controller Pelanggan
+### Controller Pelanggan
 
 | Controller | Fungsi |
 | --- | --- |
 | `Pelanggan\HomestayController` | Katalog homestay dan filter |
-| `Pelanggan\HomestayBookingController` | Booking homestay |
+| `Pelanggan\HomestayBookingController` | Booking homestay dengan date blocking |
 | `Pelanggan\SouvenirController` | Katalog/detail souvenir |
 | `Pelanggan\KeranjangController` | Keranjang dan checkout souvenir |
 | `Pelanggan\PemesananController` | Riwayat dan detail pesanan |
 | `Pelanggan\PembayaranController` | Upload bukti pembayaran manual |
 | `Pelanggan\MidtransPaymentController` | Snap token dan cek status Midtrans |
+| `Pelanggan\UlasanController` | Review/rating customer |
 | `Pelanggan\ReservasiController` | Redirect legacy reservasi ke flow aktif |
 
-### 2.4 Service
+### Controller Lainnya
+
+| Controller | Fungsi |
+| --- | --- |
+| `AuthController` | Login, register, logout |
+| `ForgotPasswordController` | Lupa password (kirim link via Mailtrap) |
+| `ResetPasswordController` | Reset password |
+| `EmailVerificationController` | Verifikasi email (notice, verify, resend) |
+| `ProfileController` | Manajemen profil dan password |
+| `InvoiceController` | Invoice HTML dan PDF |
+| `MidtransWebhookController` | Webhook Midtrans |
+| `InformasiController` | Halaman FAQ, cara pemesanan, kebijakan, syarat |
+
+### Service
 
 | Service | Fungsi |
 | --- | --- |
-| `ImageUploadService` | Resize dan simpan gambar upload |
-| `PaymentSettlementService` | Menyelesaikan pembayaran sukses dan update stok sekali saja |
+| `ImageUploadService` | Resize, WebP, simpan gambar upload |
+| `PaymentSettlementService` | Verifikasi pembayaran + kurangi stok + buat invoice (idempotent) |
 | `MidtransPaymentService` | Konfigurasi SDK, Snap token, status transaksi, signature |
-| `MidtransPaymentStatusService` | Mapping status Midtrans ke status pembayaran internal |
+| `MidtransPaymentStatusService` | Mapping status Midtrans ke status internal |
 
 ## 3. Refactoring yang Sudah Selesai
 
 ### 3.1 Pemesanan Backbone
 
-Sebelum:
+**Sebelum:** Souvenir dan homestay punya flow order terpisah.
 
-- Souvenir dan homestay berpotensi punya flow order terpisah.
+**Sesudah:** Semua order masuk `pemesanans`. Detail order masuk `detail_pemesanans`. `jenis_pemesanan` membedakan `souvenir` dan `homestay`.
 
-Sesudah:
-
-- Semua order masuk ke `pemesanans`.
-- Detail order masuk ke `detail_pemesanans`.
-- `jenis_pemesanan` membedakan `souvenir` dan `homestay`.
-
-Manfaat:
-
-- Riwayat pesanan user lebih konsisten.
-- Payment bisa dipakai untuk souvenir dan homestay.
-- Report bisa membaca data dari struktur yang sama.
-
-Status: **selesai**.
+**Manfaat:** Riwayat konsisten, payment reusable, report dari struktur sama.
 
 ### 3.2 Checkout Souvenir
 
-Sebelum:
+**Sebelum:** Checkout belum bentuk pemesanan lengkap.
 
-- Checkout belum membentuk pemesanan yang lengkap.
-
-Sesudah:
-
-- Keranjang dikonversi ke pemesanan.
-- Detail item disalin ke `detail_pemesanans`.
-- Stok divalidasi sebelum checkout.
-- Keranjang dikosongkan setelah checkout.
-- User langsung masuk halaman pembayaran.
-
-Status: **selesai**.
+**Sesudah:** Keranjang → pemesanan → detail_pemesanan. Validasi stok. Kosongkan keranjang. Redirect ke pembayaran.
 
 ### 3.3 Payment Core
 
-Sebelum:
+**Sebelum:** Belum ada record pembayaran stabil.
 
-- Belum ada record pembayaran yang stabil.
-
-Sesudah:
-
-- Ada tabel `pembayarans`.
-- User bisa upload bukti pembayaran manual.
-- Admin bisa verifikasi/tolak.
-- Verifikasi sukses update status pemesanan.
-- Stok souvenir berkurang sekali saja.
-- Rejected payment tidak mengurangi stok.
-
-Status: **selesai**.
+**Sesudah:** Tabel `pembayarans`. User upload bukti + Midtrans. Admin verify/reject. Settlement idempotent (stok berkurang sekali). Rejected tidak kurangi stok.
 
 ### 3.4 Homestay Booking
 
-Sebelum:
+**Sebelum:** Reservasi belum terhubung ke backbone pemesanan.
 
-- Reservasi belum terhubung ke backbone pemesanan.
-
-Sesudah:
-
-- Booking homestay memakai `pemesanans` dan `detail_pemesanans`.
-- Validasi check-in, check-out, dan jumlah tamu.
-- Hitung jumlah malam dan subtotal.
-- Setelah booking, user langsung masuk halaman pembayaran.
-
-Status: **selesai**.
+**Sesudah:** Booking pakai `pemesanans` + `detail_pemesanans`. Validasi tanggal, kapasitas, overlap. Hitung malam + subtotal. Redirect ke pembayaran. `DB::transaction()` + `lockForUpdate()` cegah double booking.
 
 ### 3.5 Admin Reservation Management
 
-Sebelum:
+**Sebelum:** Admin belum punya kontrol reservasi.
 
-- Admin belum punya kontrol reservasi homestay berbasis pemesanan.
-
-Sesudah:
-
-- Admin bisa melihat list/detail reservasi.
-- Admin bisa update status reservasi.
-- Filter status tersedia.
-- Homestay yang masih punya reservasi aktif tidak bisa dihapus sembarangan.
-
-Status: **selesai**.
+**Sesudah:** Admin lihat list/detail, update status, filter, verify/reject payment. Homestay dengan reservasi aktif tidak bisa dihapus.
 
 ### 3.6 Report dan PDF
 
-Sebelum:
+**Sebelum:** Laporan belum hitung transaksi valid.
 
-- Laporan belum menghitung data transaksi valid.
-
-Sesudah:
-
-- Admin bisa melihat summary pendapatan terverifikasi.
-- Ada laporan penjualan souvenir.
-- Ada laporan reservasi homestay.
-- Ada filter tanggal.
-- Ada unduh PDF memakai DomPDF.
-
-Status: **selesai**.
+**Sesudah:** Summary pendapatan, penjualan souvenir, reservasi, filter tanggal, unduh PDF DomPDF.
 
 ### 3.7 Invoice
 
-Sebelum:
+**Sebelum:** Invoice sempat di-skip.
 
-- Invoice Sprint 4 sempat di-skip agar flow reservasi dan pembayaran selesai lebih dulu.
-
-Sesudah:
-
-- Ada tabel `invoices` dan model `Invoice`.
-- Invoice dibuat otomatis setelah pembayaran valid melalui `PaymentSettlementService`.
-- Nomor invoice memakai format `INV-YYYYMMDD-0001`.
-- Customer dapat membuka invoice dari detail pesanan.
-- Admin dapat membuka invoice dari detail pembayaran souvenir dan detail reservasi homestay.
-- Invoice dapat dicetak melalui browser print.
-- Test invoice mencakup akses customer/admin, proteksi akses, homestay, dan anti-duplikasi.
-
-Status: **selesai**.
+**Sesudah:** Tabel `invoices`. Auto-generate setelah payment settlement. Nomor format `INV-YYYYMMDD-NNNN`. Customer/admin lihat HTML + PDF (DomPDF). Test anti-duplikasi.
 
 ### 3.8 Midtrans Sandbox
 
-Sebelum:
+**Sebelum:** Payment hanya manual.
 
-- Payment hanya manual.
-- Belum ada gateway online.
-
-Sesudah:
-
-- Midtrans Sandbox aktif.
-- User bisa membuka Snap popup.
-- Sistem menyimpan order id, snap token, status transaksi, payment type, VA/payment code.
-- Webhook notification tersedia.
-- Fallback cek status tersedia untuk localhost.
-- Settlement sukses memakai `PaymentSettlementService`.
-- Metode pembayaran terkunci setelah memilih Midtrans.
-- Manual transfer tidak bisa menimpa Midtrans.
-- Setelah pembayaran sukses/pending, user diarahkan ke riwayat pesanan.
-
-Status: **selesai secara kode, perlu UAT browser untuk dua flow: souvenir dan homestay**.
+**Sesudah:** Snap popup, order id, snap token, webhook, fallback cek status. Settlement via `PaymentSettlementService`. Metode pembayaran terkunci setelah pilih Midtrans. Manual tidak bisa timpa Midtrans, dan sebaliknya.
 
 ### 3.9 Image Upload
 
-Sebelum:
+**Sebelum:** Upload raw, besar, tidak seragam.
 
-- Upload gambar raw berpotensi besar dan tidak seragam.
-
-Sesudah:
-
-- Upload gambar melewati `ImageUploadService`.
-- Gambar di-resize.
-- Upload baru disimpan sebagai WebP.
-- Dipakai pada profil, homestay, souvenir, dan bukti pembayaran.
-
-Status: **selesai**.
+**Sesudah:** Via `ImageUploadService` — resize, WebP. Berlaku untuk profil, homestay, souvenir, bukti bayar.
 
 ### 3.10 Role Access
 
-Sebelum:
+**Sebelum:** Hanya kolom `users.role`.
 
-- Role hanya mengandalkan kolom `users.role`.
+**Sesudah:** Spatie `^8.1` + `HasRoles`. Kolom `users.role` jadi fallback. Test role ada.
 
-Sesudah:
+### 3.11 Ulasan (Review/Rating)
 
-- Spatie Laravel Permission dipakai.
-- Kolom `users.role` tetap jadi fallback agar data lama aman.
-- Test role sudah ada.
+**Sebelum:** Belum ada fitur review.
 
-Status: **selesai**.
+**Sesudah:** Model `Ulasan`. Customer beri rating + komentar per item pesanan setelah pembayaran terverifikasi. `updateOrCreate` cegah duplikasi. Homepage + dashboard tampilkan rating.
+
+### 3.12 Fasilitas Homestay
+
+**Sebelum:** Belum ada fitur fasilitas.
+
+**Sesudah:** Model `Fasilitas`. CRUD admin. Relasi many-to-many dengan homestay. Hapus ditolak jika masih dipakai.
+
+### 3.13 Public Homepage
+
+**Sebelum:** Root route redirect ke login/dashboard.
+
+**Sesudah:** Halaman `welcome` dengan hero, daftar homestay, souvenir terlaris, statistik, ulasan terbaru.
+
+### 3.14 Email Verification + Password Reset
+
+**Sebelum:** Belum ada verifikasi email.
+
+**Sesudah:** Kirim email via Mailtrap SMTP saat register. Signed URL verification. Middleware `verified.email` untuk akses booking/pembayaran. Resend notification. Password reset via `Password::broker()`.
+
+### 3.15 Invoice PDF menggunakan DomPDF
+
+**Sebelum:** Invoice hanya cetak browser.
+
+**Sesudah:** `InvoiceController::buildPdf()` pakai `Barryvdh\DomPDF\Facade\Pdf`. Download PDF A4 portrait untuk customer dan admin.
 
 ## 4. Test Coverage Saat Ini
 
 Feature test aktif:
-
-- Admin reservation.
-- Homestay booking.
-- Homestay CRUD/filter.
-- Kategori homestay.
-- Laporan dan PDF.
-- Midtrans payment.
-- Pembayaran manual/admin verification.
-- Pemesanan relation.
-- Role permission.
-- Souvenir checkout.
-- Souvenir CRUD/filter/detail/cart.
-
-Status terakhir:
-
-```bash
-php artisan test
-# 95 passed
-```
-
-Quality gate:
-
-```bash
-vendor\bin\pint --dirty
-npm run build
-git diff --check
-```
-
-Status terakhir:
-
-```text
-Pint passed
-Build passed
-Diff check clean
-```
+- Admin reservation
+- Homestay booking (date overlap + lock)
+- Homestay CRUD/filter
+- Kategori homestay
+- Fasilitas CRUD
+- Laporan PDF
+- Midtrans payment (Snap, webhook, settlement)
+- Pembayaran manual + admin verification
+- Pemesanan relation
+- Role permission
+- Souvenir checkout
+- Souvenir CRUD/filter/detail/cart
+- Ulasan (review)
 
 ## 5. Prioritas Refactoring Berikutnya
 
-### Prioritas 1 - Sprint 9 QA Final
+### Prioritas 1 — Email Transaksional
+Buat Mailable/Notification untuk:
+- Konfirmasi pembayaran sukses
+- Konfirmasi booking homestay
+- Invoice
 
-Wajib sebelum tambah fitur:
+### Prioritas 2 — Queue
+Pindahkan email + proses berat ke queue (infrastruktur sudah siap).
 
-- Test manual flow souvenir dari katalog sampai pembayaran.
-- Test manual flow homestay dari booking sampai pembayaran.
-- Cek riwayat pesanan setelah pembayaran.
-- Cek status pembayaran pending/sukses/gagal.
-- Cek admin pembayaran.
-- Cek admin reservasi.
-- Cek laporan PDF.
+### Prioritas 3 — Search/Filter Lanjutan
+Search homestay dan souvenir, filter harga, filter tanggal.
 
-Status: **belum**.
+### Prioritas 4 — Midtrans Production
+Aktivasi merchant, ganti key production, uji end-to-end.
 
-### Prioritas 2 - Rapikan Risiko Security
+## 6. Kesimpulan
 
-Yang perlu dicek:
-
-- Pastikan `.env.example` tidak menyimpan key Midtrans asli.
-- Pastikan `.env` tetap gitignored.
-- Pastikan upload file hanya menerima format aman.
-- Pastikan admin route tetap dibatasi role admin.
-
-Status: **belum final**.
-
-### Prioritas 3 - Invoice Customer
-
-Invoice customer/admin sudah diselesaikan.
-
-- Tabel `invoices` tersedia.
-- Invoice digenerate setelah pembayaran valid.
-- Customer dan admin dapat melihat invoice.
-- Browser print tersedia.
-- Test invoice sudah ditambahkan.
-
-Status: **selesai**.
-
-### Prioritas 4 - Optional Scope
-
-Opsional setelah MVP stabil:
-
-- Public homepage.
-- Fasilitas homestay.
-- Ulasan/rating.
-- Email notification.
-- Perbaikan UI mikro.
-- Search/filter tambahan.
-
-Status: **belum**.
-
-## 6. Commit Message yang Relevan
-
-Commit Sprint 8 payment flow:
-
-```bash
-fix: improve midtrans payment flow and order history redirect
-```
-
-Commit jika nanti update dokumentasi:
-
-```bash
-docs: sync project documentation with sprint 8 progress
-```
-
-Commit jika nanti security env example:
-
-```bash
-chore: replace midtrans example keys with placeholders
-```
-
-## 7. Kesimpulan
-
-Refactoring utama sudah membuat project lebih konsisten:
-
-- Satu backbone order untuk souvenir dan homestay.
-- Payment manual dan Midtrans memakai data pembayaran yang sama.
-- Settlement pembayaran aman dari pengurangan stok ganda.
-- Report membaca pembayaran terverifikasi.
-- Test coverage sudah cukup kuat untuk MVP.
-
-Langkah paling aman berikutnya adalah Sprint 9: **QA final dan polish**, bukan menambah fitur besar dulu.
+Refactoring utama sudah membuat project konsisten:
+- Satu backbone order untuk souvenir dan homestay
+- Payment manual dan Midtrans sharing data pembayaran
+- Settlement aman dari pengurangan stok ganda (idempotent)
+- Report membaca pembayaran terverifikasi
+- Invoice otomatis, bisa PDF
+- Ulasan dan fasilitas sudah jalan
+- Email verifikasi + password reset via Mailtrap
+- Public homepage dengan info lengkap
+- Test coverage cukup kuat untuk final PBL

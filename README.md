@@ -1,195 +1,209 @@
-# Sistem Informasi Homestay dan Souvenir (SIMHOSUV)
+# SIMHOSUV — Sistem Informasi Homestay dan Souvenir
 
 ![Laravel](https://img.shields.io/badge/Laravel-13.x-FF2D20?logo=laravel&logoColor=white)
 ![PHP](https://img.shields.io/badge/PHP-8.3+-777BB4?logo=php&logoColor=white)
-![Blade](https://img.shields.io/badge/Blade-Laravel%20Blade-FF2D20)
-![Tailwind](https://img.shields.io/badge/TailwindCSS-4.2+-38BDF8?logo=tailwindcss&logoColor=white)
 ![Midtrans](https://img.shields.io/badge/Midtrans-Sandbox-00AEEF)
-![Tests](https://img.shields.io/badge/Tests-95%20Passed-2EA44F)
+![Mailtrap](https://img.shields.io/badge/Mailtrap-SMTP_Sandbox-00D09C)
+![Tests](https://img.shields.io/badge/Tests-Passing-2EA44F)
 
-Sistem Informasi Manajemen Homestay dan Penjualan Souvenir Berbasis Web pada Natasha Homestay & Harau Souvenir adalah aplikasi Laravel untuk membantu pengelolaan homestay, penjualan souvenir, pemesanan, pembayaran, reservasi, dan laporan usaha secara terintegrasi.
+Sistem Informasi Manajemen Homestay dan Penjualan Souvenir Berbasis Web pada **Natasha Homestay & Harau Souvenir**. Aplikasi Laravel untuk pengelolaan homestay, penjualan souvenir, pemesanan, pembayaran (manual + Midtrans), reservasi, invoice, laporan, dan ulasan.
 
-Status implementasi saat ini: **Sprint 9 polish aktif**. Project sudah memiliki auth, role admin/customer, CRUD homestay dan souvenir, katalog customer, keranjang, checkout, pemesanan, pembayaran manual, invoice, Midtrans Sandbox, admin reservasi, laporan PDF, kalender ketersediaan homestay, dan test feature untuk modul utama.
-
----
-
-## Deskripsi Proyek
-
-Pengelolaan homestay dan penjualan souvenir secara manual dapat menimbulkan kendala seperti pencatatan reservasi yang tidak rapi, stok souvenir tidak terpantau, pembayaran sulit diverifikasi, dan laporan usaha sulit disusun.
-
-SIMHOSUV dibuat untuk membantu proses tersebut agar lebih terstruktur. Customer dapat melihat katalog, melakukan booking homestay, membeli souvenir, membayar pesanan, dan melihat riwayat pesanan. Admin dapat mengelola data master, memantau pembayaran, mengatur status reservasi, serta mengunduh laporan PDF.
-
-## Tujuan Sistem
-
-- Menyediakan informasi homestay dan souvenir secara online.
-- Memudahkan customer melakukan booking homestay.
-- Memudahkan customer membeli souvenir melalui keranjang dan checkout.
-- Memproses pembayaran manual dan Midtrans Sandbox.
-- Membantu admin mengelola homestay, kategori, souvenir, pembayaran, reservasi, dan laporan.
-- Menyediakan dokumentasi dan test agar project lebih siap untuk demo PBL.
-
-## Aktor Sistem
-
-| Aktor | Hak Akses |
-| --- | --- |
-| Customer | Register, login, melihat katalog homestay/souvenir, booking homestay, checkout souvenir, pembayaran, melihat riwayat pesanan |
-| Admin | Login, dashboard admin, CRUD kategori homestay, CRUD homestay, CRUD souvenir, pembayaran souvenir, reservasi homestay, laporan PDF |
-| Sistem | Membuat kode pemesanan, menghitung total, validasi stok, sinkron status Midtrans, update stok setelah pembayaran berhasil |
-
-## Fitur Sistem
-
-### Fitur Customer
-
-| Fitur | Status |
-| --- | --- |
-| Login dan register | Selesai |
-| Manajemen profil | Selesai |
-| Katalog homestay dengan filter | Selesai |
-| Booking homestay | Selesai |
-| Katalog dan detail souvenir | Selesai |
-| Keranjang souvenir | Selesai |
-| Checkout souvenir | Selesai |
-| Pembayaran manual | Selesai |
-| Pembayaran Midtrans Sandbox | Selesai secara kode |
-| Riwayat dan detail pesanan | Selesai |
-| Invoice customer | Selesai |
-
-### Fitur Admin
-
-| Fitur | Status |
-| --- | --- |
-| Dashboard statistik database | Selesai |
-| Manajemen kategori homestay | Selesai |
-| Manajemen homestay | Selesai |
-| Manajemen souvenir | Selesai |
-| Manajemen pembayaran souvenir | Selesai |
-| Manajemen reservasi homestay | Selesai |
-| Laporan dan unduh PDF | Selesai |
-| Akses invoice admin | Selesai |
-
-### Fitur Teknis
-
-| Fitur | Status |
-| --- | --- |
-| Role admin/customer dengan Spatie Permission dan fallback `users.role` | Selesai |
-| Optimasi upload gambar dengan Intervention Image | Selesai |
-| Payment settlement agar stok tidak berkurang ganda | Selesai |
-| Invoice otomatis setelah pembayaran valid | Selesai |
-| Webhook Midtrans dan fallback cek status | Selesai |
-| Test feature Laravel/Pest | Selesai |
-| GitHub Actions testing dan linting | Tersedia |
-
-### Fitur Belum / Opsional
-
-| Fitur | Status |
-| --- | --- |
-| Public homepage | Opsional Sprint 9 |
-| Ulasan/rating | Opsional Sprint 9 |
-| Fasilitas homestay | Opsional Sprint 9 |
-| Midtrans Production | Belum, butuh aktivasi merchant |
+**Sprint terkini:** Sprint 9 — Polish and Optional Scope.
 
 ---
 
-## Alur Utama Sistem
+## Daftar Isi
 
-### Alur Pembelian Souvenir
-
-1. Customer login.
-2. Customer membuka katalog souvenir.
-3. Customer melihat detail souvenir.
-4. Customer menambahkan souvenir ke keranjang.
-5. Customer checkout dan memilih metode pengiriman.
-6. Sistem membuat `pemesanans` dan `detail_pemesanans`.
-7. Customer diarahkan ke halaman pembayaran.
-8. Customer memilih transfer manual atau Midtrans.
-9. Setelah pembayaran selesai, customer diarahkan ke riwayat pesanan.
-10. Jika pembayaran terverifikasi, stok souvenir berkurang satu kali.
-
-### Alur Reservasi Homestay
-
-1. Customer login.
-2. Customer membuka katalog homestay.
-3. Customer memilih homestay.
-4. Customer mengisi check-in, check-out, jumlah tamu, dan catatan.
-5. Sistem menghitung jumlah malam dan total harga.
-6. Sistem membuat pemesanan homestay.
-7. Customer diarahkan ke halaman pembayaran.
-8. Admin dapat memantau dan memperbarui status reservasi.
-
-### Alur Pembayaran Midtrans
-
-1. Customer membuka halaman pembayaran.
-2. Customer memilih Midtrans Online.
-3. Sistem membuat Snap token.
-4. Popup Midtrans Sandbox tampil.
-5. Setelah Midtrans dipilih, metode pembayaran dikunci ke Midtrans.
-6. Sistem menerima webhook atau customer menekan cek status sebagai fallback.
-7. Jika settlement/capture sukses, payment diverifikasi otomatis.
-8. Jika deny/expire/cancel/failure, payment ditolak dan stok tidak berubah.
+- [Fitur Utama](#fitur-utama)
+- [Role Pengguna](#role-pengguna)
+- [Teknologi](#teknologi)
+- [Dependency Utama](#dependency-utama)
+- [External Services](#external-services)
+- [Persyaratan Sistem](#persyaratan-sistem)
+- [Instalasi Cepat](#instalasi-cepat)
+- [Konfigurasi](#konfigurasi)
+- [Migration dan Seeder](#migration-dan-seeder)
+- [Menjalankan Aplikasi](#menjalankan-aplikasi)
+- [Akun Demo](#akun-demo)
+- [Testing](#testing)
+- [Screenshots](#screenshots)
+- [Struktur Project](#struktur-project)
+- [Dokumentasi](#dokumentasi)
+- [Troubleshooting](#troubleshooting)
+- [Tim Pengembang](#tim-pengembang)
+- [Lisensi](#lisensi)
 
 ---
 
-## Teknologi yang Digunakan
+## Fitur Utama
+
+### Publik (Guest)
+- Homepage dengan hero, homestay, souvenir, statistik, dan ulasan
+- Login, register, lupa password
+
+### Customer
+- Dashboard dengan ringkasan
+- Katalog homestay + filter + booking (dengan kalender ketersediaan)
+- Katalog souvenir + detail + keranjang + checkout
+- Pembayaran: **Midtrans Online** (Snap, webhook, fallback) atau **Manual** (transfer_bank, qris_manual, tunai)
+- Riwayat pesanan + detail
+- Invoice + PDF (DomPDF)
+- Ulasan/rating per item
+- Manajemen profil + foto
+- Email verification (wajib sebelum booking/pembayaran)
+- Halaman informasi: FAQ, cara pemesanan, kebijakan privasi, syarat ketentuan
+
+### Admin
+- Dashboard dengan statistik komprehensif (pendapatan, tren, popular, dll)
+- CRUD: homestay, kategori, fasilitas, souvenir, user
+- Manajemen pembayaran (verify/reject/status/complete)
+- Manajemen reservasi (status, verify/reject payment)
+- Laporan + unduh PDF (filter tanggal)
+- Invoice customer view + PDF
+- Notifikasi transaksi baru
+
+### Sistem
+- Role Spatie Permission + fallback `users.role`
+- Payment settlement idempotent (`DB::transaction` + `lockForUpdate`)
+- Stok souvenir berkurang sekali saat verifikasi
+- Invoice auto-generate (`INV-YYYYMMDD-NNNN`)
+- Webhook Midtrans + fallback cek status
+- Optimasi upload gambar (WebP, resize via Intervention Image)
+- Email via Mailtrap SMTP (verifikasi, reset password)
+
+---
+
+## Role Pengguna
+
+| Role | Hak Akses |
+| --- | --- |
+| **Admin** | Dashboard, CRUD, pembayaran, reservasi, laporan, invoice, notifikasi |
+| **Customer** | Katalog, booking, keranjang, checkout, pembayaran, riwayat, invoice, ulasan, profil |
+
+---
+
+## Teknologi
 
 | Komponen | Teknologi |
 | --- | --- |
 | Backend Framework | Laravel 13 |
-| Bahasa Backend | PHP 8.3+ |
-| Frontend | Laravel Blade |
-| Styling | Tailwind CSS 4 |
-| Build Tool | Vite |
+| Bahasa | PHP 8.3+ |
+| Frontend | Laravel Blade + Tailwind CSS 4 |
+| Build Tool | Vite 8 |
 | Database | MySQL |
-| Auth | Custom AuthController |
-| Role | Spatie Laravel Permission |
-| Payment Gateway | Midtrans Sandbox |
-| PDF | Laravel DomPDF |
-| Image Processing | Intervention Image |
-| Testing | Pest dan PHPUnit |
-| Formatter | Laravel Pint |
+| Auth | Custom AuthController (email verification) |
+| Role | Spatie Laravel Permission 8.1 |
+| Payment Gateway | Midtrans Sandbox 2.6 |
+| PDF | Laravel DomPDF 3.1 |
+| Image Processing | Intervention Image 4.0 |
+| Email | Mailtrap SMTP Sandbox |
+| Testing | Pest 4.6 + PHPUnit |
+| Formatter | Laravel Pint 1.27 |
 | CI | GitHub Actions |
 
 ---
 
-## Instalasi Singkat
+## Dependency Utama
 
-### 1. Clone Repository
+### Backend (`composer.json`)
+| Package | Versi | Fungsi |
+| --- | --- | --- |
+| `laravel/framework` | ^13.0 | Core framework |
+| `spatie/laravel-permission` | ^8.1 | Role dan permission |
+| `barryvdh/laravel-dompdf` | ^3.1 | PDF generation |
+| `midtrans/midtrans-php` | ^2.6 | Payment gateway SDK |
+| `intervention/image-laravel` | ^4.0 | Image optimization |
+
+### Frontend (`package.json`)
+| Package | Versi | Fungsi |
+| --- | --- | --- |
+| `tailwindcss` | ^4.2.4 | CSS framework |
+| `vite` | ^8.0.0 | Build tool |
+| `laravel-vite-plugin` | ^3.0.0 | Laravel+Vite integration |
+
+---
+
+## External Services
+
+### Mailtrap (Email Sandbox)
+Project menggunakan **Mailtrap SMTP Sandbox** untuk mengirim email verifikasi dan reset password saat development/testing.
+
+**Fungsi:**
+- Verifikasi email pengguna baru (wajib sebelum akses booking/pembayaran)
+- Reset password / lupa password
+
+**Konfigurasi SMTP:**
+```env
+MAIL_MAILER=smtp
+MAIL_HOST=sandbox.smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=your_mailtrap_username
+MAIL_PASSWORD=your_mailtrap_password
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS="noreply@example.com"
+MAIL_FROM_NAME="${APP_NAME}"
+```
+
+**Cara mulai:**
+1. Daftar di [Mailtrap.io](https://mailtrap.io)
+2. Buka Email Testing → buat inbox
+3. Salin SMTP credentials ke `.env`
+4. Jalankan `php artisan optimize:clear`
+
+### Midtrans (Payment Gateway)
+**Fungsi:** Pembayaran online via Snap popup (Sandbox).
+
+**Konfigurasi:**
+```env
+MIDTRANS_SERVER_KEY=Mid-server-xxxxx
+MIDTRANS_CLIENT_KEY=Mid-client-xxxxx
+MIDTRANS_IS_PRODUCTION=false
+```
+
+---
+
+## Persyaratan Sistem
+
+- PHP 8.3+
+- Composer
+- Node.js 20+ dan NPM
+- MySQL/MariaDB
+- Git
+- Ekstensi PHP: `pdo_mysql`, `mbstring`, `fileinfo`, `openssl`, `curl`, `gd`, `xml`, `ctype`, `json`
+
+---
+
+## Instalasi Cepat
 
 ```bash
+# Clone
 git clone https://github.com/xayy28/pentathree-app.git
 cd pentathree-app
-```
 
-### 2. Install Dependency
-
-```bash
+# Install dependency
 composer install
 npm install
-```
 
-### 3. Konfigurasi Environment
-
-```bash
-cp .env.example .env
+# Setup environment
+copy .env.example .env
 php artisan key:generate
+
+# Konfigurasi database di .env, lalu:
+php artisan migrate --seed
+php artisan storage:link
+
+# Jalankan
+php artisan serve
+npm run dev
 ```
 
-Untuk Windows PowerShell:
+Akses: `http://127.0.0.1:8000`
 
-```powershell
-Copy-Item .env.example .env
-php artisan key:generate
-```
+---
 
-### 4. Konfigurasi Database
+## Konfigurasi
 
-Buat database MySQL:
-
-```sql
-CREATE DATABASE pentathree_app;
-```
-
-Sesuaikan `.env`:
-
+### Database
 ```env
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
@@ -199,10 +213,7 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-### 5. Konfigurasi Midtrans Sandbox
-
-Isi key Sandbox dari dashboard Midtrans:
-
+### Midtrans
 ```env
 MIDTRANS_SERVER_KEY=Mid-server-xxxxx
 MIDTRANS_CLIENT_KEY=Mid-client-xxxxx
@@ -211,31 +222,49 @@ MIDTRANS_IS_SANITIZED=true
 MIDTRANS_IS_3DS=true
 ```
 
-Jangan commit key asli ke repository.
+### Mailtrap
+```env
+MAIL_MAILER=smtp
+MAIL_HOST=sandbox.smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=your_mailtrap_username
+MAIL_PASSWORD=your_mailtrap_password
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS="noreply@example.com"
+MAIL_FROM_NAME="${APP_NAME}"
+```
 
-### 6. Migrasi dan Seeder
+Lihat [docs/instalation.md](docs/instalation.md) untuk panduan lengkap.
+
+---
+
+## Migration dan Seeder
 
 ```bash
 php artisan migrate --seed
 php artisan storage:link
 ```
 
-### 7. Jalankan Aplikasi
+---
+
+## Menjalankan Aplikasi
 
 ```bash
+# Backend
 php artisan serve
+
+# Frontend (development)
 npm run dev
-```
 
-Akses:
-
-```text
-http://127.0.0.1:8000
+# Atau sekali jalan
+composer run dev
 ```
 
 ---
 
 ## Akun Demo
+
+Setelah `php artisan db:seed`:
 
 | Role | Email | Password |
 | --- | --- | --- |
@@ -244,144 +273,119 @@ http://127.0.0.1:8000
 
 ---
 
-## Testing dan Quality Gate
-
-Jalankan test:
+## Testing
 
 ```bash
 php artisan test
-```
 
-Format kode:
-
-```bash
+# Format kode
 vendor\bin\pint --dirty
-```
 
-Build asset:
-
-```bash
+# Build asset
 npm run build
-```
 
-Cek whitespace:
-
-```bash
+# Cek whitespace
 git diff --check
 ```
 
-Status terakhir:
-
-```text
-php artisan test        = 95 passed
-vendor\bin\pint --dirty = passed
-npm run build           = passed
-git diff --check        = clean
-```
-
 ---
 
-## Struktur Project
-
-```text
-pentathree-app/
-|-- app/
-|   |-- Http/Controllers/
-|   |-- Http/Middleware/
-|   |-- Models/
-|   `-- Services/
-|-- bootstrap/
-|-- config/
-|-- database/
-|   |-- migrations/
-|   `-- seeders/
-|-- docs/
-|   |-- screenshot/
-|   |-- dependency.md
-|   |-- features.md
-|   |-- github_actions.md
-|   |-- instalation.md
-|   `-- refactoring.md
-|-- public/
-|-- resources/
-|   |-- css/
-|   |-- js/
-|   `-- views/
-|-- routes/
-|-- storage/
-|-- tests/
-|-- README.md
-|-- composer.json
-`-- package.json
-```
-
----
-
-## Dokumentasi Proyek
-
-| Dokumen | Keterangan |
-| --- | --- |
-| [docs/features.md](docs/features.md) | Dokumentasi fitur utama |
-| [docs/instalation.md](docs/instalation.md) | Panduan instalasi dan konfigurasi |
-| [docs/dependency.md](docs/dependency.md) | Analisis dependency project |
-| [docs/refactoring.md](docs/refactoring.md) | Dokumentasi refactoring dan progress teknis |
-| [docs/github_actions.md](docs/github_actions.md) | Dokumentasi GitHub Actions |
-
----
-
-## Screenshot Hasil Project
-
-Screenshot berikut diambil dari hasil project lokal pada `http://127.0.0.1:8000`.
+## Screenshots
 
 | Halaman | Preview |
 | --- | --- |
 | Login | <img src="docs/screenshot/login.png" width="720" alt="Login"> |
 | Register | <img src="docs/screenshot/register.png" width="720" alt="Register"> |
 | Dashboard Customer | <img src="docs/screenshot/customer-dashboard.png" width="720" alt="Dashboard Customer"> |
-| Profil User | <img src="docs/screenshot/profile.png" width="720" alt="Profil User"> |
 | Katalog Homestay | <img src="docs/screenshot/katalog-homestay.png" width="720" alt="Katalog Homestay"> |
 | Booking Homestay | <img src="docs/screenshot/booking-homestay.png" width="720" alt="Booking Homestay"> |
 | Katalog Souvenir | <img src="docs/screenshot/katalog-souvenir.png" width="720" alt="Katalog Souvenir"> |
 | Detail Souvenir | <img src="docs/screenshot/detail-souvenir.png" width="720" alt="Detail Souvenir"> |
-| Keranjang Souvenir | <img src="docs/screenshot/keranjang.png" width="720" alt="Keranjang Souvenir"> |
-| Checkout Souvenir | <img src="docs/screenshot/checkout-souvenir.png" width="720" alt="Checkout Souvenir"> |
-| Pembayaran Customer | <img src="docs/screenshot/pembayaran.png" width="720" alt="Pembayaran Customer"> |
-| Webhook Midtrans | <img src="docs/screenshot/webhook-midtrans.png" width="720" alt="Webhook Midtrans"> |
-| Riwayat Pesanan | <img src="docs/screenshot/riwayat-pesanan.png" width="720" alt="Riwayat Pesanan"> |
-| Detail Pesanan | <img src="docs/screenshot/detail-pesanan.png" width="720" alt="Detail Pesanan"> |
-| Dashboard Admin | <img src="docs/screenshot/admin-dashboard.png" width="720" alt="Dashboard Admin"> |
-| Admin Kategori Homestay | <img src="docs/screenshot/admin-kategori-homestay.png" width="720" alt="Admin Kategori Homestay"> |
+| Keranjang | <img src="docs/screenshot/keranjang.png" width="720" alt="Keranjang"> |
+| Checkout | <img src="docs/screenshot/checkout-souvenir.png" width="720" alt="Checkout"> |
+| Pembayaran | <img src="docs/screenshot/pembayaran.png" width="720" alt="Pembayaran"> |
+| Webhook Midtrans | <img src="docs/screenshot/webhook-midtrans.png" width="720" alt="Webhook"> |
+| Riwayat Pesanan | <img src="docs/screenshot/riwayat-pesanan.png" width="720" alt="Riwayat"> |
+| Dashboard Admin | <img src="docs/screenshot/admin-dashboard.png" width="720" alt="Admin Dashboard"> |
 | Admin Homestay | <img src="docs/screenshot/admin-homestay.png" width="720" alt="Admin Homestay"> |
+| Admin Kategori | <img src="docs/screenshot/admin-kategori-homestay.png" width="720" alt="Admin Kategori"> |
 | Admin Souvenir | <img src="docs/screenshot/admin-souvenir.png" width="720" alt="Admin Souvenir"> |
 | Admin Pembayaran | <img src="docs/screenshot/admin-pembayaran.png" width="720" alt="Admin Pembayaran"> |
 | Admin Detail Pembayaran | <img src="docs/screenshot/admin-detail-pembayaran.png" width="720" alt="Admin Detail Pembayaran"> |
 | Admin Reservasi | <img src="docs/screenshot/admin-reservasi.png" width="720" alt="Admin Reservasi"> |
 | Admin Laporan | <img src="docs/screenshot/admin-laporan.png" width="720" alt="Admin Laporan"> |
-| Role dan Hak Akses | <img src="docs/screenshot/hak-akses.png" width="720" alt="Role dan Hak Akses"> |
-| Optimasi Upload Gambar | <img src="docs/screenshot/upload-gambar.png" width="720" alt="Optimasi Upload Gambar"> |
-| Testing Quality Gate | <img src="docs/screenshot/testing.png" width="720" alt="Testing Quality Gate"> |
+
+---
+
+## Struktur Project
+
+```
+pentathree-app/
+├── app/
+│   ├── Http/Controllers/    # Admin, Pelanggan, Auth, Invoice, Webhook, dll
+│   ├── Http/Middleware/      # RoleMiddleware, EnsureEmailIsVerified
+│   ├── Models/               # User, Homestay, Souvenir, Pemesanan, dll
+│   └── Services/             # PaymentSettlement, Midtrans, ImageUpload
+├── bootstrap/
+├── config/
+├── database/
+│   ├── migrations/
+│   └── seeders/
+├── docs/
+│   ├── screenshot/           # Screenshot aplikasi
+│   ├── dependency.md
+│   ├── features.md
+│   ├── github_actions.md
+│   ├── instalation.md
+│   └── refactoring.md
+├── public/
+├── resources/views/          # Blade templates
+├── routes/
+│   └── web.php               # Semua route aplikasi
+├── tests/                    # Feature tests (Pest)
+├── .env.example
+├── README.md
+├── composer.json
+└── package.json
+```
+
+---
+
+## Dokumentasi
+
+| Dokumen | Deskripsi |
+| --- | --- |
+| [docs/features.md](docs/features.md) | Dokumentasi fitur per role |
+| [docs/instalation.md](docs/instalation.md) | Panduan instalasi lengkap + Mailtrap |
+| [docs/dependency.md](docs/dependency.md) | Analisis dependency + external service |
+| [docs/refactoring.md](docs/refactoring.md) | Catatan refactoring dan progress teknis |
+| [docs/github_actions.md](docs/github_actions.md) | Dokumentasi CI/CD pipeline |
+
+---
+
+## Troubleshooting
+
+| Masalah | Solusi |
+| --- | --- |
+| Table not found | `php artisan migrate` |
+| Gambar tidak muncul | `php artisan storage:link` |
+| Midtrans 401 | `php artisan config:clear` — cek server key |
+| Email tidak masuk | Cek `.env` Mailtrap, `php artisan optimize:clear` |
+| Halaman tidak berubah | `php artisan view:cache && php artisan config:clear` |
+| Test gagal | `php artisan test` untuk lihat detail error |
 
 ---
 
 ## Progress Sprint
 
-| Sprint | Nama | Status |
-| --- | --- | --- |
-| Sprint 0 | Stabilization | Done |
-| Sprint 1 | Pemesanan Core | Done |
-| Sprint 2 | Souvenir Checkout | Done |
-| Sprint 3 | Payment Core | Done |
-| Sprint 4 | Invoice | Done |
-| Sprint 5 | Homestay Booking | Done |
-| Sprint 6 | Admin Reservation Management | Done |
-| Sprint 6.5 | Stabilization and Demo Readiness | Done |
-| Sprint 7 | Reports | Done |
-| Sprint 8 | Midtrans Sandbox Integration | Done secara kode |
-| Sprint 9 | Polish and Optional Scope | Next |
+| Sprint | Status |
+| --- | --- |
+| Sprint 0–8 (MVP Core) | Selesai |
+| Sprint 9 (Polish & Optional) | Aktif |
 
 ---
 
-## Tim Pengembang - Kelompok PentaThree
+## Tim Pengembang — PentaThree
 
 | Nama | Peran |
 | --- | --- |
@@ -395,8 +399,8 @@ Screenshot berikut diambil dari hasil project lokal pada `http://127.0.0.1:8000`
 
 ## Status Akademik
 
-Project ini dikembangkan untuk memenuhi tugas **Project Based Learning (PBL)** pada mata kuliah **Konstruksi dan Evolusi Perangkat Lunak**, Program Studi **D4 Teknologi Rekayasa Perangkat Lunak**, Jurusan **Teknologi Informasi**, **Politeknik Negeri Padang**.
+Project ini dikembangkan untuk **Project Based Learning (PBL)** — **Konstruksi dan Evolusi Perangkat Lunak**, **D4 Teknologi Rekayasa Perangkat Lunak**, **Politeknik Negeri Padang**.
 
 ## Lisensi
 
-Project ini dikembangkan untuk tujuan akademik dan pembelajaran. Seluruh kode sumber dalam repository ini digunakan sebagai bagian dari kegiatan Project Based Learning (PBL).
+Tujuan akademik dan pembelajaran.

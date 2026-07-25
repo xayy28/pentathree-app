@@ -1,6 +1,6 @@
 # Analisis Dependency Project PentaThree SIMHOSUV
 
-Terakhir diperbarui: 2026-07-02
+Terakhir diperbarui: 2026-07-26
 
 Dokumen ini menjelaskan dependency yang dipakai pada project **Sistem Informasi Manajemen Homestay dan Penjualan Souvenir Berbasis Web pada Natasha Homestay & Harau Souvenir** berdasarkan kondisi kode terbaru.
 
@@ -8,202 +8,146 @@ Dokumen ini menjelaskan dependency yang dipakai pada project **Sistem Informasi 
 
 | Dependency | Package | Status | Penggunaan di project |
 | --- | --- | --- | --- |
-| Laravel Framework | `laravel/framework:^13.0` | Digunakan | Core backend, routing, controller, model, migration, validation, Blade |
-| Laravel Breeze | `laravel/breeze:^2.4` | Terpasang dev dependency | Pendukung scaffolding auth, tetapi auth aktif tetap custom memakai `AuthController` |
-| Spatie Laravel Permission | `spatie/laravel-permission:^8.1` | Digunakan | Role admin/user melalui `HasRoles`, tabel permission, dan fallback `users.role` |
-| Laravel DomPDF | `barryvdh/laravel-dompdf:^3.1` | Digunakan | Unduh laporan admin dalam format PDF |
+| Laravel Framework | `laravel/framework:^13.0` | Digunakan | Core backend, routing, controller, model, migration, validation, Blade, email, queue |
+| Spatie Laravel Permission | `spatie/laravel-permission:^8.1` | Digunakan | Role admin/user melalui `HasRoles`, tabel permission, fallback `users.role` |
+| Laravel DomPDF | `barryvdh/laravel-dompdf:^3.1` | Digunakan | Unduh laporan admin PDF + invoice customer PDF |
 | Midtrans PHP SDK | `midtrans/midtrans-php:^2.6` | Digunakan Sandbox | Snap token, webhook notification, cek status transaksi |
-| Intervention Image Laravel | `intervention/image-laravel:^4.0` | Digunakan | Resize/optimasi upload gambar melalui `ImageUploadService` |
-| Tailwind CSS | `tailwindcss:^4.2.4` | Digunakan | Styling halaman admin dan user |
+| Intervention Image Laravel | `intervention/image-laravel:^4.0` | Digunakan | Resize/optimasi upload gambar via `ImageUploadService` |
+| Tailwind CSS | `tailwindcss:^4.2.4` | Digunakan | Styling halaman admin dan pelanggan |
 | Vite | `vite:^8.0.0` | Digunakan | Build frontend asset |
 | Laravel Vite Plugin | `laravel-vite-plugin:^3.0.0` | Digunakan | Integrasi asset Laravel dan Vite |
 | Pest | `pestphp/pest:^4.6` | Digunakan | Feature/unit test |
 | Laravel Pint | `laravel/pint:^1.27` | Digunakan | Format kode PHP |
 | Mockery | `mockery/mockery:^1.6` | Digunakan | Mock service pada test Midtrans |
+| Laravel Breeze | `laravel/breeze:^2.4` | Dev dependency | Scaffolding auth, tetapi auth aktif custom `AuthController` |
+| Mailtrap | External Service via SMTP | Digunakan | SMTP sandbox untuk email verifikasi dan password reset |
 
-## 2. Dependency PHP Utama
+## 2. Backend Dependencies
 
-### 2.1 Laravel Framework
+### 2.1 Laravel Framework `^13.0`
 
-Laravel menjadi pondasi utama aplikasi. Fitur Laravel yang aktif:
+**Fungsi:** Pondasi utama aplikasi.
 
-- Routing web di `routes/web.php`.
-- Controller admin dan pelanggan.
-- Eloquent model untuk user, homestay, souvenir, keranjang, pemesanan, detail pemesanan, dan pembayaran.
-- Migration database.
-- Blade view.
-- Validation request.
-- Session, cache, queue, dan storage.
+**Bagian project yang menggunakan:**
+- Routing web di `routes/web.php`
+- Controller admin (`Admin\*`) dan pelanggan (`Pelanggan\*`)
+- Eloquent model: `User`, `Homestay`, `Souvenir`, `Keranjang`, `KeranjangItem`, `Pemesanan`, `DetailPemesanan`, `Pembayaran`, `Invoice`, `Ulasan`, `Fasilitas`, `KategoriHomestay`
+- Migration database
+- Blade view engine
+- Validation request
+- Session, cache, queue, storage
+- Email via Mailtrap SMTP (verifikasi email + password reset)
+- Queue (tersedia secara infrastruktur, belum digunakan aktif)
+- Authentication scaffolding (custom)
 
-Status: **digunakan penuh**.
+**Tipe:** Utama (`require`)
 
-### 2.2 Laravel Breeze
+### 2.2 Laravel Breeze `^2.4`
 
-Breeze sudah ada di `require-dev`, tetapi project tidak memakai ulang scaffold Breeze secara penuh. Alur autentikasi aktif tetap custom:
+**Fungsi:** Scaffolding authentication.
 
-- `app/Http/Controllers/AuthController.php`
-- `resources/views/auth/login.blade.php`
-- `resources/views/auth/register.blade.php`
-- `routes/web.php`
+**Bagian project yang menggunakan:**
+- Tidak digunakan secara langsung. Auth aktif memakai custom `AuthController`, `ForgotPasswordController`, `ResetPasswordController`, `EmailVerificationController`.
 
-Alasan:
+**Catatan:**
+- Breeze tetap terpasang sebagai dev dependency, tetapi project tidak menjalankan `php artisan breeze:install` agar tidak menimpa auth custom.
+- Tidak ada file Breeze yang di-override.
 
-- Project memakai field lokal seperti `nama`, `no_hp`, `alamat`, dan `role`.
-- Redirect login berbeda antara admin dan user.
-- UI sudah disesuaikan dengan kebutuhan project.
+**Tipe:** Development (`require-dev`)
 
-Status: **terpasang sebagai dependency development, tidak dijalankan ulang agar tidak menimpa auth custom**.
+### 2.3 Spatie Laravel Permission `^8.1`
 
-### 2.3 Spatie Laravel Permission
+**Fungsi:** Role dan permission admin/user.
 
-Spatie digunakan untuk role admin dan user.
+**Bagian project yang menggunakan:**
+- Model `User` memakai trait `Spatie\Permission\Traits\HasRoles`
+- Migration `create_permission_tables` (tabel: `roles`, `permissions`, `model_has_roles`, `role_has_permissions`, `model_has_permissions`)
+- Seeder `RoleSeeder` dan `DatabaseSeeder` membuat role `admin` dan `user`
+- Register user meng-assign role `user`
+- Middleware `RoleMiddleware` — fallback ke kolom legacy `users.role` jika Spatie tables belum tersedia
 
-Implementasi aktif:
-
-- Model `User` memakai trait `Spatie\Permission\Traits\HasRoles`.
-- Migration permission tersedia melalui `create_permission_tables`.
-- Seeder membuat role `admin` dan `user`.
-- Register user meng-assign role user.
-- Middleware role tetap punya fallback ke kolom legacy `users.role`.
-
-File terkait:
-
+**File terkait:**
 - `app/Models/User.php`
 - `app/Http/Middleware/RoleMiddleware.php`
 - `database/migrations/2026_06_29_212459_create_permission_tables.php`
+- `database/seeders/RoleSeeder.php`
 - `database/seeders/DatabaseSeeder.php`
 - `tests/Feature/RolePermissionTest.php`
 
-Status: **digunakan**.
+**Tipe:** Utama (`require`)
 
-### 2.4 Laravel DomPDF
+### 2.4 Laravel DomPDF `^3.1`
 
-DomPDF dipakai untuk fitur laporan PDF admin.
+**Fungsi:** Generate dokumen PDF dari HTML Blade.
 
-Implementasi aktif:
+**Bagian project yang menggunakan:**
+- **Admin Laporan PDF:** `Admin\LaporanController::downloadPdf()` — filter tanggal, ringkasan pendapatan, penjualan souvenir, reservasi homestay
+- **Invoice Customer/Admin PDF:** `InvoiceController::buildPdf()` — invoice format A4 portrait
+- Template PDF: `resources/views/invoices/pdf.blade.php`, `resources/views/admin/laporan/pdf.blade.php`
 
-- Admin membuka halaman laporan.
-- Admin bisa filter tanggal laporan.
-- Admin bisa unduh laporan dalam format PDF.
-- PDF dibuat dari Blade khusus laporan.
-
-File terkait:
-
+**File terkait:**
 - `app/Http/Controllers/Admin/LaporanController.php`
-- `resources/views/admin/laporan/index.blade.php`
+- `app/Http/Controllers/InvoiceController.php`
 - `resources/views/admin/laporan/pdf.blade.php`
+- `resources/views/invoices/pdf.blade.php`
 - `tests/Feature/LaporanTest.php`
 
-Catatan penting:
+**Tipe:** Utama (`require`)
 
-- DomPDF saat ini dipakai untuk **laporan**, bukan invoice customer.
-- Invoice customer sudah tersedia sebagai halaman cetak browser setelah pembayaran valid.
+### 2.5 Midtrans PHP SDK `^2.6`
 
-Status: **digunakan**.
+**Fungsi:** Payment gateway online via Midtrans Sandbox.
 
-### 2.5 Midtrans PHP SDK
+**Bagian project yang menggunakan:**
+- Konfigurasi di `config/midtrans.php`
+- Endpoint membuat Snap token untuk popup pembayaran
+- Webhook notification handler di `MidtransWebhookController`
+- Fallback cek status transaksi via `Pelanggan\MidtransPaymentController::status()`
+- Settlement otomatis via `PaymentSettlementService` (update stok souvenir, invoice issuance)
+- Metode pembayaran dikunci setelah user memilih Midtrans
 
-Midtrans dipakai dalam mode Sandbox untuk pembayaran online.
+**Environment variable:**
+```
+MIDTRANS_SERVER_KEY=
+MIDTRANS_CLIENT_KEY=
+MIDTRANS_IS_PRODUCTION=false
+MIDTRANS_IS_SANITIZED=true
+MIDTRANS_IS_3DS=true
+```
 
-Implementasi aktif:
+**Catatan:**
+- Sandbox dipakai untuk demo PBL tanpa uang asli
+- Jangan commit key asli ke repository
+- Production membutuhkan aktivasi merchant dan dokumen bisnis
+- Untuk localhost, webhook Midtrans tidak selalu bisa masuk; tersedia fallback cek status
 
-- Konfigurasi Midtrans di `config/midtrans.php`.
-- Env key: `MIDTRANS_SERVER_KEY`, `MIDTRANS_CLIENT_KEY`, `MIDTRANS_IS_PRODUCTION`, `MIDTRANS_IS_SANITIZED`, `MIDTRANS_IS_3DS`.
-- Endpoint membuat Snap token.
-- Snap popup di halaman pembayaran pelanggan.
-- Webhook notification dari Midtrans.
-- Fallback cek status transaksi untuk localhost.
-- Pembayaran sukses memakai logic settlement yang sama dengan verifikasi payment core.
-- Metode pembayaran dikunci setelah user memilih Midtrans.
-- Manual transfer tidak bisa menimpa pembayaran Midtrans.
-- Setelah pembayaran selesai, user diarahkan ke riwayat pesanan.
+**Tipe:** Utama (`require`)
 
-File terkait:
+### 2.6 Intervention Image Laravel `^4.0`
 
-- `config/midtrans.php`
-- `app/Services/MidtransPaymentService.php`
-- `app/Services/MidtransPaymentStatusService.php`
-- `app/Services/PaymentSettlementService.php`
-- `app/Http/Controllers/Pelanggan/MidtransPaymentController.php`
-- `app/Http/Controllers/MidtransWebhookController.php`
-- `resources/views/pelanggan/pembayaran/create.blade.php`
-- `tests/Feature/MidtransPaymentTest.php`
+**Fungsi:** Optimasi dan resize gambar upload.
 
-Catatan Sandbox:
+**Bagian project yang menggunakan:**
+- Upload foto profil user (`ProfileController`)
+- Upload foto homestay (`Admin\HomestayController`)
+- Upload foto souvenir (`Admin\SouvenirController`)
+- Upload bukti pembayaran (`Pelanggan\PembayaranController`)
+- Semua upload melewati `ImageUploadService` — resize, konversi ke WebP
 
-- Sandbox bisa dipakai untuk demo PBL tanpa uang asli.
-- Key Sandbox jangan di-hardcode di kode.
-- Production membutuhkan aktivasi merchant dan dokumen owner/bisnis.
-- Untuk localhost, webhook Midtrans tidak selalu bisa masuk. Gunakan tombol/status check fallback.
-
-Status: **digunakan Sandbox**.
-
-### 2.6 Intervention Image Laravel
-
-Intervention Image dipakai untuk optimasi gambar upload.
-
-Implementasi aktif:
-
-- Upload foto profil.
-- Upload foto homestay.
-- Upload foto souvenir.
-- Upload bukti pembayaran.
-- Resize dengan batas ukuran.
-- Output disimpan sebagai WebP untuk upload baru.
-
-File terkait:
-
+**File terkait:**
 - `app/Services/ImageUploadService.php`
 - `app/Http/Controllers/ProfileController.php`
 - `app/Http/Controllers/Admin/HomestayController.php`
 - `app/Http/Controllers/Admin/SouvenirController.php`
 - `app/Http/Controllers/Pelanggan/PembayaranController.php`
 
-Status: **digunakan**.
+**Tipe:** Utama (`require`)
 
-## 3. Dependency Frontend
+### 2.7 Pest `^4.6` + Pest Plugin Laravel `^4.1`
 
-### 3.1 Tailwind CSS
+**Fungsi:** Test runner dan assertion library.
 
-Tailwind digunakan langsung pada Blade untuk membangun UI admin dan user.
-
-Area yang memakai Tailwind:
-
-- Dashboard.
-- Katalog homestay.
-- Katalog souvenir.
-- Detail souvenir.
-- Keranjang dan checkout.
-- Pembayaran.
-- Riwayat pesanan.
-- Admin CRUD.
-- Admin pembayaran.
-- Admin reservasi.
-- Admin laporan.
-
-Status: **digunakan**.
-
-### 3.2 Vite dan Laravel Vite Plugin
-
-Vite dipakai untuk build asset frontend.
-
-Command utama:
-
-```bash
-npm run dev
-npm run build
-```
-
-Status: **digunakan**.
-
-## 4. Dependency Testing dan Quality Gate
-
-### 4.1 Pest
-
-Pest dipakai sebagai test runner.
-
-Test aktif:
-
+**Test aktif (13 file feature test):**
 - `AdminReservasiTest`
 - `HomestayBookingTest`
 - `HomestayTest`
@@ -215,56 +159,171 @@ Test aktif:
 - `RolePermissionTest`
 - `SouvenirCheckoutTest`
 - `SouvenirTest`
+- (tambah: `FasilitasTest`, `UlasanTest` jika sudah ada)
 
-Status terakhir:
+**Tipe:** Development (`require-dev`)
 
-```bash
-php artisan test
-# 95 passed
-```
+### 2.8 Laravel Pint `^1.27`
 
-### 4.2 Laravel Pint
+**Fungsi:** Format kode PHP sesuai standar.
 
-Pint dipakai untuk format kode PHP.
-
-Command:
-
+**Command:**
 ```bash
 vendor\bin\pint --dirty
 ```
 
-Status terakhir: **passed**.
+**Tipe:** Development (`require-dev`)
 
-### 4.3 Vite Build
+### 2.9 Mockery `^1.6`
 
-Command:
+**Fungsi:** Mocking framework untuk test PHP.
 
+**Bagian project yang menggunakan:**
+- Test Midtrans (mock Snap token, payload webhook)
+
+**Tipe:** Development (`require-dev`)
+
+### 2.10 Dependency Pendukung Lainnya
+
+| Package | Tipe | Fungsi |
+| --- | --- | --- |
+| `laravel/tinker:^3.0` | Utama | REPL interaktif Laravel |
+| `fakerphp/faker:^1.23` | Dev | Generator data palsu untuk seeder/test |
+| `laravel/pail:^1.2.5` | Dev | Log viewer realtime di terminal |
+| `nunomaduro/collision:^8.6` | Dev | Error handler yang lebih informatif |
+
+## 3. Frontend Dependencies
+
+### 3.1 Tailwind CSS `^4.2.4`
+
+**Fungsi:** Utility-first CSS framework.
+
+**Bagian project yang menggunakan:**
+- Semua halaman admin: dashboard, CRUD, pembayaran, reservasi, laporan
+- Semua halaman pelanggan: dashboard, katalog, booking, keranjang, checkout, pembayaran, riwayat pesanan, profil, homepage
+- Halaman publik: welcome, informasi (FAQ, cara pemesanan, kebijakan privasi, syarat ketentuan)
+- Auth pages: login, register, forgot-password, reset-password, verify-email
+
+**Plugin:**
+- `@tailwindcss/vite:^4.2.4` — integrasi dengan Vite
+
+### 3.2 Vite `^8.0.0`
+
+**Fungsi:** Build tool frontend.
+
+**Command:**
 ```bash
-npm run build
+npm run dev   # development server
+npm run build # production build
 ```
 
-Status terakhir: **passed**.
+**Plugin:**
+- `laravel-vite-plugin:^3.0.0` — integrasi asset Laravel
 
-## 5. Dependency yang Belum atau Tidak Dipakai
+### 3.3 Concurrently `^9.0.1`
+
+**Fungsi:** Menjalankan multiple command secara paralel.
+
+**Digunakan di:** `composer run dev` — menjalankan `php artisan serve`, `php artisan queue:listen`, dan `npm run dev` secara bersamaan.
+
+## 4. External Services
+
+### 4.1 Mailtrap
+
+**Fungsi:** SMTP sandbox untuk pengujian email.
+
+**Fitur yang menggunakan email:**
+- Verifikasi email pengguna baru (wajib sebelum akses booking/pembayaran)
+- Password reset / lupa password
+- Notifikasi verifikasi email dikirim ulang
+
+**Cara project terhubung:**
+- SMTP: `sandbox.smtp.mailtrap.io:2525`
+- TLS encryption
+- Username dan password dari Mailtrap inbox
+- Tidak menggunakan Laravel Queue — email dikirim sinkron
+
+**Environment variable:**
+```env
+MAIL_MAILER=smtp
+MAIL_HOST=sandbox.smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=your_mailtrap_username
+MAIL_PASSWORD=your_mailtrap_password
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS="noreply@example.com"
+MAIL_FROM_NAME="${APP_NAME}"
+```
+
+**Cara menguji email:**
+1. Buka [Mailtrap.io](https://mailtrap.io) dan login
+2. Buka Email Testing → pilih inbox
+3. Salin SMTP credentials ke `.env`
+4. Jalankan aplikasi
+5. Register akun baru → email verifikasi akan masuk ke inbox Mailtrap
+6. Klik link verifikasi untuk mengaktifkan akun
+7. Coba fitur lupa password → email reset akan masuk ke inbox yang sama
+
+**Troubleshooting:**
+- Email tidak masuk: cek `.env` sudah benar, jalankan `php artisan optimize:clear`
+- Port SMTP salah: pastikan port 2525 (bukan 587 atau 465)
+- Credential salah: regenerasi dari dashboard Mailtrap
+- `MAIL_FROM_ADDRESS` tidak diisi: beberapa email provider menolak
+- Cache config: `php artisan config:clear`
+
+### 4.2 Midtrans Sandbox
+
+(Lihat bagian 2.5)
+
+## 5. Dependency Testing dan Quality Gate
+
+### 5.1 Test Suite
+
+**Test runner:** Pest (via `php artisan test`)
+
+**Feature test aktif:**
+- Admin reservation
+- Homestay booking + overlap detection
+- Homestay CRUD + filter
+- Kategori homestay
+- Fasilitas CRUD
+- Laporan PDF
+- Midtrans payment (Snap token, webhook, settlement)
+- Pembayaran manual + admin verification + settlement
+- Pemesanan relations
+- Role permission
+- Souvenir checkout
+- Souvenir CRUD + filter + detail + cart
+- Ulasan (review/rating)
+
+### 5.2 Quality Gate
+
+| Command | Fungsi |
+| --- | --- |
+| `php artisan test` | Jalankan seluruh test suite |
+| `vendor/bin/pint --dirty` | Format kode PHP |
+| `npm run build` | Build asset frontend |
+| `git diff --check` | Cek whitespace error |
+
+## 6. Dependency yang Tidak Digunakan
 
 | Dependency/Fitur | Status | Catatan |
 | --- | --- | --- |
-| Font Awesome | Belum terpasang | UI saat ini tidak bergantung ke Font Awesome |
-| Invoice customer | Sudah dibuat | Menggunakan Blade dan browser print; DomPDF tetap dipakai untuk laporan |
-| Midtrans Production | Belum | Butuh aktivasi merchant dan dokumen owner/bisnis |
-| Email notification | Belum | Opsional untuk sprint polish |
-| Ulasan/rating | Belum | Opsional setelah order/reservasi selesai |
-| Fasilitas homestay | Belum | Opsional jika dosen meminta detail fasilitas |
+| Laravel Breeze scaffold | Tidak dipakai untuk auth | Auth custom tetap dipakai |
+| Queue | Infrastruktur siap | Tidak ada Job class, tidak ada dispatch |
+| Scheduler | Tidak dikonfigurasi | Tidak ada task terjadwal |
+| Midtrans Production | Belum aktif | Butuh aktivasi merchant |
+| Mailtrap Production (sending) | Belum | Masih sandbox untuk testing |
 
-## 6. Kesimpulan
+## 7. Kesimpulan
 
-Dependency utama project sudah sesuai dengan progress terbaru:
-
-- Auth custom tetap dipakai, Breeze hanya dependency development.
-- Role sudah memakai Spatie dengan fallback kolom `users.role`.
-- Laporan PDF sudah memakai DomPDF.
-- Upload gambar sudah memakai Intervention Image.
-- Payment gateway sudah memakai Midtrans Sandbox.
-- Test dan build sudah memakai Pest, Pint, dan Vite.
-
-Project saat ini sudah melewati Sprint 8. Sprint berikutnya adalah Sprint 9 untuk polish, QA final, dan fitur opsional.
+Dependency utama project sudah sesuai dengan implementasi terbaru:
+- Laravel 13 sebagai core framework
+- Spatie Permission untuk role admin/user
+- DomPDF untuk laporan dan invoice PDF
+- Midtrans Sandbox untuk payment gateway
+- Intervention Image untuk optimasi upload gambar
+- Mailtrap SMTP untuk email verifikasi dan password reset
+- Pest + Pint + Vite untuk test, format, dan build
+- Fasilitas CRUD, Ulasan, Homepage publik sudah berjalan
+- Email verification dan password reset aktif via Mailtrap

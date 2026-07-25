@@ -2,656 +2,689 @@
 
 Dokumen ini menjelaskan fitur-fitur utama pada project **PentaThree SIMHOSUV - Sistem Informasi Manajemen Homestay dan Penjualan Souvenir Berbasis Web pada Natasha Homestay & Harau Souvenir**.
 
-Terakhir diperbarui: 2026-07-02
+Terakhir diperbarui: 2026-07-26
 
 ---
 
-## 1. Login
+## Fitur Guest (Belum Login)
 
-### Tujuan Fitur
+### 1. Public Homepage
 
-Fitur login digunakan agar admin dan pelanggan dapat masuk ke sistem menggunakan akun yang sudah terdaftar.
+**Tujuan:** Halaman utama publik yang menampilkan informasi homestay, souvenir, dan ulasan tanpa login.
 
-### Aktor
+**Aktor:** Guest, Customer, Admin
 
-- Admin
-- Customer
+**Alur:**
+Guest membuka URL root. Sistem menampilkan hero section, daftar homestay tersedia (max 3), daftar souvenir terlaris (max 4), statistik total (homestay, souvenir, user, rating), dan ulasan terbaru rating >= 4. Guest dapat login/register dari halaman ini.
 
-### Alur Fitur
+**Route:**
+- `GET /` — `name: home`
+- Controller: Closure di `routes/web.php`
+- View: `resources/views/welcome.blade.php`
 
-User membuka halaman login, lalu memasukkan email dan kata sandi. Sistem memvalidasi data login melalui `AuthController`. Jika data benar, sistem membuat session login dan mengarahkan user sesuai role. Admin diarahkan ke dashboard admin, sedangkan customer diarahkan ke dashboard customer. Jika data salah, sistem menampilkan pesan error dan user tetap berada di halaman login.
+---
 
-### Route / Controller Terkait
+### 2. Login
 
-- Route: `GET /login`
-- Route: `POST /login`
+**Tujuan:** Admin dan pelanggan masuk ke sistem.
+
+**Aktor:** Admin, Customer
+
+**Alur:**
+User membuka halaman login, memasukkan email dan password. `AuthController::login()` memvalidasi, membuat session, redirect berdasarkan role (admin → `/admin/dashboard`, user → `/dashboard`).
+
+**Route:**
+- `GET /login` — `name: login`
+- `POST /login`
 - Controller: `AuthController`
 - View: `resources/views/auth/login.blade.php`
 
-### Screenshot Fitur
-
-![Screenshot Login](screenshot/login.png)
+**Screenshot:** `screenshot/login.png`
 
 ---
 
-## 2. Register
+### 3. Register
 
-### Tujuan Fitur
+**Tujuan:** Customer membuat akun baru.
 
-Fitur register digunakan agar customer dapat membuat akun baru sebelum melakukan pembelian souvenir atau reservasi homestay.
+**Aktor:** Customer
 
-### Aktor
+**Alur:**
+Customer mengisi nama, email, no HP, alamat, password, konfirmasi password. `AuthController::register()` validasi, simpan ke `users`, assign role `user` via Spatie, kirim email verifikasi via Mailtrap.
 
-- Customer
-
-### Alur Fitur
-
-Customer membuka halaman register, lalu mengisi data akun seperti nama, email, nomor HP, alamat, kata sandi, dan konfirmasi kata sandi. Sistem memvalidasi data input, menyimpan akun baru ke tabel `users`, mengatur role customer, dan menyiapkan akun agar dapat digunakan untuk login.
-
-### Route / Controller Terkait
-
-- Route: `GET /register`
-- Route: `POST /register`
+**Route:**
+- `GET /register` — `name: register`
+- `POST /register`
 - Controller: `AuthController`
 - View: `resources/views/auth/register.blade.php`
 
-### Screenshot Fitur
-
-![Screenshot Register](screenshot/register.png)
+**Screenshot:** `screenshot/register.png`
 
 ---
 
-## 3. Dashboard Admin
+### 4. Lupa Password
 
-### Tujuan Fitur
+**Tujuan:** Customer mereset password melalui email.
 
-Dashboard admin digunakan untuk menampilkan ringkasan data operasional sistem secara cepat.
+**Aktor:** Customer, Admin
 
-### Aktor
+**Alur:**
+User memasukkan email terdaftar. `ForgotPasswordController::sendResetLinkEmail()` mengirim link reset via Mailtrap. User klik link, masuk halaman reset password, memasukkan password baru. `ResetPasswordController::reset()` memproses perubahan.
 
-- Admin
+**Route:**
+- `GET /forgot-password` — `name: password.request`
+- `POST /forgot-password` — `name: password.email`
+- `GET /reset-password/{token}` — `name: password.reset`
+- `POST /reset-password` — `name: password.update`
+- Controller: `ForgotPasswordController`, `ResetPasswordController`
+- View: `resources/views/auth/forgot-password.blade.php`, `resources/views/auth/reset-password.blade.php`
 
-### Alur Fitur
-
-Admin berhasil login lalu diarahkan ke dashboard admin. Sistem menampilkan data ringkasan seperti total homestay, homestay baru bulan ini, total souvenir, souvenir tersedia, total reservasi, reservasi aktif, pendapatan bulan ini dari pembayaran terverifikasi, pembayaran menunggu verifikasi, total user, dan user baru bulan ini. Data dashboard dihitung langsung dari database.
-
-### Route / Controller Terkait
-
-- Route: `GET /admin/dashboard`
-- Controller: Closure pada `routes/web.php`
-- View: `resources/views/admin/dashboard.blade.php`
-
-### Screenshot Fitur
-
-![Screenshot Dashboard Admin](screenshot/dashboard-admin.png)
+<!-- Screenshot: forgot-password.png -->
 
 ---
 
-## 4. Dashboard Customer
+## Fitur Customer (Setelah Login)
 
-### Tujuan Fitur
+### 5. Dashboard Customer
 
-Dashboard customer digunakan sebagai halaman awal customer setelah login.
+**Tujuan:** Halaman awal customer dengan ringkasan informasi.
 
-### Aktor
+**Aktor:** Customer
 
-- Customer
+**Alur:**
+Customer login → diarahkan ke `/dashboard`. Sistem menampilkan homestay tersedia (4), souvenir terlaris (4), total homestay/souvenir, pesanan aktif, pesanan terakhir, total ulasan, dan rating rata-rata.
 
-### Alur Fitur
-
-Customer berhasil login lalu diarahkan ke dashboard customer. Dari halaman ini customer dapat mengakses katalog homestay, katalog souvenir, keranjang, riwayat pesanan, dan menu profil.
-
-### Route / Controller Terkait
-
-- Route: `GET /dashboard`
-- Controller: Closure pada `routes/web.php`
+**Route:**
+- `GET /dashboard` — `name: dashboard`
 - View: `resources/views/pelanggan/dashboard.blade.php`
 
-### Screenshot Fitur
-
-![Screenshot Dashboard Customer](screenshot/dashboard-customer.png)
+**Screenshot:** `screenshot/dashboard-customer.png`
 
 ---
 
-## 5. Manajemen Profil
+### 6. Email Verification
 
-### Tujuan Fitur
+**Tujuan:** Memverifikasi email customer sebelum mengakses booking/pembayaran.
 
-Fitur profil digunakan agar user dapat melihat dan memperbarui data akun.
+**Aktor:** Customer, Sistem
 
-### Aktor
+**Alur:**
+Setelah register, sistem kirim email verifikasi via Mailtrap. Customer klik link signed URL. `EmailVerificationController::verify()` memvalidasi ID, hash, signature. Jika valid, `markEmailAsVerified()`. Akses ke rute booking/pembayaran dibatasi middleware `verified.email` sampai email terverifikasi. Customer bisa minta kirim ulang via `resend()`.
 
-- Admin
-- Customer
+**Route:**
+- `GET /email/verify` — `name: verification.notice`
+- `POST /email/verification-notification` — `name: verification.send` (throttle: 6,1)
+- `GET /email/verify/{id}/{hash}` — `name: verification.verify` (signed)
+- Controller: `EmailVerificationController`
+- View: `resources/views/auth/verify-email.blade.php`
 
-### Alur Fitur
+<!-- Screenshot: email-verification.png -->
 
-User membuka halaman profil untuk melihat data akun. User dapat mengubah data profil seperti nama, nomor HP, alamat, dan foto profil. User juga dapat mengganti password melalui halaman khusus. Upload foto diproses menggunakan `ImageUploadService` agar gambar lebih ringan dan tersimpan rapi.
+---
 
-### Route / Controller Terkait
+### 7. Manajemen Profil
 
-- Route: `GET /profile`
-- Route: `GET /profile/edit`
-- Route: `PUT /profile`
-- Route: `GET /profile/password/edit`
-- Route: `PUT /profile/password`
+**Tujuan:** User melihat/memperbarui data akun.
+
+**Aktor:** Admin, Customer
+
+**Alur:**
+User buka `/profile`, lihat data. Bisa ubah nama, no HP, alamat, foto profil (via `ImageUploadService` — resize, WebP). Bisa ganti password via halaman terpisah.
+
+**Route:**
+- `GET /profile` — `name: profile.show`
+- `GET /profile/edit` — `name: profile.edit`
+- `PUT /profile` — `name: profile.update`
+- `GET /profile/password/edit` — `name: profile.password.edit`
+- `PUT /profile/password` — `name: profile.password.update`
 - Controller: `ProfileController`
 
-### Screenshot Fitur
-
-![Screenshot Profil](screenshot/profil.png)
+**Screenshot:** `screenshot/profile.png`
 
 ---
 
-## 6. Manajemen Kategori Homestay
+### 8. Informasi Halaman
 
-### Tujuan Fitur
+**Tujuan:** Menyediakan halaman informasi untuk customer.
 
-Fitur kategori homestay digunakan agar admin dapat mengelompokkan data homestay berdasarkan jenis atau kategori.
+**Aktor:** Customer, Admin
 
-### Aktor
+**Halaman:**
+- FAQ — `GET /informasi/faq`
+- Cara Pemesanan — `GET /informasi/cara-pemesanan`
+- Kebijakan Privasi — `GET /informasi/kebijakan-privasi`
+- Syarat & Ketentuan — `GET /informasi/syarat-ketentuan`
+- Controller: `InformasiController`
 
-- Admin
-
-### Alur Fitur
-
-Admin membuka halaman kategori homestay. Sistem menampilkan daftar kategori yang sudah tersimpan. Admin dapat menambah kategori baru, mengubah data kategori, dan menghapus kategori. Jika kategori masih digunakan oleh data homestay, sistem mencegah penghapusan agar data homestay tidak rusak.
-
-### Route / Controller Terkait
-
-- Route: `GET /admin/kategori-homestay`
-- Route: `GET /admin/kategori-homestay/create`
-- Route: `POST /admin/kategori-homestay`
-- Route: `GET /admin/kategori-homestay/{kategori_id}/edit`
-- Route: `PUT /admin/kategori-homestay/{kategori_id}`
-- Route: `DELETE /admin/kategori-homestay/{kategori_id}`
-- Controller: `Admin\KategoriHomestayController`
-
-### Screenshot Fitur
-
-![Screenshot Kategori Homestay](screenshot/kategori-homestay.png)
+<!-- Screenshot: informasi-faq.png -->
 
 ---
 
-## 7. Manajemen Homestay
+### 9. Katalog Homestay
 
-### Tujuan Fitur
+**Tujuan:** Customer melihat daftar homestay tersedia.
 
-Fitur manajemen homestay digunakan agar admin dapat mengelola data penginapan yang ditawarkan kepada customer.
+**Aktor:** Customer
 
-### Aktor
+**Alur:**
+Customer buka `/homestay`. Sistem tampilkan daftar homestay dengan nama, kategori, harga/malam, kapasitas, status, foto, rating. Filter berdasarkan kategori, status, kapasitas.
 
-- Admin
-
-### Alur Fitur
-
-Admin membuka halaman homestay untuk melihat daftar homestay. Admin dapat memfilter data berdasarkan kategori dan status, menambah homestay, mengubah data homestay, mengupload foto, serta menghapus homestay. Sistem memvalidasi status homestay agar hanya memakai nilai yang diizinkan. Jika homestay masih memiliki reservasi aktif, sistem mencegah penghapusan data.
-
-### Route / Controller Terkait
-
-- Route: `GET /admin/homestay`
-- Route: `GET /admin/homestay/create`
-- Route: `POST /admin/homestay`
-- Route: `GET /admin/homestay/{homestay_id}/edit`
-- Route: `PUT /admin/homestay/{homestay_id}`
-- Route: `DELETE /admin/homestay/{homestay_id}`
-- Controller: `Admin\HomestayController`
-
-### Screenshot Fitur
-
-![Screenshot Manajemen Homestay](screenshot/admin-homestay.png)
-
----
-
-## 8. Manajemen Souvenir
-
-### Tujuan Fitur
-
-Fitur manajemen souvenir digunakan agar admin dapat mengelola produk souvenir yang dijual.
-
-### Aktor
-
-- Admin
-
-### Alur Fitur
-
-Admin membuka halaman souvenir untuk melihat daftar produk. Admin dapat menambah souvenir, mengubah data souvenir, mengupload foto, mengatur harga, stok, status, deskripsi, dan menghapus souvenir. Sistem juga menyimpan admin terakhir yang memperbarui data melalui field `updated_by`.
-
-### Route / Controller Terkait
-
-- Route: `GET /admin/souvenir`
-- Route: `GET /admin/souvenir/create`
-- Route: `POST /admin/souvenir`
-- Route: `GET /admin/souvenir/{souvenir_id}/edit`
-- Route: `PUT /admin/souvenir/{souvenir_id}`
-- Route: `DELETE /admin/souvenir/{souvenir_id}`
-- Controller: `Admin\SouvenirController`
-
-### Screenshot Fitur
-
-![Screenshot Manajemen Souvenir](screenshot/admin-souvenir.png)
-
----
-
-## 9. Katalog Homestay
-
-### Tujuan Fitur
-
-Katalog homestay digunakan agar customer dapat melihat daftar homestay yang tersedia sebelum melakukan booking.
-
-### Aktor
-
-- Customer
-
-### Alur Fitur
-
-Customer membuka halaman homestay. Sistem menampilkan daftar homestay lengkap dengan nama, kategori, harga per malam, kapasitas, status, detail, dan foto. Customer dapat menggunakan filter kategori, status, dan kapasitas tamu. Jika homestay tersedia, customer dapat melanjutkan ke halaman booking.
-
-### Route / Controller Terkait
-
-- Route: `GET /homestay`
+**Route:**
+- `GET /homestay` — `name: user.homestay`
+- `GET /homestay/{homestay_id}` — `name: user.homestay.show`
 - Controller: `Pelanggan\HomestayController`
-- View: `resources/views/pelanggan/homestay/index.blade.php`
+- View: `resources/views/pelanggan/homestay/index.blade.php`, `pelanggan/homestay/show.blade.php`
 
-### Screenshot Fitur
-
-![Screenshot Katalog Homestay](screenshot/katalog-homestay.png)
+**Screenshot:** `screenshot/katalog-homestay.png`
 
 ---
 
-## 10. Booking Homestay
+### 10. Booking Homestay
 
-### Tujuan Fitur
+**Tujuan:** Customer reservasi homestay dengan tanggal menginap.
 
-Fitur booking homestay digunakan agar customer dapat melakukan reservasi homestay berdasarkan tanggal menginap.
+**Aktor:** Customer (wajib email terverifikasi)
 
-### Aktor
+**Alur:**
+Customer pilih homestay → buka halaman booking → isi check-in, check-out, jumlah tamu, catatan. Sistem validasi: check-out > check-in, tamu <= kapasitas, tidak overlap booking aktif. Hitung jumlah malam + subtotal. `HomestayBookingController::store()` menggunakan `DB::transaction()` + `lockForUpdate()` untuk mencegah double booking. Setelah sukses, redirect ke halaman pembayaran.
 
-- Customer
+**Teknis:**
+- Date overlap: `check_in < check_out AND check_out > check_in` — hanya booking aktif (tidak dibatalkan/kedaluwarsa) yang memblokir
+- Menampilkan kalender tanggal terbooking via `bookedDates()`
+- Locking homestay row pakai `lockForUpdate()`
 
-### Alur Fitur
-
-Customer memilih homestay yang tersedia, lalu membuka halaman booking. Customer mengisi tanggal check-in, tanggal check-out, jumlah tamu, dan catatan opsional. Sistem memvalidasi tanggal, memastikan check-out setelah check-in, memastikan jumlah tamu tidak melebihi kapasitas, menghitung jumlah malam, dan menghitung total harga. Jika valid, sistem membuat data `pemesanans` dengan jenis `homestay` dan menyimpan detail booking ke `detail_pemesanans`. Setelah booking berhasil, customer langsung diarahkan ke halaman pembayaran.
-
-### Route / Controller Terkait
-
-- Route: `GET /homestay/{homestay_id}/booking`
-- Route: `POST /homestay/{homestay_id}/booking`
+**Route:**
+- `GET /homestay/{homestay_id}/booking` — `name: user.homestay.booking.create`
+- `POST /homestay/{homestay_id}/booking` — `name: user.homestay.booking.store`
 - Controller: `Pelanggan\HomestayBookingController`
 
-### Screenshot Fitur
-
-![Screenshot Booking Homestay](screenshot/booking-homestay.png)
+**Screenshot:** `screenshot/booking-homestay.png`
 
 ---
 
-## 11. Katalog dan Detail Souvenir
+### 11. Katalog dan Detail Souvenir
 
-### Tujuan Fitur
+**Tujuan:** Customer melihat produk souvenir.
 
-Fitur katalog dan detail souvenir digunakan agar customer dapat melihat produk souvenir yang tersedia sebelum membeli.
+**Aktor:** Customer
 
-### Aktor
+**Alur:**
+Customer buka `/souvenir`. Lihat daftar souvenir dengan foto, harga, stok, status, jumlah terjual. Filter status, lihat terlaris. Buka detail souvenir, lihat info lengkap, tambah ke keranjang atau pesan sekarang.
 
-- Customer
-
-### Alur Fitur
-
-Customer membuka halaman souvenir. Sistem menampilkan produk souvenir beserta harga, stok, status, foto, dan jumlah terjual. Customer dapat memfilter souvenir berdasarkan status dan melihat produk terlaris. Customer dapat membuka detail souvenir untuk melihat informasi lebih lengkap, lalu memilih tombol Tambahkan ke Keranjang atau Pesan Sekarang.
-
-### Route / Controller Terkait
-
-- Route: `GET /souvenir`
-- Route: `GET /souvenir/{souvenir_id}`
+**Route:**
+- `GET /souvenir` — `name: user.souvenir`
+- `GET /souvenir/{souvenir_id}` — `name: user.souvenir.show`
 - Controller: `Pelanggan\SouvenirController`
 
-### Screenshot Fitur
-
-![Screenshot Katalog Souvenir](screenshot/katalog-souvenir.png)
-
-![Screenshot Detail Souvenir](screenshot/detail-souvenir.png)
+**Screenshot:** `screenshot/katalog-souvenir.png`, `screenshot/detail-souvenir.png`
 
 ---
 
-## 12. Keranjang Souvenir
+### 12. Keranjang Souvenir
 
-### Tujuan Fitur
+**Tujuan:** Menyimpan sementara souvenir sebelum checkout.
 
-Fitur keranjang digunakan untuk menyimpan sementara souvenir yang ingin dibeli customer sebelum checkout.
+**Aktor:** Customer (wajib email terverifikasi)
 
-### Aktor
+**Alur:**
+Customer tambah souvenir dari halaman detail → sistem buat/update `KeranjangItem`. Customer buka `/cart` → lihat daftar item, ubah jumlah, hapus item, lanjut checkout. Validasi stok: jumlah tidak boleh melebihi stok.
 
-- Customer
-
-### Alur Fitur
-
-Customer menambahkan souvenir ke keranjang dari halaman detail souvenir. Sistem membuat atau memperbarui data keranjang customer. Customer dapat membuka halaman keranjang untuk melihat daftar item, mengubah jumlah, menghapus item, dan melanjutkan ke checkout. Sistem memvalidasi stok agar jumlah item di keranjang tidak melebihi stok souvenir.
-
-### Route / Controller Terkait
-
-- Route: `GET /cart`
-- Route: `POST /cart/add`
-- Route: `PUT /cart/update`
-- Route: `DELETE /cart/{id}`
+**Route:**
+- `GET /cart` — `name: cart.index`
+- `POST /cart/add` — `name: cart.add`
+- `PUT /cart/update` — `name: cart.update`
+- `DELETE /cart/{id}` — `name: cart.destroy`
 - Controller: `Pelanggan\KeranjangController`
 
-### Screenshot Fitur
-
-![Screenshot Keranjang](screenshot/keranjang.png)
+**Screenshot:** `screenshot/keranjang.png`
 
 ---
 
-## 13. Checkout Souvenir
+### 13. Checkout Souvenir
 
-### Tujuan Fitur
+**Tujuan:** Mengubah keranjang menjadi pemesanan.
 
-Fitur checkout digunakan untuk mengubah isi keranjang menjadi pemesanan souvenir.
+**Aktor:** Customer (wajib email terverifikasi)
 
-### Aktor
+**Alur:**
+Customer buka `/cart/checkout`. Sistem tampilkan ringkasan item, subtotal, biaya layanan, pilihan pengiriman, total. Proses checkout: validasi stok, buat `Pemesanan` (jenis souvenir), salin item keranjang ke `DetailPemesanan`, hitung total, kosongkan keranjang, redirect ke halaman pembayaran. Menggunakan `DB::transaction()`.
 
-- Customer
-
-### Alur Fitur
-
-Customer membuka halaman checkout dari keranjang. Sistem menampilkan ringkasan item, subtotal, biaya layanan, pilihan pengiriman, dan total tagihan. Customer memilih metode pengiriman seperti pickup, ekspedisi, atau instan. Saat checkout diproses, sistem memvalidasi stok, membuat data `pemesanans` dengan jenis `souvenir`, menyalin item keranjang ke `detail_pemesanans`, menghitung total harga, mengosongkan keranjang, lalu mengarahkan customer ke halaman pembayaran.
-
-### Route / Controller Terkait
-
-- Route: `GET /cart/checkout`
-- Route: `POST /cart/checkout`
+**Route:**
+- `GET /cart/checkout` — `name: checkout.index`
+- `POST /cart/checkout` — `name: checkout.store`
 - Controller: `Pelanggan\KeranjangController`
 
-### Screenshot Fitur
-
-![Screenshot Checkout Souvenir](screenshot/checkout-souvenir.png)
+**Screenshot:** `screenshot/checkout-souvenir.png`
 
 ---
 
-## 14. Pembayaran Customer
+### 14. Pembayaran Customer
 
-### Tujuan Fitur
+**Tujuan:** Customer membayar pemesanan souvenir atau homestay.
 
-Fitur pembayaran digunakan agar customer dapat membayar pemesanan souvenir atau reservasi homestay.
+**Aktor:** Customer, Sistem (wajib email terverifikasi)
 
-### Aktor
+**Alur:**
+Setelah booking/checkout, customer diarahkan ke halaman pembayaran. Customer pilih:
+- **Midtrans Online:** Sistem buat Snap token → popup Midtrans → webhook / fallback cek status → settlement otomatis
+- **Transfer Manual (3 metode):** `transfer_bank`, `qris_manual`, `tunai` → upload bukti pembayaran (jpeg/png/jpg/webp, max 2MB) → status `menunggu_verifikasi` → admin verifikasi
 
-- Customer
-- Sistem
+**Penguncian metode:**
+- Jika pilih Midtrans, metode dikunci (manual transfer tidak bisa menimpa)
+- Jika sudah upload manual, Midtrans ditolak dengan pesan
 
-### Alur Fitur
+**Settlement otomatis:** `PaymentSettlementService::verify()` pakai `DB::transaction()` + `lockForUpdate()` → kurangi stok souvenir → update status → buat invoice
 
-Setelah checkout souvenir atau booking homestay berhasil, customer langsung diarahkan ke halaman pembayaran. Customer dapat memilih Midtrans Online atau Transfer Manual. Jika memilih transfer manual, customer mengisi metode manual, jumlah bayar, dan mengupload bukti pembayaran. Jika memilih Midtrans, sistem membuat Snap token dan menampilkan popup pembayaran Midtrans Sandbox. Setelah Midtrans dipilih sekali, metode pembayaran dikunci ke Midtrans sehingga customer tidak dapat mengganti ke transfer manual. Setelah pembayaran terverifikasi, sistem menerbitkan invoice otomatis yang dapat dilihat customer dan admin. Setelah pembayaran sukses atau pending, customer diarahkan ke riwayat pesanan.
+**Route:**
+- `GET /pesanan/{pemesanan_id}/pembayaran` — `name: user.pembayaran.create`
+- `POST /pesanan/{pemesanan_id}/pembayaran` — `name: user.pembayaran.store`
+- `POST /pesanan/{pemesanan_id}/midtrans-token` — `name: user.pembayaran.midtrans.token`
+- `POST /pesanan/{pemesanan_id}/midtrans-status` — `name: user.pembayaran.midtrans.status`
+- Controller: `Pelanggan\PembayaranController`, `Pelanggan\MidtransPaymentController`
+- Service: `MidtransPaymentService`, `MidtransPaymentStatusService`, `PaymentSettlementService`
 
-### Route / Controller Terkait
-
-- Route: `GET /pesanan/{pemesanan_id}/pembayaran`
-- Route: `POST /pesanan/{pemesanan_id}/pembayaran`
-- Route: `POST /pesanan/{pemesanan_id}/midtrans-token`
-- Route: `POST /pesanan/{pemesanan_id}/midtrans-status`
-- Controller: `Pelanggan\PembayaranController`
-- Controller: `Pelanggan\MidtransPaymentController`
-- Service: `MidtransPaymentService`
-- Service: `MidtransPaymentStatusService`
-
-### Screenshot Fitur
-
-![Screenshot Pembayaran](screenshot/pembayaran.png)
+**Screenshot:** `screenshot/pembayaran.png`
 
 ---
 
-## 15. Invoice Customer dan Admin
+### 15. Riwayat Pesanan Customer
 
-### Tujuan Fitur
+**Tujuan:** Customer melihat daftar pemesanan.
 
-Fitur invoice digunakan sebagai bukti transaksi setelah pembayaran dinyatakan valid.
+**Aktor:** Customer
 
-### Aktor
+**Alur:**
+Customer buka `/pesanan`. Sistem tampilkan daftar pemesanan milik customer: kode pemesanan, jenis (souvenir/homestay), total harga, status pemesanan, status pembayaran, tanggal. Customer bisa buka detail, lihat item souvenir atau detail booking.
 
-- Customer
-- Admin
-- Sistem
+**Route:**
+- `GET /pesanan` — `name: user.pesanan.index`
+- `GET /pesanan/{pemesanan_id}` — `name: user.pesanan.show`
+- Controller: `Pelanggan\PemesananController`
 
-### Alur Fitur
+**Screenshot:** `screenshot/riwayat-pesanan.png`, `screenshot/detail-pesanan.png`
 
-Saat pembayaran manual diverifikasi admin atau pembayaran Midtrans sukses, sistem membuat invoice otomatis untuk pemesanan terkait. Nomor invoice dibuat dengan format `INV-YYYYMMDD-0001`. Customer dapat membuka invoice dari detail pesanan, sedangkan admin dapat membuka invoice dari detail pembayaran souvenir atau detail reservasi homestay. Invoice dapat dicetak melalui fitur print browser.
+---
 
-### Route / Controller Terkait
+### 16. Invoice Customer
 
-- Route: `GET /pesanan/{pemesanan_id}/invoice`
-- Route: `GET /admin/invoices/{invoice_id}`
+**Tujuan:** Bukti transaksi setelah pembayaran valid.
+
+**Aktor:** Customer, Admin, Sistem
+
+**Alur:**
+Setelah payment settlement, `PaymentSettlementService::issueInvoice()` buat invoice (format nomor: `INV-YYYYMMDD-NNNN`). Customer lihat invoice dari detail pesanan. Bisa unduh PDF via DomPDF.
+
+**Route:**
+- `GET /pesanan/{pemesanan_id}/invoice` — `name: user.invoices.show`
+- `GET /pesanan/{pemesanan_id}/invoice/pdf` — `name: user.invoices.pdf`
 - Controller: `InvoiceController`
 - Model: `Invoice`
 - Service: `PaymentSettlementService`
 
----
-
-## 16. Webhook Midtrans
-
-### Tujuan Fitur
-
-Webhook Midtrans digunakan agar sistem dapat menerima notifikasi status pembayaran dari Midtrans.
-
-### Aktor
-
-- Sistem
-- Midtrans
-
-### Alur Fitur
-
-Midtrans mengirim notifikasi transaksi ke endpoint webhook. Sistem memvalidasi signature key agar notifikasi benar-benar berasal dari Midtrans. Jika transaksi berstatus settlement atau capture sukses, sistem menandai pembayaran sebagai terverifikasi, memperbarui status pemesanan, mengurangi stok souvenir jika jenis pesanan adalah souvenir, dan menambah jumlah terjual. Jika transaksi pending, sistem mempertahankan status menunggu pembayaran. Jika transaksi deny, expire, cancel, atau failure, sistem menandai pembayaran ditolak tanpa mengurangi stok.
-
-### Route / Controller Terkait
-
-- Route: `POST /midtrans/notification`
-- Controller: `MidtransWebhookController`
-- Service: `MidtransPaymentService`
-- Service: `MidtransPaymentStatusService`
-- Service: `PaymentSettlementService`
-
-### Screenshot Fitur
-
-![Screenshot Webhook Midtrans](screenshot/webhook-midtrans.png)
+<!-- Screenshot: invoice.png, invoice-pdf.png -->
 
 ---
 
-## 16. Riwayat Pesanan Customer
+### 17. Ulasan (Review/Rating)
 
-### Tujuan Fitur
+**Tujuan:** Customer memberi rating dan komentar setelah pembayaran terverifikasi.
 
-Fitur riwayat pesanan digunakan agar customer dapat melihat daftar pemesanan souvenir dan reservasi homestay yang pernah dibuat.
+**Aktor:** Customer
 
-### Aktor
+**Alur:**
+Customer buka detail pesanan, beri rating (1-5) dan komentar (opsional) per item. `UlasanController::store()` validasi: hanya untuk detail pemesanan milik customer yang pembayarannya sudah `STATUS_TERVERIFIKASI`. Sistem `updateOrCreate` untuk mencegah duplikasi.
 
-- Customer
+**Route:**
+- `POST /pesanan/{pemesanan_id}/detail/{detail_pemesanan_id}/ulasan` — `name: user.ulasan.store`
+- Controller: `Pelanggan\UlasanController`
+- Model: `Ulasan`
 
-### Alur Fitur
-
-Customer membuka halaman riwayat pesanan. Sistem menampilkan daftar pemesanan milik customer yang sedang login. Data yang ditampilkan mencakup kode pemesanan, jenis pemesanan, total harga, status pemesanan, status pembayaran, dan tanggal dibuat. Customer dapat membuka detail pesanan untuk melihat rincian item souvenir atau detail booking homestay.
-
-### Route / Controller Terkait
-
-- Route: `GET /pesanan`
-- Route: `GET /pesanan/{pemesanan_id}`
-- Controller: `Pelanggan\PemesananController`
-
-### Screenshot Fitur
-
-![Screenshot Riwayat Pesanan](screenshot/riwayat-pesanan.png)
-
-![Screenshot Detail Pesanan](screenshot/detail-pesanan.png)
+<!-- Screenshot: ulasan.png -->
 
 ---
 
-## 17. Admin Pembayaran Souvenir
+## Fitur Admin
 
-### Tujuan Fitur
+### 18. Dashboard Admin
 
-Fitur admin pembayaran digunakan agar admin dapat memantau dan memverifikasi pembayaran souvenir.
+**Tujuan:** Ringkasan data operasional sistem.
 
-### Aktor
+**Aktor:** Admin
 
-- Admin
+**Alur:**
+Admin login → `/admin/dashboard`. `Admin\DashboardController` menghitung: total homestay (baru bulan ini), souvenir (tersedia, habis, stok menipis), reservasi aktif, pesanan souvenir aktif, pendapatan (hari ini, bulan ini, bulan lalu, total), pembayaran (menunggu, ditolak, terverifikasi), user (total, baru, admin, pelanggan), ulasan (total, bulan ini, distribusi rating), tren pendapatan 6 bulan, popular homestay, best seller souvenir, cek-in mendatang.
 
-### Alur Fitur
+**Route:**
+- `GET /admin/dashboard` — `name: admin.dashboard`
+- Controller: `Admin\DashboardController`
+- View: `resources/views/admin/dashboard.blade.php`
 
-Admin membuka halaman pembayaran. Sistem menampilkan daftar pembayaran yang berasal dari pemesanan souvenir. Admin dapat memfilter pembayaran berdasarkan status seperti menunggu pembayaran, menunggu verifikasi, terverifikasi, dan ditolak. Admin dapat membuka detail pembayaran untuk melihat data customer, kode pemesanan, metode pembayaran, bukti pembayaran manual, atau data Midtrans. Untuk pembayaran manual, admin dapat memverifikasi atau menolak pembayaran. Saat pembayaran diverifikasi, sistem memperbarui status pembayaran, status pemesanan, stok souvenir, dan jumlah terjual.
+**Screenshot:** `screenshot/admin-dashboard.png`
 
-### Route / Controller Terkait
+---
 
-- Route: `GET /admin/pembayaran`
-- Route: `GET /admin/pembayaran/{pembayaran_id}`
-- Route: `POST /admin/pembayaran/{pembayaran_id}/verify`
-- Route: `POST /admin/pembayaran/{pembayaran_id}/reject`
+### 19. Manajemen Kategori Homestay
+
+**Tujuan:** Admin mengelola kategori homestay.
+
+**Aktor:** Admin
+
+**Alur:**
+Admin lihat daftar kategori, tambah (nama, icon), edit, hapus. Jika kategori masih digunakan homestay, hapus ditolak.
+
+**Route:**
+- `GET /admin/kategori-homestay` — `name: admin.kategori-homestay`
+- `GET /admin/kategori-homestay/create` — `name: admin.kategori-homestay.create`
+- `POST /admin/kategori-homestay` — `name: admin.kategori-homestay.store`
+- `GET /admin/kategori-homestay/{kategori_id}/edit` — `name: admin.kategori-homestay.edit`
+- `PUT /admin/kategori-homestay/{kategori_id}` — `name: admin.kategori-homestay.update`
+- `DELETE /admin/kategori-homestay/{kategori_id}` — `name: admin.kategori-homestay.destroy`
+- Controller: `Admin\KategoriHomestayController`
+
+**Screenshot:** `screenshot/admin-kategori-homestay.png`
+
+---
+
+### 20. Manajemen Fasilitas Homestay
+
+**Tujuan:** Admin mengelola daftar fasilitas yang bisa dipasang ke homestay.
+
+**Aktor:** Admin
+
+**Alur:**
+Admin lihat daftar fasilitas, tambah (nama, ikon), edit, hapus. Jika fasilitas masih digunakan homestay, hapus ditolak.
+
+**Route:**
+- `GET /admin/fasilitas` — `name: admin.fasilitas`
+- `GET /admin/fasilitas/create` — `name: admin.fasilitas.create`
+- `POST /admin/fasilitas` — `name: admin.fasilitas.store`
+- `GET /admin/fasilitas/{fasilitas_id}/edit` — `name: admin.fasilitas.edit`
+- `PUT /admin/fasilitas/{fasilitas_id}` — `name: admin.fasilitas.update`
+- `DELETE /admin/fasilitas/{fasilitas_id}` — `name: admin.fasilitas.destroy`
+- Controller: `Admin\FasilitasController`
+- Model: `Fasilitas`
+
+<!-- Screenshot: admin-fasilitas.png -->
+
+---
+
+### 21. Manajemen Homestay
+
+**Tujuan:** Admin mengelola data penginapan.
+
+**Aktor:** Admin
+
+**Alur:**
+Admin lihat daftar homestay (filter kategori & status), tambah (nama, kategori, harga, kapasitas, deskripsi, fasilitas, foto), edit, hapus. Jika homestay masih punya reservasi aktif, hapus ditolak. Upload foto via `ImageUploadService`.
+
+**Route:**
+- `GET /admin/homestay` — `name: admin.homestay`
+- `GET /admin/homestay/create` — `name: admin.homestay.create`
+- `POST /admin/homestay` — `name: admin.homestay.store`
+- `GET /admin/homestay/{homestay_id}/edit` — `name: admin.homestay.edit`
+- `PUT /admin/homestay/{homestay_id}` — `name: admin.homestay.update`
+- `DELETE /admin/homestay/{homestay_id}` — `name: admin.homestay.destroy`
+- Controller: `Admin\HomestayController`
+
+**Screenshot:** `screenshot/admin-homestay.png`
+
+---
+
+### 22. Manajemen Souvenir
+
+**Tujuan:** Admin mengelola produk souvenir.
+
+**Aktor:** Admin
+
+**Alur:**
+Admin lihat daftar souvenir, tambah (nama, harga, stok, status, deskripsi, foto), edit, hapus. Sistem simpan `updated_by` (admin terakhir). Upload foto via `ImageUploadService`.
+
+**Route:**
+- `GET /admin/souvenir` — `name: admin.souvenir`
+- `GET /admin/souvenir/create` — `name: admin.souvenir.create`
+- `POST /admin/souvenir` — `name: admin.souvenir.store`
+- `GET /admin/souvenir/{souvenir_id}/edit` — `name: admin.souvenir.edit`
+- `PUT /admin/souvenir/{souvenir_id}` — `name: admin.souvenir.update`
+- `DELETE /admin/souvenir/{souvenir_id}` — `name: admin.souvenir.destroy`
+- Controller: `Admin\SouvenirController`
+
+**Screenshot:** `screenshot/admin-souvenir.png`
+
+---
+
+### 23. Admin Manajemen User
+
+**Tujuan:** Admin melihat daftar user.
+
+**Aktor:** Admin
+
+**Alur:**
+Admin buka `/admin/user`. Lihat daftar user dengan filter role. Lihat statistik total admin, total pelanggan, total terverifikasi.
+
+**Route:**
+- `GET /admin/user` — `name: admin.user`
+- Controller: `Admin\UserController`
+
+<!-- Screenshot: admin-user.png -->
+
+---
+
+### 24. Admin Pembayaran Souvenir
+
+**Tujuan:** Admin memantau/memverifikasi pembayaran souvenir.
+
+**Aktor:** Admin
+
+**Alur:**
+Admin lihat daftar pembayaran (filter status). Buka detail — lihat data customer, kode pesanan, metode, bukti bayar / data Midtrans. Untuk manual: verify (update status, stok, invoice) atau reject.
+
+**Route:**
+- `GET /admin/pembayaran` — `name: admin.pembayaran`
+- `GET /admin/pembayaran/{pembayaran_id}` — `name: admin.pembayaran.show`
+- `POST /admin/pembayaran/{pembayaran_id}/verify` — `name: admin.pembayaran.verify`
+- `POST /admin/pembayaran/{pembayaran_id}/reject` — `name: admin.pembayaran.reject`
+- `POST /admin/pembayaran/{pembayaran_id}/status` — `name: admin.pembayaran.status`
+- `POST /admin/pembayaran/{pembayaran_id}/complete` — `name: admin.pembayaran.complete`
 - Controller: `Admin\PembayaranController`
 - Service: `PaymentSettlementService`
 
-### Screenshot Fitur
-
-![Screenshot Admin Pembayaran](screenshot/admin-pembayaran.png)
-
-![Screenshot Detail Pembayaran](screenshot/admin-detail-pembayaran.png)
+**Screenshot:** `screenshot/admin-pembayaran.png`, `screenshot/admin-detail-pembayaran.png`
 
 ---
 
-## 18. Admin Reservasi Homestay
+### 25. Admin Reservasi Homestay
 
-### Tujuan Fitur
+**Tujuan:** Admin mengelola reservasi homestay.
 
-Fitur admin reservasi digunakan agar admin dapat memantau dan mengatur status reservasi homestay.
+**Aktor:** Admin
 
-### Aktor
+**Alur:**
+Admin lihat daftar reservasi (filter status). Buka detail — lihat data customer, check-in, check-out, malam, total, status pembayaran. Ubah status: diproses, dikonfirmasi, dibatalkan, selesai. Verify/reject payment reservasi.
 
-- Admin
-
-### Alur Fitur
-
-Admin membuka halaman reservasi. Sistem menampilkan daftar pemesanan dengan jenis `homestay`. Admin dapat memfilter reservasi berdasarkan status, membuka detail reservasi, melihat data customer, tanggal check-in, tanggal check-out, jumlah malam, total harga, dan status pembayaran. Admin dapat mengubah status reservasi menjadi diproses, dikonfirmasi, dibatalkan, atau selesai sesuai kondisi operasional.
-
-### Route / Controller Terkait
-
-- Route: `GET /admin/reservasi`
-- Route: `GET /admin/reservasi/{pemesanan_id}`
-- Route: `POST /admin/reservasi/{pemesanan_id}/status`
+**Route:**
+- `GET /admin/reservasi` — `name: admin.reservasi`
+- `GET /admin/reservasi/{pemesanan_id}` — `name: admin.reservasi.show`
+- `POST /admin/reservasi/{pemesanan_id}/status` — `name: admin.reservasi.status`
+- `POST /admin/reservasi/{pemesanan_id}/verify-payment` — `name: admin.reservasi.verify-payment`
+- `POST /admin/reservasi/{pemesanan_id}/reject-payment` — `name: admin.reservasi.reject-payment`
 - Controller: `Admin\ReservasiController`
 
-### Screenshot Fitur
-
-![Screenshot Admin Reservasi](screenshot/admin-reservasi.png)
+**Screenshot:** `screenshot/admin-reservasi.png`
 
 ---
 
-## 19. Laporan dan Unduh PDF
+### 26. Admin Invoice
 
-### Tujuan Fitur
+**Tujuan:** Admin melihat dan mengunduh invoice pembayaran terverifikasi.
 
-Fitur laporan digunakan agar admin dapat melihat ringkasan pendapatan, penjualan souvenir, reservasi homestay, dan pembayaran terverifikasi.
+**Aktor:** Admin
 
-### Aktor
+**Alur:**
+Admin buka invoice dari detail pembayaran atau reservasi. Lihat tampilan HTML atau unduh PDF via DomPDF.
 
-- Admin
+**Route:**
+- `GET /admin/invoices/{invoice_id}` — `name: admin.invoices.show`
+- `GET /admin/invoices/{invoice_id}/pdf` — `name: admin.invoices.pdf`
+- Controller: `InvoiceController`
 
-### Alur Fitur
+<!-- Screenshot: admin-invoice.png -->
 
-Admin membuka halaman laporan. Sistem menampilkan ringkasan pendapatan dari pembayaran terverifikasi, jumlah pembayaran menunggu verifikasi, jumlah reservasi homestay, laporan penjualan souvenir, laporan status reservasi, dan daftar pembayaran terverifikasi terbaru. Admin dapat memilih rentang tanggal untuk memfilter laporan. Admin juga dapat menekan tombol Unduh PDF untuk mengunduh laporan dalam format PDF menggunakan DomPDF.
+---
 
-### Route / Controller Terkait
+### 27. Notifikasi Transaksi
 
-- Route: `GET /admin/laporan`
-- Route: `GET /admin/laporan/pdf`
+**Tujuan:** Admin melihat notifikasi transaksi baru.
+
+**Aktor:** Admin
+
+**Alur:**
+Admin mengakses notifikasi transaksi via `/admin/notifikasi/transaksi/{pemesanan_id}`. Sistem menandai pesanan sudah dilihat admin (`tandaiDilihatAdmin()`), lalu redirect ke halaman detail sesuai jenis (reservasi homestay / pembayaran souvenir).
+
+**Route:**
+- `GET /admin/notifikasi/transaksi/{pemesanan_id}` — `name: admin.notifikasi.transaksi`
+- Controller: `Admin\NotifikasiTransaksiController`
+
+---
+
+### 28. Laporan dan Unduh PDF
+
+**Tujuan:** Admin melihat ringkasan pendapatan dan laporan.
+
+**Aktor:** Admin
+
+**Alur:**
+Admin buka `/admin/laporan`. Lihat ringkasan: pendapatan terverifikasi, pembayaran menunggu, jumlah reservasi, penjualan souvenir, status reservasi, pembayaran terverifikasi terbaru. Filter tanggal. Unduh PDF via DomPDF.
+
+**Route:**
+- `GET /admin/laporan` — `name: admin.laporan`
+- `GET /admin/laporan/pdf` — `name: admin.laporan.pdf`
 - Controller: `Admin\LaporanController`
 - View PDF: `resources/views/admin/laporan/pdf.blade.php`
 
-### Screenshot Fitur
-
-![Screenshot Laporan](screenshot/laporan.png)
+**Screenshot:** `screenshot/admin-laporan.png`
 
 ---
 
-## 20. Role dan Hak Akses
+## Fitur Sistem (Otomatis)
 
-### Tujuan Fitur
+### 29. Webhook Midtrans
 
-Fitur role digunakan untuk membatasi akses halaman berdasarkan jenis user.
+**Tujuan:** Menerima notifikasi status pembayaran dari Midtrans.
 
-### Aktor
+**Aktor:** Midtrans, Sistem
 
-- Admin
-- Customer
-- Sistem
+**Alur:**
+Midtrans kirim POST ke `/midtrans/notification` (tanpa CSRF). `MidtransWebhookController::handle()` verifikasi signature (`hash_equals`), cari `Pembayaran` via `midtrans_order_id`. `MidtransPaymentStatusService::apply()` mapping status: `settlement`/`capture` → verifikasi via `PaymentSettlementService`, `pending` → mark pending, `capture + challenge` → mark review, `deny`/`cancel`/`expire`/`failure` → mark failed.
 
-### Alur Fitur
+**Route:**
+- `POST /midtrans/notification` — tanpa CSRF — `name: midtrans.notification`
+- Controller: `MidtransWebhookController`
+- Services: `MidtransPaymentService`, `MidtransPaymentStatusService`, `PaymentSettlementService`
 
-Sistem memeriksa role user melalui `RoleMiddleware`. Admin hanya dapat mengakses halaman admin seperti dashboard admin, CRUD homestay, CRUD souvenir, pembayaran, reservasi, dan laporan. Customer hanya dapat mengakses halaman customer seperti dashboard, katalog, keranjang, checkout, pembayaran, dan riwayat pesanan. Role utama dikelola menggunakan Spatie Laravel Permission, sedangkan kolom `users.role` tetap digunakan sebagai fallback agar data lama tetap aman.
-
-### Route / Controller Terkait
-
-- Middleware: `RoleMiddleware`
-- Model: `User`
-- Package: `spatie/laravel-permission`
-- Seeder: `DatabaseSeeder`
-
-### Screenshot Fitur
-
-![Screenshot Hak Akses](screenshot/hak-akses.png)
+**Screenshot:** `screenshot/webhook-midtrans.png`
 
 ---
 
-## 21. Optimasi Upload Gambar
+### 30. Payment Settlement
 
-### Tujuan Fitur
+**Tujuan:** Memproses efek pembayaran sukses tepat satu kali.
 
-Fitur optimasi upload gambar digunakan agar file gambar yang diupload tidak terlalu besar dan tetap mudah ditampilkan pada website.
+**Aktor:** Sistem
 
-### Aktor
+**Alur:**
+`PaymentSettlementService::verify()` pakai `DB::transaction()` + `lockForUpdate()`:
+1. Idempotency guard — jika sudah terverifikasi, skip
+2. Untuk souvenir: validasi stok, `decrement('stok')`, `increment('jumlah_terjual')`
+3. Update `pembayarans.status_pembayaran = terverifikasi`
+4. Update `pemesanans.status_pemesanan` (souvenir → terverifikasi, homestay → dikonfirmasi)
+5. `issueInvoice()` — buat invoice dengan nomor auto-generated `INV-YYYYMMDD-NNNN`
 
-- Admin
-- Customer
-- Sistem
+---
 
-### Alur Fitur
+### 31. Role dan Hak Akses
 
-Saat user mengupload foto profil, foto homestay, foto souvenir, atau bukti pembayaran, sistem memproses file melalui `ImageUploadService`. Service melakukan resize sesuai batas ukuran, mengubah output menjadi WebP untuk upload baru, lalu menyimpan file ke folder upload. Jika data lama memiliki gambar sebelumnya, sistem dapat menghapus gambar lama saat gambar diganti.
+**Tujuan:** Membatasi akses halaman berdasarkan role.
 
-### Route / Controller Terkait
+**Aktor:** Admin, Customer, Sistem
 
+**Alur:**
+Sistem periksa via `RoleMiddleware`: coba Spatie `$user->hasRole()`, fallback ke `$user->role`. Route admin pakai `middleware('role:admin')`, route customer pakai `middleware('role:user')`. Rute booking/pembayaran juga butuh `middleware('verified.email')`.
+
+**Komponen:**
+- Middleware: `RoleMiddleware`, `EnsureEmailIsVerified`
+- Model: `User` (trait `HasRoles`)
+- Package: `spatie/laravel-permission:^8.1`
+- Seeder: `RoleSeeder`, `DatabaseSeeder`
+
+**Screenshot:** `screenshot/hak-akses.png`
+
+---
+
+### 32. Optimasi Upload Gambar
+
+**Tujuan:** File gambar tidak terlalu besar.
+
+**Aktor:** Admin, Customer, Sistem
+
+**Alur:**
+Semua upload via `ImageUploadService` — resize sesuai batas, output WebP. Berlaku untuk: foto profil, foto homestay, foto souvenir, bukti pembayaran. Gambar lama dihapus saat diganti.
+
+**Komponen:**
 - Service: `ImageUploadService`
-- Controller: `ProfileController`
-- Controller: `Admin\HomestayController`
-- Controller: `Admin\SouvenirController`
-- Controller: `Pelanggan\PembayaranController`
+- Package: `intervention/image-laravel:^4.0`
 
-### Screenshot Fitur
-
-![Screenshot Upload Gambar](screenshot/upload-gambar.png)
+**Screenshot:** `screenshot/upload-gambar.png`
 
 ---
 
-## 22. Testing dan Quality Gate
+### 33. Email Notification (Mailtrap)
 
-### Tujuan Fitur
+**Tujuan:** Mengirim email verifikasi dan password reset.
 
-Testing dan quality gate digunakan untuk memastikan fitur utama tetap berjalan setelah perubahan kode.
+**Aktor:** Sistem, Mailtrap
 
-### Aktor
+**Fitur email aktif:**
+- Email verifikasi akun baru (custom `VerifyEmailNotification`)
+- Email reset password (bawaan Laravel `Password::broker()`)
 
-- Developer
-- Sistem
+**Implementasi:**
+- Mailtrap SMTP Sandbox (`sandbox.smtp.mailtrap.io:2525`)
+- Email dikirim sinkron (tidak pakai queue)
+- Belum ada email untuk: konfirmasi pembayaran, konfirmasi booking, invoice
 
-### Alur Fitur
+**Konfigurasi:**
+```env
+MAIL_MAILER=smtp
+MAIL_HOST=sandbox.smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=your_mailtrap_username
+MAIL_PASSWORD=your_mailtrap_password
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS="noreply@example.com"
+MAIL_FROM_NAME="${APP_NAME}"
+```
 
-Developer menjalankan test menggunakan Pest melalui command `php artisan test`. Test mencakup autentikasi role, CRUD homestay, kategori homestay, souvenir, pemesanan, checkout souvenir, pembayaran, Midtrans, booking homestay, admin reservasi, dan laporan PDF. Developer juga menjalankan Laravel Pint untuk format kode, `npm run build` untuk memastikan asset frontend berhasil dibuild, serta `git diff --check` untuk memastikan tidak ada whitespace error.
+<!-- Screenshot: mailtrap-inbox.png -->
 
-### Route / Controller Terkait
+---
 
-- Test: `tests/Feature`
-- Command: `php artisan test`
-- Command: `vendor\bin\pint --dirty`
-- Command: `npm run build`
-- Command: `git diff --check`
+### 34. Testing dan Quality Gate
 
-### Screenshot Fitur
+**Tujuan:** Memastikan fitur utama tetap berjalan.
 
-![Screenshot Testing](screenshot/testing.png)
+**Aktor:** Developer
+
+**Command:**
+```bash
+php artisan test          # Pest test suite
+vendor/bin/pint --dirty   # Format PHP
+npm run build             # Build frontend
+git diff --check           # Cek whitespace
+```
+
+**Test coverage:** Admin reservation, Homestay booking, CRUD, Kategori, Fasilitas, Laporan PDF, Midtrans payment, Pembayaran manual, Pemesanan, Role permission, Souvenir checkout, Souvenir CRUD.
+
+**Screenshot:** `screenshot/testing.png`
 
 ---
 
@@ -659,25 +692,39 @@ Developer menjalankan test menggunakan Pest melalui command `php artisan test`. 
 
 | Fitur | Status |
 | --- | --- |
+| Public homepage | Selesai |
 | Login dan register | Selesai |
-| Role admin/customer | Selesai |
+| Lupa/reset password via email | Selesai |
+| Email verifikasi (Mailtrap) | Selesai |
+| Role admin/customer (Spatie + fallback) | Selesai |
+| Halaman informasi (FAQ, cara pemesanan, dll) | Selesai |
 | Dashboard admin dan customer | Selesai |
-| Profil user | Selesai |
+| Profil user + upload foto | Selesai |
 | CRUD kategori homestay | Selesai |
+| CRUD fasilitas homestay | Selesai |
 | CRUD homestay | Selesai |
 | CRUD souvenir | Selesai |
-| Katalog homestay | Selesai |
-| Booking homestay | Selesai |
+| Admin manajemen user | Selesai |
+| Notifikasi transaksi admin | Selesai |
+| Katalog homestay + filter | Selesai |
+| Booking homestay + date blocking | Selesai |
 | Katalog dan detail souvenir | Selesai |
 | Keranjang souvenir | Selesai |
 | Checkout souvenir | Selesai |
-| Payment manual | Selesai |
-| Midtrans Sandbox | Selesai secara kode |
+| Payment manual (transfer_bank, qris_manual, tunai) | Selesai |
+| Midtrans Sandbox (Snap, webhook, fallback) | Selesai |
+| Settlement pembayaran (stok, invoice) | Selesai |
 | Riwayat pesanan | Selesai |
-| Admin pembayaran | Selesai |
-| Admin reservasi | Selesai |
-| Laporan dan PDF | Selesai |
-| Invoice customer | Selesai |
-| Public homepage | Belum, opsional Sprint 9 |
-| Ulasan/rating | Belum, opsional Sprint 9 |
-| Fasilitas homestay | Belum, opsional Sprint 9 |
+| Admin pembayaran (verify/reject) | Selesai |
+| Admin reservasi (status, verify payment) | Selesai |
+| Invoice customer + PDF (DomPDF) | Selesai |
+| Invoice admin + PDF | Selesai |
+| Laporan admin + PDF | Selesai |
+| Ulasan/rating customer | Selesai |
+| Email notification (verifikasi, reset password) | Selesai via Mailtrap |
+| Optimasi upload gambar (ImageUploadService) | Selesai |
+| GitHub Actions CI | Tersedia |
+| Laravel Queue | Infrastruktur siap, belum dipakai |
+| Laravel Scheduler | Tidak dikonfigurasi |
+| Midtrans Production | Belum |
+| Email transaksional (pembayaran, booking, invoice) | Belum |
